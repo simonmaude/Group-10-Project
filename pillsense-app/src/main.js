@@ -79,6 +79,7 @@ let scheduleEnd2 = 2000;
 
 /* Assets */
 let back = './assets/back.png';
+let add = './assets/add.png';
 let edit = './assets/edit.png';
 let save = './assets/save.png';
 let plus = './assets/plus.png';
@@ -104,7 +105,8 @@ class MainScreenBehavior extends Behavior {
 		let toSettings =  new SettingsScreen();
 		let toPatient =  new PatientScreen();
 		let toPatientEdit =  new PatientEditScreen();
-		let toAddMedication =  new AddMedication();
+		let toAddMedication =  new AddMedicationScreen();
+		let toAddPatient =  new AddPatientScreen();
 		
 		// let toAddNewPatient = new AddNewPatient();
 		this.AtoB = !this.AtoB;
@@ -120,6 +122,12 @@ class MainScreenBehavior extends Behavior {
 				break;
 			case "homeToPatient":
 				container.run( new TRANSITION.Push({ direction : "left", duration : 400 }), container.last, toPatient );
+				break;
+			case "homeToAddPatient":
+				container.run( new TRANSITION.Push({ direction : "left", duration : 400 }), container.last, toAddPatient );
+				break; 		
+			case "addPatientToHome":
+				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, toHome );
 				break;
 			case "settingsToHome":
 				container.run( new TRANSITION.Push({ direction : "left", duration : 400 }), container.last, toHome );
@@ -193,6 +201,13 @@ let HomeScreen = Container.template($ => ({
 										}
 									}, 
 								}),
+								Picture($, { right:10, top:30, active: true, bottom:0, width:(application.width * 0.1), url: add, active: true, 
+									Behavior: class extends Behavior {
+										onTouchEnded(container, id, x, y, ticks) {
+											container.bubble( "onTriggerTransition", "homeToAddPatient");
+										}
+									},  
+								}),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
@@ -260,6 +275,113 @@ let HomeScreen = Container.template($ => ({
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
 					/* BLANK SPACE */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height * 0.22), top: 0, style:labelStyle, skin: greySkin, string:'  ' }),
+							]
+						}),	
+					]
+				})
+
+			]
+		})
+	] 
+}));
+
+
+/* Add Patient Screen */
+let AddPatientScreen = Container.template($ => ({ 
+	left: 0, right: 0, top: 0, bottom: 0, skin: whiteSkin, 
+	Behavior: MainScreenBehavior, 
+	contents: [
+		Container($, {left: 0, right: 0,
+			contents: [ 		
+				Column($, {left: 0, right: 0,
+					contents: [ 
+					/* PATIENTS TITLE */
+						Container($, {left: 0, right: 0, skin: blueSkin,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height / 7), top: 30, style:titleStyle, string:'Add Patient' }),
+								Picture($, { left:0, top:30, active: true, bottom:0, width:(application.width * 0.1), url: back, active: true, 
+									Behavior: class extends Behavior {
+										onTouchEnded(container, id, x, y, ticks) {
+											container.bubble( "onTriggerTransition", "addPatientToHome");
+										}
+									},  
+								}),
+								Picture($, { right:10, top:30, active: true, bottom:0, width:(application.width * 0.2), url: save, active: true, 
+									Behavior: class extends Behavior {
+										onTouchEnded(container, id, x, y, ticks) {
+											container.bubble( "onTriggerTransition", "addPatientToHome");
+										}
+									},  
+								}),
+							]
+						}),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+					/* PATIENT A */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient A:' }),
+								ibuLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+							]
+						}),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+					/* PATIENT Z */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient Z' }),
+								aceLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+							]
+						}),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+					/* PATIENT R */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient R:' }),
+								ibuLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+							]
+						}),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+					/* PATIENT X */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient X:' }),
+								aceLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+							]
+						}),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+					/* PATIENT B */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient B:' }),
+								ibuLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+							]
+						}),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+					/* PATIENT C */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient C:' }),
+								aceLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+							]
+						}),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+					/* PATIENT D */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Picture($, { left:0, top:0, bottom:0, url:plus, active: true, 
+									Behavior: class extends Behavior {
+										onTouchEnded(container, id, x, y, ticks) {
+											container.bubble( "onTriggerTransition", "patientToAddMedication");
+										}
+									},  									
+								}),
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Add Medication' }),
+							]
+						}),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+		/* BLANK SPACE */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
 								Label($, {left:0, right:0, height:(application.height * 0.22), top: 0, style:labelStyle, skin: greySkin, string:'  ' }),
@@ -481,7 +603,7 @@ let PatientEditScreen = Container.template($ => ({
 }));
 
 /* Add Medication Screen */
-let AddMedication = Container.template($ => ({ 
+let AddMedicationScreen = Container.template($ => ({ 
 	left: 0, right: 0, top: 0, bottom: 0, skin: whiteSkin, 
 	contents: [
 Container($, {left: 0, right: 0,
