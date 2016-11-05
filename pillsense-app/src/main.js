@@ -1,9 +1,8 @@
-
+/* Transitions Setup */
 import TRANSITION from 'transitions';
 
 /* Pins Setup */
 import Pins from "pins";
-
 let remotePins;
 let connected = false;
 let deviceURL = "";
@@ -11,35 +10,30 @@ let deviceURL = "";
 /* Skins and styles */
 let blackSkin = new Skin({ fill: 'black' });
 let blueSkin = new Skin({ fill: '#2D9CDB' });
-let yellowSkin = new Skin({ fill: 'yellow' });
 let whiteSkin = new Skin({ fill: 'white' });
-var greySkin = new Skin({ fill: '#E6E6E6'});
-var darkGreySkin = new Skin({ fill: '#808080'});
+let greySkin = new Skin({ fill: '#E6E6E6'});
+let darkGreySkin = new Skin({ fill: '#808080'});
+let appSkin = new Skin ({fill: '#ddd'});
+let separatorSkin = new Skin({ fill: 'silver'});
+let buttonSkin = new Skin ({fill: '#404040'});
+let inactiveButtonSkin = new Skin ({fill: '#b2b2b2'});
+let skyBlueSkin = new Skin ({fill: '#808080'});
 
-
-var appSkin = new Skin ({fill: '#ddd'});
-var separatorSkin = new Skin({ fill: 'silver'});
-var buttonSkin = new Skin ({fill: '#404040'});
-var inactiveButtonSkin = new Skin ({fill: '#b2b2b2'});
-var skyBlueSkin = new Skin ({fill: '#808080'});
-
-var buttonStyle = new Style ({font: 'bold 20px', color: 'white'});
-var inactiveStyle = new Style ({font: 'bold 20px', color: 'white'});
-var titleStyle = new Style({font: 'bold 22px', color: 'white'});
-var productNameStyle = new Style({  font: 'bold 18px', horizontal: 'left', vertical: 'middle', lines: 1 });
-var productDescriptionStyle = new Style({  font: '16px', horizontal: 'left', vertical: 'middle', left: 1});
-var productAmountStyle = new Style({  font: '16px', horizontal: 'left', vertical: 'middle', left: 1, skin: greySkin});
-var explainStyle = new Style({  font: '12px', horizontal: 'left', vertical: 'middle', left: 1});
-
+let buttonStyle = new Style ({font: 'bold 20px', color: 'white'});
+let inactiveStyle = new Style ({font: 'bold 20px', color: 'white'});
+let titleStyle = new Style({font: 'bold 22px', color: 'white'});
+let productNameStyle = new Style({  font: 'bold 18px', horizontal: 'left', vertical: 'middle', lines: 1 });
+let productDescriptionStyle = new Style({  font: '16px', horizontal: 'left', vertical: 'middle', left: 1});
+let productAmountStyle = new Style({  font: '16px', horizontal: 'left', vertical: 'middle', left: 1, skin: greySkin});
+let explainStyle = new Style({  font: '12px', horizontal: 'left', vertical: 'middle', left: 1});
 let capsStyle = new Style({ color: 'black', font: 'bold 20px', horizontal: 'right'});
 let capsStyleDisconnect = new Style({ color: '#BDBDBD', font: 'bold 20px', horizontal: 'right'});
 let labelStyle = new Style({ color: 'black', font: 'bold 20px', horizontal: 'left'});
 let textStyle = new Style({ color: 'black', font: '20px', horizontal: 'right'});
-
 let splashLabelStyle = new Style({ color: 'white', font: 'bold 50px', horizontal: 'center', vertical: 'middle' });
 let hugeLabelStyle = new Style({ color: 'black', font: 'bold 125px', horizontal: 'center', vertical: 'middle' });
 
-/* System Variables*/
+/* System variables*/
 let status = false;
 let statusLabel; 
 let statusString; 
@@ -76,7 +70,6 @@ let scheduleEnd1 = 1000;
 let scheduleStart2 = 1700;
 let scheduleEnd2 = 2000;
 
-
 /* Assets */
 let back = './assets/back.png';
 let add = './assets/add.png';
@@ -95,7 +88,6 @@ let half = './assets/half.png';
 let oneQuarter = './assets/oneQuarter.png';
 let empty = './assets/empty.png';
 let emptyDisconnect = './assets/empty_disconnect.png';
-
 
 /* Transitions */
 class MainScreenBehavior extends Behavior {
@@ -146,9 +138,7 @@ class MainScreenBehavior extends Behavior {
 				break;
 			case "addMedicationToPatient":
 				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, toAddMedication );
-				break;
-
-				
+				break;	
 		}
 	}
 }
@@ -733,6 +723,7 @@ Container($, {left: 0, right: 0,
 }));
 
 
+/* DEVICE INTERACTION */
 /* LED Flash function */
 Handler.bind("/flashLED", {
     onInvoke: function(handler, message){
@@ -748,14 +739,14 @@ Handler.bind("/flashLED", {
 
 /* Timings helper function */
 function getTimeDate(switcher) {
-    var str = "";
+    let str = "";
 
-    var currentTime = new Date()
-    var hours = currentTime.getHours()
-    var minutes = currentTime.getMinutes()
-    var seconds = currentTime.getSeconds()
-    var date = currentTime.getDate()
-    var month = currentTime.getMonth()
+    let currentTime = new Date()
+    let hours = currentTime.getHours()
+    let minutes = currentTime.getMinutes()
+    let seconds = currentTime.getSeconds()
+    let date = currentTime.getDate()
+    let month = currentTime.getMonth()
 
     if (minutes < 10) {
         minutes = "0" + minutes
@@ -884,11 +875,11 @@ function discovery() {
                 updateFeederConnection(false);
                 trace("Disconnected from remote pins\n");
                 remotePins = undefined;
-
             }
         }
     )
 }
+
 
 
 /* Application set-up */
