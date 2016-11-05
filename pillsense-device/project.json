@@ -1,0 +1,14 @@
+{
+    "title":"pillsense_device",
+    "description":"Pillsense device code",
+    "id":"pillsense-device.app",
+    "tags":[
+        "emptySample"
+    ],
+    "Create":{
+        "main":"main"
+    },
+    "Element":{
+        "main":"main"
+    }
+}
