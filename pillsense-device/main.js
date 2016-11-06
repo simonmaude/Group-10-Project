@@ -17,7 +17,7 @@ class AppBehavior extends Behavior {
                     digital: { pin: 52, direction: "output" },
                 }
             },
-            foodButton: {
+            pill1Button: {
     			require: "Digital",
     			pins: {
         			power: {pin: 62, voltage: 3.3, type: "Power"},
@@ -25,7 +25,7 @@ class AppBehavior extends Behavior {
         			digital: {pin: 64, direction: "input"},
     			}
 			}, 
-            waterButton: {
+            pill2Button: {
     			require: "Digital",
     			pins: {
         			power: {pin: 65, voltage: 3.3, type: "Power"},
@@ -33,7 +33,7 @@ class AppBehavior extends Behavior {
         			digital: {pin: 67, direction: "input"},
     			}
 			},  
-			foodLevel: {
+			ibuLevel: {
                 require: "Analog",
                 pins: {
                     power: { pin: 53, type: "Power", voltage: 3.3 },
@@ -41,7 +41,7 @@ class AppBehavior extends Behavior {
                     ground: { pin: 55, type: "Ground" }
                 }
             },				
-    		waterLevel: {
+    		aceLevel: {
                 require: "Analog",
                 pins: {
                     power: { pin: 56, type: "Power", voltage: 3.3 },
@@ -67,7 +67,7 @@ class AppBehavior extends Behavior {
         },  success => {
             if (success) {
                 Pins.share("ws", {zeroconf: true, name: "cat-feeder-device"});
-                application.add(new MainContainer({ string: "Connected!", backgroundColor: "#080165" }));
+                application.add(new MainContainer({ string: "Connected!", backgroundColor: "#2D9CDB" }));
             } else {
                    application.add(new MainContainer({ string: "Error, no connection", backgroundColor: "red" }));
                };

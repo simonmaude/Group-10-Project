@@ -34,41 +34,12 @@ let splashLabelStyle = new Style({ color: 'white', font: 'bold 50px', horizontal
 let hugeLabelStyle = new Style({ color: 'black', font: 'bold 125px', horizontal: 'center', vertical: 'middle' });
 
 /* System variables*/
-let status = false;
-let statusLabel; 
-let statusString; 
-let lastAteLabel;
-let lastDrankLabel;
 let dispenserPicture;
 let dispenserLabel;
 let dispenserLabelStyle = capsStyleDisconnect;
 let ibuLevel;
 let aceLevel;
-let treatLevel;
-let treatCount = 5;
-let level3;
 let dispenseButton;
-let start1Label;
-let sliderEnd2;
-let unitLabel;
-let plusButton1;
-let minusButton1;
-let countButton1;
-let plusButton2;
-let minusButton2;
-let countButton2;
-let plusButton3;
-let minusButton3;
-let countButton3;
-let plusButton4;
-let minusButton4;
-let countButton4;
-let lastAteString = 'no current data  ';
-let lastDrankString = 'no current data  ';
-let scheduleStart1 = 700;
-let scheduleEnd1 = 1000;
-let scheduleStart2 = 1700;
-let scheduleEnd2 = 2000;
 
 /* Assets */
 let back = './assets/back.png';
@@ -99,9 +70,6 @@ class MainScreenBehavior extends Behavior {
 		let toPatientEdit =  new PatientEditScreen();
 		let toAddMedication =  new AddMedicationScreen();
 		let toAddPatient =  new AddPatientScreen();
-		
-		// let toAddNewPatient = new AddNewPatient();
-		this.AtoB = !this.AtoB;
 		switch ( name ) {
 			case "home":
 				container.run( new TRANSITION.CrossFade({ duration : 900 }), container.last, toHome );
@@ -137,7 +105,7 @@ class MainScreenBehavior extends Behavior {
 				container.run( new TRANSITION.Push({ direction : "left", duration : 400 }), container.last, toAddMedication );
 				break;
 			case "addMedicationToPatient":
-				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, toAddMedication );
+				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, toPatient );
 				break;	
 		}
 	}
@@ -646,10 +614,34 @@ Container($, {left: 0, right: 0,
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+					/* DEVICE TITLE */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								dispenserPicture = Picture($, { left:0, top:0, bottom:0, width:(application.width * 0.15), url:feederDisconnect}),
+								dispenserLabel = Label($, {left:0, right:0, height:(application.height / 8), width:(application.width * 0.85), top: 0, style:dispenserLabelStyle, string:' DISPENSER 2  ' }),
+							]
+						}),						
+						Line($, { left: 0, right: 0, height: 3, skin: separatorSkin }),
+					/* PILL NAME 1 */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Diazepam levels:' }),
+								ibuLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+							]
+						}),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+					/* PILL NAME 2 */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Haloperidol levels:' }),
+								aceLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+							]
+						}),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
 					/* BLANK SPACE */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height * 0.55), top: 0, style:labelStyle, string:'  ' }),
+								Label($, {left:0, right:0, height:(application.height * 0.3), top: 0, style:labelStyle, skin:greySkin, string:'  ' }),
 							]
 						}),						
 					]			
@@ -709,10 +701,34 @@ Container($, {left: 0, right: 0,
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
-					/* BLANK SPACE */
+					/* DEVICE TITLE */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height * 0.55), top: 0, style:labelStyle, string:'  ' }),
+								dispenserPicture = Picture($, { left:0, top:0, bottom:0, width:(application.width * 0.15), url:feederDisconnect}),
+								dispenserLabel = Label($, {left:0, right:0, height:(application.height / 8), width:(application.width * 0.85), top: 0, style:dispenserLabelStyle, string:' DISPENSER 2  ' }),
+							]
+						}),						
+						Line($, { left: 0, right: 0, height: 3, skin: separatorSkin }),
+					/* PILL NAME 1 */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Diazepam levels:' }),
+								ibuLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+							]
+						}),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+					/* PILL NAME 2 */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Haloperidol levels:' }),
+								aceLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+							]
+						}),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+				/* BLANK SPACE */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height * 0.2), top: 0, style:labelStyle, skin: greySkin, string:'  ' }),
 							]
 						}),						
 					]			
@@ -740,7 +756,6 @@ Handler.bind("/flashLED", {
 /* Timings helper function */
 function getTimeDate(switcher) {
     let str = "";
-
     let currentTime = new Date()
     let hours = currentTime.getHours()
     let minutes = currentTime.getMinutes()
@@ -811,44 +826,16 @@ function discovery() {
 	let discoveryInstance = Pins.discover(
         connectionDesc => {
             
-            if (connectionDesc.name == "cat-feeder-device") {
+            if (connectionDesc.name == "pillsense-device") {
                 updateFeederConnection(true);
                 trace("Connecting to remote pins\n");
                 remotePins = Pins.connect(connectionDesc);
-                let foodActive = false;
-                let waterActive = false;
-                remotePins.repeat("/foodButton/read", 500, function(result1) {
-			      	let timeNow = getTimeDate(true);
-				    if ((timeNow > scheduleStart1 && timeNow < scheduleEnd1) || (timeNow > scheduleStart2 && timeNow < scheduleEnd2)) {
-						if (result1) {
-					      statusLabel.string = ' feeding  ';
-					      lastAteString = getTimeDate(false);
-					      lastAteLabel.string = lastAteString;
-					      foodActive = true;
-						} else {
-				      		if (!waterActive) statusLabel.string = ' not present  ';
-					    	foodActive = true;
-						}     
-				    } else {
-				    	if (!waterActive) {
-				      		if ((timeNow < 2400 && timeNow > scheduleEnd2) || (timeNow < scheduleStart1)) statusString = 'Next Scheduled Feed: ' + scheduleStart1.toString();
-				      		else statusString = 'Next Scheduled Feed: ' + scheduleStart2.toString();
-				      		statusLabel.string = statusString.slice(0, (statusString.length -2)) + ":00  ";
-				        }
-				      foodActive = false;
-				    }
+                remotePins.repeat("/pill1Button/read", 500, function(result1) {
+			      
 				});
 
-				remotePins.repeat("/waterButton/read", 500, function(result2) {
-			      	let timeNow = getTimeDate(true);
-				    if (result2) {
-				        statusLabel.string = ' drinking  ';
-				        lastDrankString = getTimeDate(false);
-				        lastDrankLabel.string = lastDrankString;
-				        waterActive = true;
-				    } else {
-				    	waterActive = false;
-				    }
+				remotePins.repeat("/pill2Button/read", 500, function(result2) {
+
 				});
 
 		        remotePins.repeat("/ibuLevel/read", 500, function(result) {
@@ -871,7 +858,7 @@ function discovery() {
             }
         }, 
         connectionDesc => {
-            if (connectionDesc.name == "cat-feeder-device") {
+            if (connectionDesc.name == "pillsense-device") {
                 updateFeederConnection(false);
                 trace("Disconnected from remote pins\n");
                 remotePins = undefined;
