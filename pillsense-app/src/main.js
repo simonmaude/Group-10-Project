@@ -7,6 +7,16 @@ let remotePins;
 let connected = false;
 let deviceURL = "";
 
+/* Keyboard Setup */
+import KEYBOARD from './keyboard';
+
+/* Scroll Setup */
+import {
+    FieldScrollerBehavior,
+    FieldLabelBehavior
+} from 'field';
+
+
 /* Skins and styles */
 let blackSkin = new Skin({ fill: 'black' });
 let blueSkin = new Skin({ fill: '#2D9CDB' });
@@ -30,9 +40,18 @@ let capsStyle = new Style({ color: 'black', font: 'bold 20px', horizontal: 'righ
 let capsStyleDisconnect = new Style({ color: '#BDBDBD', font: 'bold 20px', horizontal: 'right'});
 let labelStyle = new Style({ color: 'black', font: '20px', horizontal: 'left'});
 let boldLabelStyle = new Style({ color: 'black', font: 'bold 20px', horizontal: 'left'});
+let editLabelStyle = new Style({ color: '#E6E6E6', font: 'bold 20px', horizontal: 'left'});
 let textStyle = new Style({ color: 'black', font: '20px', horizontal: 'right'});
 let splashLabelStyle = new Style({ color: 'white', font: 'bold 50px', horizontal: 'center', vertical: 'middle' });
 let hugeLabelStyle = new Style({ color: 'black', font: 'bold 125px', horizontal: 'center', vertical: 'middle' });
+
+let fieldStyle = new Style({ color: 'black', font: 'bold 24px', horizontal: 'left',
+    vertical: 'middle', left: 5, right: 5, top: 5, bottom: 5 });
+let fieldHintStyle = new Style({ color: '#aaa', font: '24px', horizontal: 'left',
+    vertical: 'middle', left: 5, right: 5, top: 5, bottom: 5 });
+let fieldLabelSkin = new Skin({ fill: ['transparent', 'transparent', '#C0C0C0', '#acd473'] });
+let nameInputSkin = new Skin({ borders: { left: 2, right: 2, top: 2, bottom: 2 }, stroke: 'gray' });
+
 
 /* System variables*/
 let dispenserPicture;
@@ -41,6 +60,7 @@ let dispenserLabelStyle = capsStyleDisconnect;
 let ibuLevel;
 let aceLevel;
 let dispenseButton;
+let lastNameLabel;
 
 /* Assets */
 let back = './assets/back.png';
@@ -65,6 +85,10 @@ let emptyDisconnect = './assets/empty_disconnect.png';
 
 /* Transitions */
 class MainScreenBehavior extends Behavior {
+    onTouchEnded(content) {
+        KEYBOARD.hide();
+        content.focus();
+    }
 	onTriggerTransition(container, name) {
 		let toSplashFilled =  new SplashScreenFilled();
 		let toHome =  new HomeScreen();
@@ -113,6 +137,35 @@ class MainScreenBehavior extends Behavior {
 		}
 	}
 }
+
+/* IAP140 Keyboard */
+let MyField = Container.template($ => ({ 
+    width: 250, height: 36, skin: nameInputSkin, contents: [
+        Scroller($, { 
+            left: 4, right: 4, top: 4, bottom: 4, active: true, 
+            Behavior: FieldScrollerBehavior, clip: true, 
+            contents: [
+                Label($, { 
+                    left: 0, top: 0, bottom: 0, skin: fieldLabelSkin, 
+                    style: fieldStyle, anchor: 'NAME',
+                    editable: true, string: $.name,
+                    Behavior: class extends FieldLabelBehavior {
+                        onEdited(label) {
+                            let data = this.data;
+                            data.name = label.string;
+                            label.container.hint.visible = (data.name.length == 0);
+                            trace(data.name+"\n");
+                        }
+                    },
+                }),
+                Label($, {
+                    left: 4, right: 4, top: 4, bottom: 4, style: fieldHintStyle,
+                    string: "Tap to add text...", name: "hint"
+                }),
+            ]
+        })
+    ]
+}));
 
 
 /* Screens */
@@ -259,76 +312,113 @@ let AddPatientScreen = Container.template($ => ({
 			contents: [ 		
 				Column($, {left: 0, right: 0,
 					contents: [ 
-					/* PATIENTS TITLE */
+/* PATIENT X TITLE */
 						Container($, {left: 0, right: 0, skin: blueSkin,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 7), top: 30, style:titleStyle, string:'Add Patient' }),
+								Label($, {left:0, right:0, height:(application.height / 8), top: 30, style:titleStyle, string:'Add Patient' }),
 								Picture($, { left:0, top:30, active: true, bottom:0, width:(application.width * 0.1), url: back, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
-											container.bubble( "onTriggerTransition", "addPatientToHome");
+											container.bubble( "onTriggerTransition", "patientToHome");
 										}
 									},  
 								}),
-								Picture($, { right:10, top:30, active: true, bottom:0, width:(application.width * 0.2), url: save, active: true, 
+								Picture($, { right:10, top:30, active: true, bottom:0, width:(application.width * 0.25), url: save, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
-											container.bubble( "onTriggerTransition", "addPatientToHome");
+											container.bubble( "onTriggerTransition", "patientToPatientEdit");
 										}
 									},  
 								}),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
-					/* PATIENT A */
+					/* FIRST NAME */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient A:' }),
-								ibuLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  First Name:' }),
+								Label($, {right:25, height:(application.height / 10), top: 0, active: true, editable: true, style:editLabelStyle, string:'  enter text', 
+									Behavior: class extends Behavior {onTouchEnded(label) {
+				                            label.string = "John",
+				                            label.style = labelStyle,
+										}
+									}, 
+								}),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
-					/* PATIENT Z */
+					/* LAST NAME */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient Z' }),
-								aceLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Last Name:' }),
+								Label($, {right:25, height:(application.height / 10), top: 0, active: true, editable: true, style:editLabelStyle, string:'  enter text', 
+									Behavior: class extends Behavior {onTouchEnded(label) {
+				                            label.string = "Doe",
+				                            label.style = labelStyle,
+										}
+									}, 
+								}),
+
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
-					/* PATIENT R */
+					/* BIRTHDAY */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient R:' }),
-								ibuLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Birthday:' }),
+								Label($, {right:25, height:(application.height / 10), top: 0, active: true, editable: true, style:editLabelStyle, string:'  enter text', 
+									Behavior: class extends Behavior {onTouchEnded(label) {
+				                            label.string = "01/01/1989",
+				                            label.style = labelStyle,
+										}
+									}, 
+								}),
+							]
+						}),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),	
+					/* GENDER */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Gender:' }),
+								Label($, {right:25, height:(application.height / 10), top: 0, active: true, editable: true, style:editLabelStyle, string:'  enter text', 
+									Behavior: class extends Behavior {onTouchEnded(label) {
+				                            label.string = "Male",
+				                            label.style = labelStyle,
+										}
+									}, 
+								}),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
-					/* PATIENT X */
+					/* HEIGHT */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient X:' }),
-								aceLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Height:' }),
+								Label($, {right:25, height:(application.height / 10), top: 0, active: true, editable: true, style:editLabelStyle, string:'  enter text', 
+									Behavior: class extends Behavior {onTouchEnded(label) {
+				                            label.string = "6 ft",
+				                            label.style = labelStyle,
+										}
+									}, 
+								}),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
-					/* PATIENT B */
+					/* WEIGHT */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient B:' }),
-								ibuLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Weight:' }),
+								Label($, {right:25, height:(application.height / 10), top: 0, active: true, editable: true, style:editLabelStyle, string:'  enter text', 
+									Behavior: class extends Behavior {onTouchEnded(label) {
+				                            label.string = "169 lbs",
+				                            label.style = labelStyle,
+										}
+									}, 
+								}),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
-					/* PATIENT C */
-						Line($, {left: 0, right: 0, top:0, bottom:0,
-							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient C:' }),
-								aceLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
-							]
-						}),
-						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
-					/* PATIENT D */
+					/* ADD MEDICATION */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
 								Picture($, { left:0, top:0, bottom:0, url:plus, active: true, 
