@@ -21,14 +21,15 @@ let skyBlueSkin = new Skin ({fill: '#808080'});
 
 let buttonStyle = new Style ({font: 'bold 20px', color: 'white'});
 let inactiveStyle = new Style ({font: 'bold 20px', color: 'white'});
-let titleStyle = new Style({font: 'bold 22px', color: 'white'});
+let titleStyle = new Style({font: 'bold 26px', color: 'white'});
 let productNameStyle = new Style({  font: 'bold 18px', horizontal: 'left', vertical: 'middle', lines: 1 });
 let productDescriptionStyle = new Style({  font: '16px', horizontal: 'left', vertical: 'middle', left: 1});
 let productAmountStyle = new Style({  font: '16px', horizontal: 'left', vertical: 'middle', left: 1, skin: greySkin});
 let explainStyle = new Style({  font: '12px', horizontal: 'left', vertical: 'middle', left: 1});
 let capsStyle = new Style({ color: 'black', font: 'bold 20px', horizontal: 'right'});
 let capsStyleDisconnect = new Style({ color: '#BDBDBD', font: 'bold 20px', horizontal: 'right'});
-let labelStyle = new Style({ color: 'black', font: 'bold 20px', horizontal: 'left'});
+let labelStyle = new Style({ color: 'black', font: '20px', horizontal: 'left'});
+let boldLabelStyle = new Style({ color: 'black', font: 'bold 20px', horizontal: 'left'});
 let textStyle = new Style({ color: 'black', font: '20px', horizontal: 'right'});
 let splashLabelStyle = new Style({ color: 'white', font: 'bold 50px', horizontal: 'center', vertical: 'middle' });
 let hugeLabelStyle = new Style({ color: 'black', font: 'bold 125px', horizontal: 'center', vertical: 'middle' });
@@ -153,7 +154,7 @@ let HomeScreen = Container.template($ => ({
 					/* HOME */
 						Container($, {left: 0, right: 0, skin: blueSkin,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 7), top: 30, style:titleStyle, string:'My Patients' }),
+								Label($, {left:0, right:0, height:(application.height / 8), top: 30, style:titleStyle, string:'My Patients' }),
 								Picture($, { left:0, top:30, bottom:0, width:(application.width * 0.1), url: settingsPicture, active: true,
 									Behavior: class extends Behavior {
 										onTouchBegan(container, id, x, y, ticks) {
@@ -365,10 +366,10 @@ let PatientScreen = Container.template($ => ({
 			contents: [ 		
 				Column($, {left: 0, right: 0,
 					contents: [ 
-					/* PATIENTS TITLE */
+					/* PATIENT X TITLE */
 						Container($, {left: 0, right: 0, skin: blueSkin,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 7), top: 30, style:titleStyle, string:'Patient X' }),
+								Label($, {left:0, right:0, height:(application.height / 8), top: 30, style:titleStyle, string:'Patient X' }),
 								Picture($, { left:0, top:30, active: true, bottom:0, width:(application.width * 0.1), url: back, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
@@ -376,7 +377,7 @@ let PatientScreen = Container.template($ => ({
 										}
 									},  
 								}),
-								Picture($, { right:10, top:30, active: true, bottom:0, width:(application.width * 0.2), url: edit, active: true, 
+								Picture($, { right:10, top:30, active: true, bottom:0, width:(application.width * 0.25), url: edit, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
 											container.bubble( "onTriggerTransition", "patientToPatientEdit");
@@ -386,55 +387,62 @@ let PatientScreen = Container.template($ => ({
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
-					/* PATIENT A */
+					/* AGE */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient A:' }),
-								ibuLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Age:' }),
+								Label($, {right:25, height:(application.height / 10), top: 0, style:labelStyle, string:'  27' }),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
-					/* PATIENT Z */
+					/* GENDER */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient Z' }),
-								aceLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Gender:' }),
+								Label($, {right:25, height:(application.height / 10), top: 0, style:labelStyle, string:'  M' }),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
-					/* PATIENT R */
+					/* HEIGHT */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient R:' }),
-								ibuLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Height:' }),
+								Label($, {right:25, height:(application.height / 10), top: 0, style:labelStyle, string:'  6 ft' }),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
-					/* PATIENT X */
+					/* WEIGHT */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient X:' }),
-								aceLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Weight:' }),
+								Label($, {right:25, height:(application.height / 10), top: 0, style:labelStyle, string:'  169 lbs' }),
+							]
+						}),
+						Line($, { left: 0, right: 0, height: 3, skin: separatorSkin }),
+					/* MEDICATION TITLE */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, height:(application.height / 10), top: 0, style:boldLabelStyle, string:'  MEDICATIONS:' }),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
-					/* PATIENT B */
+					/* IBRUPROFEN */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient B:' }),
-								ibuLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Ibuprofen' }),
+								aceLevel = Picture($, { right:0, top:0, bottom:0, url:tick }),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
-					/* PATIENT C */
+					/* ACETAMINOPHEN */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient C:' }),
-								aceLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Acetaminophen' }),
+								aceLevel = Picture($, { right:0, top:0, bottom:0, url:exclamation }),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
-					/* PATIENT D */
+					/* ADD MEDICATION */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
 								Picture($, { left:0, top:0, bottom:0, url:plus, active: true, 
@@ -451,7 +459,7 @@ let PatientScreen = Container.template($ => ({
 		/* BLANK SPACE */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height * 0.22), top: 0, style:labelStyle, skin: greySkin, string:'  ' }),
+								Label($, {left:0, right:0, height:(application.height * 0.15), top: 0, style:labelStyle, skin: greySkin, string:'  ' }),
 							]
 						}),	
 					]
