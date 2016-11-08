@@ -53,6 +53,8 @@ let feederDisconnect = './assets/dispenser_disconnect.png';
 let cat = './assets/cat.png';
 let splash = './assets/splash.png'
 let splashFilled = './assets/splashFilled.png'
+let exclamation = './assets/exclamation.png' 
+let tick = './assets/tick.png' 
 let full = './assets/full.png';
 let threeQuarter = './assets/threeQuarter.png';
 let half = './assets/half.png';
@@ -173,7 +175,7 @@ let HomeScreen = Container.template($ => ({
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
 								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient A:' }),
-								ibuLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+								ibuLevel = Picture($, { left:0, top:0, bottom:0, url:exclamation }),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
@@ -181,7 +183,7 @@ let HomeScreen = Container.template($ => ({
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
 								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient Z' }),
-								aceLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+								aceLevel = Picture($, { left:0, top:0, bottom:0, url:exclamation }),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
@@ -189,7 +191,7 @@ let HomeScreen = Container.template($ => ({
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
 								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient R:' }),
-								ibuLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+								ibuLevel = Picture($, { left:0, top:0, bottom:0, url:exclamation }),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
@@ -204,7 +206,7 @@ let HomeScreen = Container.template($ => ({
 										}
 									},
 								}),
-								aceLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+								aceLevel = Picture($, { left:0, top:0, bottom:0, url:tick }),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
@@ -212,7 +214,7 @@ let HomeScreen = Container.template($ => ({
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
 								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient B:' }),
-								ibuLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+								ibuLevel = Picture($, { left:0, top:0, bottom:0, url:tick }),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
@@ -220,7 +222,7 @@ let HomeScreen = Container.template($ => ({
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
 								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient C:' }),
-								aceLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+								aceLevel = Picture($, { left:0, top:0, bottom:0, url:tick }),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
@@ -228,7 +230,7 @@ let HomeScreen = Container.template($ => ({
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
 								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient D:' }),
-								aceLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+								aceLevel = Picture($, { left:0, top:0, bottom:0, url:tick }),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
