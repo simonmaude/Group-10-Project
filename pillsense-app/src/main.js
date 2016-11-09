@@ -931,7 +931,7 @@ let AddMedicationScreen = Container.template($ => ({
 /* PATIENT X TITLE */
 						Container($, {left: 0, right: 0, skin: blueSkin,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 8), top: 30, style:titleStyle, string:'Add Medication' }),
+								Label($, {left:0, right:40, height:(application.height / 8), top: 30, style:titleStyle, string:'Add Medication' }),
 								Picture($, { left:0, top:30, active: true, bottom:0, width:(application.width * 0.1), url: back, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
@@ -958,10 +958,10 @@ let AddMedicationScreen = Container.template($ => ({
 						}),
 						Line($, {height:(application.height / 15), left: 0, right: 0, top:0, bottom:0, active: true,
 							contents: [
-								Label($, {active: true, editable: true, left: 80, right: 20, style:editLabelStyle, string:'', 
+								Label($, {active: true, editable: true, left: 0, right: 10, style:editLabelStyle, string:'', 
 												
 											}),
-								Label($, {active: true, editable: true, left: 80, right: 20, style:editLabelStyle, string:'Medicine Name', 
+								Label($, {active: true, editable: true, left: 0, right: 10, style:editLabelStyle, string:'Medicine Name', 
 												Behavior: class extends Behavior {onTouchEnded(label) {
 							                            label.string = "         Ibuprofen",
 							                            label.style = labelStyle,
@@ -975,22 +975,22 @@ let AddMedicationScreen = Container.template($ => ({
 					/* Dosage */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Dosage' }),
+								Label($, {left:0, right:0, height:(application.height / 13), top: 0, style:labelStyle, string:'  Dosage' }),
 							]
 						}),
 						Line($, {height:(application.height / 15), left: 0, right: 0, top:0, bottom:0, active: true,
 							contents: [
-								Label($, {active: true, editable: true, left: 60, right: 20, style:editLabelStyle, string:'amount', 
+								Label($, {active: true, editable: true, left: 30, right: 20, style:editLabelStyle, string:'amount', 
 												Behavior: class extends Behavior {onTouchEnded(label) {
 							                            label.string = "300",
 							                            label.style = labelStyle,
 													}
 												}, 
 											}),
-								Label($, {active: true, editable: true, left: 60, right: 20, style:editLabelStyle, string:'', 
+								Label($, {active: true, editable: true, left: 30, right: 20, style:editLabelStyle, string:'', 
 												
 											}),
-								Label($, {active: true, editable: true, left: 60, right: 20, style:editLabelStyle, string:'unit', 
+								Label($, {active: true, editable: true, left: 30, right: 20, style:editLabelStyle, string:'unit', 
 												Behavior: class extends Behavior {onTouchEnded(label) {
 							                            label.string = "mg",
 							                            label.style = labelStyle,
@@ -1004,22 +1004,22 @@ let AddMedicationScreen = Container.template($ => ({
 					/* Frequency */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 15), top: 0, style:labelStyle, string:'  Frequency' }),
+								Label($, {left:0, right:0, height:(application.height / 13), top: 0, style:labelStyle, string:'  Frequency' }),
 							]
 						}),
 						Line($, {height:(application.height / 15), left: 0, right: 0, top:0, bottom:0, active: true,
 							contents: [
-								Label($, {active: true, editable: true, left: 60, right: 20, style:editLabelStyle, string:'X times', 
+								Label($, {active: true, editable: true, left: 30, right: 20, style:editLabelStyle, string:'X times', 
 												Behavior: class extends Behavior {onTouchEnded(label) {
 							                            label.string = "3 times",
 							                            label.style = labelStyle,
 													}
 												}, 
 											}),
-								Label($, {active: true, editable: true, left: 60, right: 20, style:editLabelStyle, string:'per', 
+								Label($, {active: true, editable: true, left: 30, right: 20, style:editLabelStyle, string:'per', 
 												
 											}),
-								Label($, {active: true, editable: true, left: 60, right: 20, style:editLabelStyle, string:'day', 
+								Label($, {active: true, editable: true, left: 30, right: 20, style:editLabelStyle, string:'day', 
 												Behavior: class extends Behavior {onTouchEnded(label) {
 							                            label.string = "day",
 							                            label.style = labelStyle,
@@ -1038,7 +1038,7 @@ let AddMedicationScreen = Container.template($ => ({
 						}),
 						Line($, {height:(application.height / 7.5), left: 0, right: 0, top:0, bottom:0, active: true,
 							contents: [
-								Label($, {active: true, editable: true, left: 60, right: 20, style:editLabelStyle, string:'None', 
+								Label($, {active: true, editable: true, left: 30, right: 20, style:editLabelStyle, string:'None', 
 												Behavior: class extends Behavior {onTouchEnded(label) {
 							                            label.string = "None",
 							                            label.style = labelStyle,
@@ -1055,7 +1055,7 @@ let AddMedicationScreen = Container.template($ => ({
 						}),
 						Line($, {height:(application.height / 7.5), left: 0, right: 0, top:0, bottom:0, active: true,
 							contents: [
-								Label($, {active: true, editable: true, left: 60, right: 20, style:editLabelStyle, string:'None', 
+								Label($, {active: true, editable: true, left: 30, right: 20, style:editLabelStyle, string:'None', 
 												Behavior: class extends Behavior {onTouchEnded(label) {
 							                            label.string = "None",
 							                            label.style = labelStyle,
