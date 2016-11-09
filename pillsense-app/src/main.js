@@ -203,6 +203,19 @@ let SplashScreenFilled = Container.template($ => ({
 }));
 
 
+// /* Pop Up Screen */
+// let PopUpScreen = Container.template($ => ({ 
+// 	left: 100, right: 100, top: 100, bottom: 100, skin: whiteSkin, Behavior: MainScreenBehavior, active: true,
+// 	Behavior: class extends Behavior {
+// 		onTouchEnded(container, id, x, y, ticks) {
+//             let data = this.data;
+//             data.visible = false;
+// 		}
+// 	}, 
+// 	contents: [Picture($, { left:0, right:0, top:40, bottom:0, url:splash }),]
+// }));
+
+
 /* Home Screen */
 let HomeScreen = Container.template($ => ({ 
 	left: 0, right: 0, top: 0, bottom: 0, skin: whiteSkin, 
@@ -264,30 +277,12 @@ let HomeScreen = Container.template($ => ({
 									Behavior: class extends Behavior {
 										onTouchBegan(container, id, x, y, ticks) {
 											container.bubble( "onTriggerTransition", "homeToPatient" );
-											// let warningPopUp;
-											// warningPopUp = new Container($, {left: 0, right: 0, top: 0, bottom: 0, height:(application.height / 10), width:(application.width / 10), 
-											// 	contents:[
-											// 		Label($, {left:0, right:0, top: 0, style:labelStyle, string:'  Warning!' }),
-											// 	]
-											// });
-											// MainScreen.add(warningPopUp);
-											// warningPopUp.show();
-											trace("warningPopUp\n");
 										}
 									},
 								}),
 								Picture($, { left:0, top:0, bottom:0, url:tick,
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
-											// let warningPopUp;
-											// warningPopUp = new Container($, {left: 0, right: 0, top: 0, bottom: 0, height:(application.height / 10), width:(application.width / 10), 
-											// 	contents:[
-											// 		Label($, {left:0, right:0, top: 0, style:labelStyle, string:'  Warning!' }),
-											// 	]
-											// });
-											// MainScreen.add(warningPopUp);
-											// warningPopUp.show();
-											// trace("warningPopUp\n");
 										}
 									},
 								 }),
@@ -331,17 +326,6 @@ let HomeScreen = Container.template($ => ({
 		})
 	] 
 }));
-
-
-/* Pop Up Screen */
-let PopUpScreen = Container.template($ => ({ 
-	left: 50, right: 50, top: 50, bottom: 50, skin: whiteSkin, Behavior: MainScreenBehavior, active: true,
-	Behavior: class extends Behavior {
-		onTouchEnded(container, id, x, y, ticks) { }
-	}, 
-	// contents: [Picture($, { left:0, right:0, top:40, bottom:0, url:splash }),]
-}));
-
 
 /* New Home Screen */
 let NewHomeScreen = Container.template($ => ({ 
