@@ -148,14 +148,14 @@ class MainScreenBehavior extends Behavior {
 
 /* IAP140 Keyboard */
 let MyField = Container.template($ => ({ 
-    width: 250, height: 36, skin: nameInputSkin, contents: [
+    width: 200, height: 36, skin: nameInputSkin, contents: [
         Scroller($, { 
             left: 4, right: 4, top: 4, bottom: 4, active: true, 
             Behavior: FieldScrollerBehavior, clip: true, 
             contents: [
                 Label($, { 
                     left: 0, top: 0, bottom: 0, skin: fieldLabelSkin, 
-                    style: fieldStyle, anchor: 'NAME',
+                    style: labelStyle, horizontal:"right", anchor: 'NAME',
                     editable: true, string: $.name,
                     Behavior: class extends FieldLabelBehavior {
                         onEdited(label) {
@@ -450,7 +450,15 @@ let AddPatientScreen = Container.template($ => ({
 		Container($, {left: 0, right: 0,
 			contents: [ 		
 				Column($, {left: 0, right: 0,
-					contents: [ 
+					Behavior: class extends Behavior {
+						onTouchEnded(content) {
+			        		//SystemKeyboard.hide();
+			        		trace("hide keyboard moom \n");
+			        		//SystemKeyBoard.hide();
+			        		content.focus();
+		    			}
+		    		},
+    				contents: [ 
 /* PATIENT X TITLE */
 						Container($, {left: 0, right: 0, skin: blueSkin,
 							contents: [
@@ -475,85 +483,96 @@ let AddPatientScreen = Container.template($ => ({
 					/* FIRST NAME */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  First Name:' }),
-								Label($, {right:25, height:(application.height / 10), top: 0, active: true, editable: true, style:editLabelStyle, string:'  enter text', 
-									Behavior: class extends Behavior {onTouchEnded(label) {
-				                            label.string = "John",
-				                            label.style = labelStyle,
-										}
-									}, 
-								}),
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  First Name:', 
+									Behavior: class extends Behavior {
+										onTouchEnded(content) {
+											KEYBOARD.hide();
+        									system.keyboard.visible = false;
+        									content.focus();
+    									}
+    								},
+    							}),
+								new MyField({name: "enter text"}),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
 					/* LAST NAME */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Last Name:' }),
-								Label($, {right:25, height:(application.height / 10), top: 0, active: true, editable: true, style:editLabelStyle, string:'  enter text', 
-									Behavior: class extends Behavior {onTouchEnded(label) {
-				                            label.string = "Doe",
-				                            label.style = labelStyle,
-										}
-									}, 
-								}),
-
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  First Name:', 
+									Behavior: class extends Behavior {
+										onTouchEnded(content) {
+											KEYBOARD.hide();
+        									system.keyboard.visible = false;
+        									content.focus();
+    									}
+    								},
+    							}),
+								new MyField({name: "enter text"}),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
 					/* BIRTHDAY */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Birthday:' }),
-								Label($, {right:25, height:(application.height / 10), top: 0, active: true, editable: true, style:editLabelStyle, string:'  enter text', 
-									Behavior: class extends Behavior {onTouchEnded(label) {
-				                            label.string = "01/01/1989",
-				                            label.style = labelStyle,
-										}
-									}, 
-								}),
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  First Name:', 
+									Behavior: class extends Behavior {
+										onTouchEnded(content) {
+											KEYBOARD.hide();
+        									system.keyboard.visible = false;
+        									content.focus();
+    									}
+    								},
+    							}),
+								new MyField({name: "enter text"}),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),	
 					/* GENDER */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Gender:' }),
-								Label($, {right:25, height:(application.height / 10), top: 0, active: true, editable: true, style:editLabelStyle, string:'  enter text', 
-									Behavior: class extends Behavior {onTouchEnded(label) {
-				                            label.string = "Male",
-				                            label.style = labelStyle,
-										}
-									}, 
-								}),
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  First Name:', 
+									Behavior: class extends Behavior {
+										onTouchEnded(content) {
+											KEYBOARD.hide();
+        									system.keyboard.visible = false;
+        									content.focus();
+    									}
+    								},
+    							}),
+								new MyField({name: "enter text"}),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
 					/* HEIGHT */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Height:' }),
-								Label($, {right:25, height:(application.height / 10), top: 0, active: true, editable: true, style:editLabelStyle, string:'  enter text', 
-									Behavior: class extends Behavior {onTouchEnded(label) {
-				                            label.string = "6 ft",
-				                            label.style = labelStyle,
-										}
-									}, 
-								}),
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  First Name:', 
+									Behavior: class extends Behavior {
+										onTouchEnded(content) {
+											KEYBOARD.hide();
+        									system.keyboard.visible = false;
+        									content.focus();
+    									}
+    								},
+    							}),
+								new MyField({name: "enter text"}),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
 					/* WEIGHT */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Weight:' }),
-								Label($, {right:25, height:(application.height / 10), top: 0, active: true, editable: true, style:editLabelStyle, string:'  enter text', 
-									Behavior: class extends Behavior {onTouchEnded(label) {
-				                            label.string = "169 lbs",
-				                            label.style = labelStyle,
-										}
-									}, 
-								}),
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  First Name:', 
+									Behavior: class extends Behavior {
+										onTouchEnded(content) {
+											KEYBOARD.hide();
+        									system.keyboard.visible = false;
+        									content.focus();
+    									}
+    								},
+    							}),
+								new MyField({name: "enter text"}),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
@@ -820,14 +839,15 @@ let PatientEditScreen = Container.template($ => ({
 	contents: [
 		Container($, {left: 0, right: 0, 
 			contents: [ 		
-				Column($, {left: 0, right: 0, active: true, Behavior: class extends Behavior {
-				onTouchEnded(content) {
-        		//SystemKeyboard.hide();
-        		trace("hide keyboard moom \n");
-        		//SystemKeyBoard.hide();
-        		content.focus();
-    			}
-    		},
+				Column($, {left: 0, right: 0, active: true, 
+					Behavior: class extends Behavior {
+						onTouchEnded(content) {
+			        		//SystemKeyboard.hide();
+			        		trace("hide keyboard moom \n");
+			        		//SystemKeyBoard.hide();
+			        		content.focus();
+		    			}
+    				},
 					contents: [ 
 					/* PATIENT X TITLE */
 						Container($, {left: 0, right: 0, skin: blueSkin, 
