@@ -818,22 +818,29 @@ let PatientEditScreen = Container.template($ => ({
 	left: 0, right: 0, top: 0, bottom: 0, skin: whiteSkin, 
 	Behavior: MainScreenBehavior, 
 	contents: [
-		Container($, {left: 0, right: 0,
+		Container($, {left: 0, right: 0, 
 			contents: [ 		
-				Column($, {left: 0, right: 0,
+				Column($, {left: 0, right: 0, active: true, Behavior: class extends Behavior {
+				onTouchEnded(content) {
+        		//SystemKeyboard.hide();
+        		trace("hide keyboard moom \n");
+        		//SystemKeyBoard.hide();
+        		content.focus();
+    			}
+    		},
 					contents: [ 
-					/* PATIENTS TITLE */
-						Container($, {left: 0, right: 0, skin: blueSkin,
+					/* PATIENT X TITLE */
+						Container($, {left: 0, right: 0, skin: blueSkin, 
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 7), top: 30, style:titleStyle, string:'Edit Patient X' }),
+								Label($, {left:0, right:0, height:(application.height / 8), top: 30, style:titleStyle, string:'Edit Patient' }),
 								Picture($, { left:0, top:30, active: true, bottom:0, width:(application.width * 0.1), url: back, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
-											container.bubble( "onTriggerTransition", "patientEditToPatient");
+											container.bubble( "onTriggerTransition", "patientToHome");
 										}
 									},  
 								}),
-								Picture($, { right:10, top:30, active: true, bottom:0, width:(application.width * 0.2), url: save, active: true, 
+								Picture($, { right:10, top:30, active: true, bottom:0, width:(application.width * 0.25), url: save, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
 											container.bubble( "onTriggerTransition", "patientEditToPatient");
@@ -843,59 +850,134 @@ let PatientEditScreen = Container.template($ => ({
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
-					/* PATIENT A */
+					/* FIRST NAME */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient A:' }),
-								ibuLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  First Name:', 
+									Behavior: class extends Behavior {
+										onTouchEnded(content) {
+											KEYBOARD.hide();
+        									//SystemKeyboard.hide();
+        									system.keyboard.visible = false;
+        									//SystemKeyBoard.hide();
+        									content.focus();
+    									}
+    								},
+    							}),
+
+								new MyField({name: "John"}),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
-					/* PATIENT Z */
+					/* LAST NAME */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient Z' }),
-								aceLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Last Name:', 
+									Behavior: class extends Behavior {
+										onTouchEnded(content) {
+											KEYBOARD.hide();
+        									//SystemKeyboard.hide();
+        									system.keyboard.visible = false;
+        									//SystemKeyBoard.hide();
+        									content.focus();
+    									}
+    								},
+    							}),
+
+								new MyField({name: "Doe"}),
+
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
-					/* PATIENT R */
+					/* BIRTHDAY */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient R:' }),
-								ibuLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Birthday:', 
+									Behavior: class extends Behavior {
+										onTouchEnded(content) {
+											KEYBOARD.hide();
+        									//SystemKeyboard.hide();
+        									system.keyboard.visible = false;
+        									//SystemKeyBoard.hide();
+        									content.focus();
+    									}
+    								},
+    							}),
+
+								new MyField({name: "  01/01/1989"}),
+							]
+						}),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),	
+					/* GENDER */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Gender:', 
+									Behavior: class extends Behavior {
+										onTouchEnded(content) {
+											KEYBOARD.hide();
+        									//SystemKeyboard.hide();
+        									system.keyboard.visible = false;
+        									//SystemKeyBoard.hide();
+        									content.focus();
+    									}
+    								},
+    							}),
+
+								new MyField({name: "  Male"}),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
-					/* PATIENT X */
+					/* HEIGHT */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient X:' }),
-								aceLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Height:', 
+									Behavior: class extends Behavior {
+										onTouchEnded(content) {
+											KEYBOARD.hide();
+        									//SystemKeyboard.hide();
+        									system.keyboard.visible = false;
+        									//SystemKeyBoard.hide();
+        									content.focus();
+    									}
+    								},
+    							}),
+
+								new MyField({name: "  6 ft"}),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
-					/* PATIENT B */
+					/* WEIGHT */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient B:' }),
-								ibuLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Weight:', 
+									Behavior: class extends Behavior {
+										onTouchEnded(content) {
+											KEYBOARD.hide();
+        									//SystemKeyboard.hide();
+        									system.keyboard.visible = false;
+        									//SystemKeyBoard.hide();
+        									content.focus();
+    									}
+    								},
+    							}),
+
+								new MyField({name: "  169 lbs"}),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
-					/* PATIENT C */
+					/* ADD MEDICATION */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient C:' }),
-								aceLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
-							]
-						}),
-						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
-					/* PATIENT D */
-						Line($, {left: 0, right: 0, top:0, bottom:0,
-							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient D:' }),
-								aceLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+								Picture($, { left:0, top:0, bottom:0, url:plus, active: true, 
+									Behavior: class extends Behavior {
+										onTouchEnded(container, id, x, y, ticks) {
+											container.bubble( "onTriggerTransition", "patientToAddMedication");
+											SystemKeyboard.hide();
+											container.focus();
+										}
+									},  									
+								}),
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Add Medication' }),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
