@@ -333,6 +333,16 @@ let HomeScreen = Container.template($ => ({
 }));
 
 
+/* Pop Up Screen */
+let PopUpScreen = Container.template($ => ({ 
+	left: 50, right: 50, top: 50, bottom: 50, skin: whiteSkin, Behavior: MainScreenBehavior, active: true,
+	Behavior: class extends Behavior {
+		onTouchEnded(container, id, x, y, ticks) { }
+	}, 
+	// contents: [Picture($, { left:0, right:0, top:40, bottom:0, url:splash }),]
+}));
+
+
 /* New Home Screen */
 let NewHomeScreen = Container.template($ => ({ 
 	left: 0, right: 0, top: 0, bottom: 0, skin: whiteSkin, 
