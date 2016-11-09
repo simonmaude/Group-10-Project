@@ -237,7 +237,7 @@ let HomeScreen = Container.template($ => ({
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
 								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient A:' }),
-								ibuLevel = Picture($, { left:0, top:0, bottom:0, url:exclamation }),
+								Picture($, { left:0, top:0, bottom:0, url:exclamation }),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
@@ -245,7 +245,7 @@ let HomeScreen = Container.template($ => ({
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
 								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient Z' }),
-								aceLevel = Picture($, { left:0, top:0, bottom:0, url:exclamation }),
+								Picture($, { left:0, top:0, bottom:0, url:exclamation }),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
@@ -253,7 +253,7 @@ let HomeScreen = Container.template($ => ({
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
 								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient R:' }),
-								ibuLevel = Picture($, { left:0, top:0, bottom:0, url:exclamation }),
+								Picture($, { left:0, top:0, bottom:0, url:exclamation }),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
@@ -263,12 +263,34 @@ let HomeScreen = Container.template($ => ({
 								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Patient X:',
 									Behavior: class extends Behavior {
 										onTouchBegan(container, id, x, y, ticks) {
-											trace("out \n");
 											container.bubble( "onTriggerTransition", "homeToPatient" );
+											// let warningPopUp;
+											// warningPopUp = new Container($, {left: 0, right: 0, top: 0, bottom: 0, height:(application.height / 10), width:(application.width / 10), 
+											// 	contents:[
+											// 		Label($, {left:0, right:0, top: 0, style:labelStyle, string:'  Warning!' }),
+											// 	]
+											// });
+											// MainScreen.add(warningPopUp);
+											// warningPopUp.show();
+											trace("warningPopUp\n");
 										}
 									},
 								}),
-								aceLevel = Picture($, { left:0, top:0, bottom:0, url:tick }),
+								Picture($, { left:0, top:0, bottom:0, url:tick,
+									Behavior: class extends Behavior {
+										onTouchEnded(container, id, x, y, ticks) {
+											// let warningPopUp;
+											// warningPopUp = new Container($, {left: 0, right: 0, top: 0, bottom: 0, height:(application.height / 10), width:(application.width / 10), 
+											// 	contents:[
+											// 		Label($, {left:0, right:0, top: 0, style:labelStyle, string:'  Warning!' }),
+											// 	]
+											// });
+											// MainScreen.add(warningPopUp);
+											// warningPopUp.show();
+											// trace("warningPopUp\n");
+										}
+									},
+								 }),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
@@ -276,7 +298,7 @@ let HomeScreen = Container.template($ => ({
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
 								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient B:' }),
-								ibuLevel = Picture($, { left:0, top:0, bottom:0, url:tick }),
+								Picture($, { left:0, top:0, bottom:0, url:tick }),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
@@ -284,7 +306,7 @@ let HomeScreen = Container.template($ => ({
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
 								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient C:' }),
-								aceLevel = Picture($, { left:0, top:0, bottom:0, url:tick }),
+								Picture($, { left:0, top:0, bottom:0, url:tick }),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
@@ -292,7 +314,7 @@ let HomeScreen = Container.template($ => ({
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
 								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient D:' }),
-								aceLevel = Picture($, { left:0, top:0, bottom:0, url:tick }),
+								Picture($, { left:0, top:0, bottom:0, url:tick }),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
@@ -897,27 +919,27 @@ let PatientEditScreen = Container.template($ => ({
 	] 
 }));
 
-/* Add Medication Screen */
+//////////////////////////////////////////////////////////////////////////////
 let AddMedicationScreen = Container.template($ => ({ 
 	left: 0, right: 0, top: 0, bottom: 0, skin: whiteSkin, 
+	Behavior: MainScreenBehavior, 
 	contents: [
-Container($, {left: 0, right: 0,
+		Container($, {left: 0, right: 0,
 			contents: [ 		
 				Column($, {left: 0, right: 0,
 					contents: [ 
-					/* SETTINGS */
+/* PATIENT X TITLE */
 						Container($, {left: 0, right: 0, skin: blueSkin,
 							contents: [
-								Picture($, { left:0, top:10, active: true, bottom:0, width:(application.width * 0.1), url: back,
-									Behavior: MainScreenBehavior, 
+								Label($, {left:0, right:0, height:(application.height / 8), top: 30, style:titleStyle, string:'Add Medication' }),
+								Picture($, { left:0, top:30, active: true, bottom:0, width:(application.width * 0.1), url: back, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
 											container.bubble( "onTriggerTransition", "addMedicationToPatient");
 										}
 									},  
 								}),
-								Label($, {left:0, right:0, top: 10, height:(application.height / 7), top: 0, style:titleStyle, string:'AddMedication' }),
-								Picture($, { right:10, top:30, active: true, bottom:0, width:(application.width * 0.2), url: save, active: true, 
+								Picture($, { right:10, top:30, active: true, bottom:0, width:(application.width * 0.25), url: save, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
 											container.bubble( "onTriggerTransition", "addMedicationToPatient");
@@ -927,67 +949,141 @@ Container($, {left: 0, right: 0,
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
-					/* DEVICE TITLE */
+					/* Medicine Name */
+
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								dispenserPicture = Picture($, { left:0, top:0, bottom:0, width:(application.width * 0.15), url:feederDisconnect}),
-								dispenserLabel = Label($, {left:0, right:0, height:(application.height / 8), width:(application.width * 0.85), top: 0, style:dispenserLabelStyle, string:' DISPENSER 1  ' }),
-							]
-						}),						
-						Line($, { left: 0, right: 0, height: 3, skin: separatorSkin }),
-					/* PILL NAME 1 */
-						Line($, {left: 0, right: 0, top:0, bottom:0,
-							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Ibuprofen levels:' }),
-								ibuLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Medicine Name' }),
 							]
 						}),
+						Line($, {height:(application.height / 15), left: 0, right: 0, top:0, bottom:0, active: true,
+							contents: [
+								Label($, {active: true, editable: true, left: 80, right: 20, style:editLabelStyle, string:'', 
+												
+											}),
+								Label($, {active: true, editable: true, left: 80, right: 20, style:editLabelStyle, string:'Medicine Name', 
+												Behavior: class extends Behavior {onTouchEnded(label) {
+							                            label.string = "         Ibuprofen",
+							                            label.style = labelStyle,
+													}
+												}, 
+											}),
+							],
+						}),
+
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
-					/* PILL NAME 2 */
+					/* Dosage */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Acetaminophen levels:' }),
-								aceLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Dosage' }),
 							]
 						}),
+						Line($, {height:(application.height / 15), left: 0, right: 0, top:0, bottom:0, active: true,
+							contents: [
+								Label($, {active: true, editable: true, left: 60, right: 20, style:editLabelStyle, string:'amount', 
+												Behavior: class extends Behavior {onTouchEnded(label) {
+							                            label.string = "300",
+							                            label.style = labelStyle,
+													}
+												}, 
+											}),
+								Label($, {active: true, editable: true, left: 60, right: 20, style:editLabelStyle, string:'', 
+												
+											}),
+								Label($, {active: true, editable: true, left: 60, right: 20, style:editLabelStyle, string:'unit', 
+												Behavior: class extends Behavior {onTouchEnded(label) {
+							                            label.string = "mg",
+							                            label.style = labelStyle,
+													}
+												}, 
+											}),
+							],
+						}),
+
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
-					/* DEVICE TITLE */
+					/* Frequency */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								dispenserPicture = Picture($, { left:0, top:0, bottom:0, width:(application.width * 0.15), url:feederDisconnect}),
-								dispenserLabel = Label($, {left:0, right:0, height:(application.height / 8), width:(application.width * 0.85), top: 0, style:dispenserLabelStyle, string:' DISPENSER 2  ' }),
-							]
-						}),						
-						Line($, { left: 0, right: 0, height: 3, skin: separatorSkin }),
-					/* PILL NAME 1 */
-						Line($, {left: 0, right: 0, top:0, bottom:0,
-							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Diazepam levels:' }),
-								ibuLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+								Label($, {left:0, right:0, height:(application.height / 15), top: 0, style:labelStyle, string:'  Frequency' }),
 							]
 						}),
+						Line($, {height:(application.height / 15), left: 0, right: 0, top:0, bottom:0, active: true,
+							contents: [
+								Label($, {active: true, editable: true, left: 60, right: 20, style:editLabelStyle, string:'X times', 
+												Behavior: class extends Behavior {onTouchEnded(label) {
+							                            label.string = "3 times",
+							                            label.style = labelStyle,
+													}
+												}, 
+											}),
+								Label($, {active: true, editable: true, left: 60, right: 20, style:editLabelStyle, string:'per', 
+												
+											}),
+								Label($, {active: true, editable: true, left: 60, right: 20, style:editLabelStyle, string:'day', 
+												Behavior: class extends Behavior {onTouchEnded(label) {
+							                            label.string = "day",
+							                            label.style = labelStyle,
+													}
+												}, 
+											}),
+							],
+						}),
+
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
-					/* PILL NAME 2 */
+					/* Intake Directions */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Haloperidol levels:' }),
-								aceLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+								Label($, {left:0, right:0, height:(application.height / 15), top: 0, style:labelStyle, string:'  Intake Instructions' }),
 							]
 						}),
+						Line($, {height:(application.height / 7.5), left: 0, right: 0, top:0, bottom:0, active: true,
+							contents: [
+								Label($, {active: true, editable: true, left: 60, right: 20, style:editLabelStyle, string:'None', 
+												Behavior: class extends Behavior {onTouchEnded(label) {
+							                            label.string = "None",
+							                            label.style = labelStyle,
+													}
+												}, 
+											}),
+							],
+						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
-					/* BLANK SPACE */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height * 0.3), top: 0, style:labelStyle, skin:greySkin, string:'  ' }),
+								Label($, {left:0, right:0, height:(application.height / 15), top: 0, style:labelStyle, string:'  Side Effects / Warnings' }),
 							]
-						}),						
-					]			
+						}),
+						Line($, {height:(application.height / 7.5), left: 0, right: 0, top:0, bottom:0, active: true,
+							contents: [
+								Label($, {active: true, editable: true, left: 60, right: 20, style:editLabelStyle, string:'None', 
+												Behavior: class extends Behavior {onTouchEnded(label) {
+							                            label.string = "None",
+							                            label.style = labelStyle,
+													}
+												}, 
+											}),
+							],
+						}),
+
+
+		/* BLANK SPACE */
+
+						
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height * 0.10), top: 0, style:labelStyle, skin: greySkin, string:'  ' }),
+							]
+						}),
+						
+					]
 				})
+
 			]
 		})
-	]
+	] 
 }));
 
+/////////////////////////////////////////////////////////////
 
 
 
