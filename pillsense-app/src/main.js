@@ -99,6 +99,7 @@ class MainScreenBehavior extends Behavior {
 		let toPatientEdit =  new PatientEditScreen();
 		let toAddMedication =  new AddMedicationScreen();
 		let toAddPatient =  new AddPatientScreen();
+		let toAddPatientIbuprofen =  new AddPatientIbuprofenScreen();
 		switch ( name ) {
 			case "home":
 				container.run( new TRANSITION.CrossFade({ duration : 900 }), container.last, toHome );
@@ -144,6 +145,9 @@ class MainScreenBehavior extends Behavior {
 				break;
 			case "addMedicationToPatient":
 				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, toPatient );
+				break;	
+			case "addMedicationToPatientIbuprofen":
+				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, toAddPatientIbuprofen );
 				break;	
 		}
 	}
@@ -486,96 +490,84 @@ let AddPatientScreen = Container.template($ => ({
 					/* FIRST NAME */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  First Name:', 
-									Behavior: class extends Behavior {
-										onTouchEnded(content) {
-											KEYBOARD.hide();
-        									system.keyboard.visible = false;
-        									content.focus();
-    									}
-    								},
-    							}),
-								new MyField({name: "enter text"}),
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  First Name:' }),
+								Label($, {right:25, height:(application.height / 10), top: 0, active: true, editable: true, style:editLabelStyle, string:'  enter text', 
+									Behavior: class extends Behavior {onTouchEnded(label) {
+				                            label.string = "John",
+				                            label.style = labelStyle,
+										}
+									}, 
+								}),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
 					/* LAST NAME */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Last Name:', 
-									Behavior: class extends Behavior {
-										onTouchEnded(content) {
-											KEYBOARD.hide();
-        									system.keyboard.visible = false;
-        									content.focus();
-    									}
-    								},
-    							}),
-								new MyField({name: "enter text"}),
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Last Name:' }),
+								Label($, {right:25, height:(application.height / 10), top: 0, active: true, editable: true, style:editLabelStyle, string:'  enter text', 
+									Behavior: class extends Behavior {onTouchEnded(label) {
+				                            label.string = "Doe",
+				                            label.style = labelStyle,
+										}
+									}, 
+								}),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
 					/* BIRTHDAY */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Birthday:', 
-									Behavior: class extends Behavior {
-										onTouchEnded(content) {
-											KEYBOARD.hide();
-        									system.keyboard.visible = false;
-        									content.focus();
-    									}
-    								},
-    							}),
-								new MyField({name: "enter text"}),
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Birthday:'}), 
+								Label($, {right:25, height:(application.height / 10), top: 0, active: true, editable: true, style:editLabelStyle, string:'  enter text', 
+									Behavior: class extends Behavior {onTouchEnded(label) {
+				                            label.string = "01/01/1989",
+				                            label.style = labelStyle,
+										}
+									}, 
+								}),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),	
 					/* GENDER */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Gender:', 
-									Behavior: class extends Behavior {
-										onTouchEnded(content) {
-											KEYBOARD.hide();
-        									system.keyboard.visible = false;
-        									content.focus();
-    									}
-    								},
-    							}),
-								new MyField({name: "enter text"}),
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Gender:'}), 
+								Label($, {right:25, height:(application.height / 10), top: 0, active: true, editable: true, style:editLabelStyle, string:'  enter text', 
+									Behavior: class extends Behavior {onTouchEnded(label) {
+				                            label.string = "Male",
+				                            label.style = labelStyle,
+										}
+									}, 
+								}),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
 					/* HEIGHT */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Height:', 
-									Behavior: class extends Behavior {
-										onTouchEnded(content) {
-											KEYBOARD.hide();
-        									system.keyboard.visible = false;
-        									content.focus();
-    									}
-    								},
-    							}),
-								new MyField({name: "enter text"}),
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Height:'}), 
+								Label($, {right:25, height:(application.height / 10), top: 0, active: true, editable: true, style:editLabelStyle, string:'  enter text', 
+									Behavior: class extends Behavior {onTouchEnded(label) {
+				                            label.string = "6ft",
+				                            label.style = labelStyle,
+										}
+									}, 
+								}),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
 					/* WEIGHT */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Weight:', 
-									Behavior: class extends Behavior {
-										onTouchEnded(content) {
-											KEYBOARD.hide();
-        									system.keyboard.visible = false;
-        									content.focus();
-    									}
-    								},
-    							}),
-								new MyField({name: "enter text"}),
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Weight:'}), 
+								Label($, {right:25, height:(application.height / 10), top: 0, active: true, editable: true, style:editLabelStyle, string:'  enter text', 
+									Behavior: class extends Behavior {onTouchEnded(label) {
+				                            label.string = "169 lbs",
+				                            label.style = labelStyle,
+										}
+									}, 
+								}),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
@@ -597,6 +589,147 @@ let AddPatientScreen = Container.template($ => ({
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
 								Label($, {left:0, right:0, height:(application.height * 0.22), top: 0, style:labelStyle, skin: greySkin, string:'  ' }),
+							]
+						}),	
+					]
+				})
+
+			]
+		})
+	] 
+}));
+
+
+/* Add Patient with Ibuprofen Screen */
+let AddPatientIbuprofenScreen = Container.template($ => ({ 
+	left: 0, right: 0, top: 0, bottom: 0, skin: whiteSkin, 
+	Behavior: MainScreenBehavior, 
+	contents: [
+		Container($, {left: 0, right: 0,
+			contents: [ 		
+				Column($, {left: 0, right: 0,
+					Behavior: class extends Behavior {
+						onTouchEnded(content) {
+			        		//SystemKeyboard.hide();
+			        		trace("hide keyboard moom \n");
+			        		//SystemKeyBoard.hide();
+			        		content.focus();
+		    			}
+		    		},
+    				contents: [ 
+/* PATIENT X TITLE */
+						Container($, {left: 0, right: 0, skin: blueSkin,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height / 8), top: 30, style:titleStyle, string:'Add Patient' }),
+								Picture($, { left:0, top:30, active: true, bottom:0, width:(application.width * 0.1), url: back, active: true, 
+									Behavior: class extends Behavior {
+										onTouchEnded(container, id, x, y, ticks) {
+											container.bubble( "onTriggerTransition", "patientToHome");
+										}
+									},  
+								}),
+								Picture($, { right:10, top:30, active: true, bottom:0, width:(application.width * 0.25), url: save, active: true, 
+									Behavior: class extends Behavior {
+										onTouchEnded(container, id, x, y, ticks) {
+											container.bubble( "onTriggerTransition", "patientToNewHome");
+										}
+									},  
+								}),
+							]
+						}),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+					/* FIRST NAME */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  First Name:' }),
+								Label($, {right:25, height:(application.height / 10), top: 0, active: true, editable: true, style:labelStyle, string:'  John',}),
+							]
+						}),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+					/* LAST NAME */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Last Name:' }),
+								Label($, {right:25, height:(application.height / 10), top: 0, active: true, editable: true, style:labelStyle, string:'  Doe',}),
+							]
+						}),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+					/* BIRTHDAY */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Birthday:'}), 
+								Label($, {right:25, height:(application.height / 10), top: 0, active: true, editable: true, style:labelStyle, string:'  01/01/89',}),
+							]
+						}),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),	
+					/* GENDER */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Gender:'}), 
+								Label($, {right:25, height:(application.height / 10), top: 0, active: true, editable: true, style:editLabelStyle, string:'  enter text', 
+									Behavior: class extends Behavior {onTouchEnded(label) {
+				                            label.string = "Male",
+				                            label.style = labelStyle,
+										}
+									}, 
+								}),
+							]
+						}),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+					/* HEIGHT */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Height:'}), 
+								Label($, {right:25, height:(application.height / 10), top: 0, active: true, editable: true, style:editLabelStyle, string:'  enter text', 
+									Behavior: class extends Behavior {onTouchEnded(label) {
+				                            label.string = "6ft",
+				                            label.style = labelStyle,
+										}
+									}, 
+								}),
+							]
+						}),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+					/* WEIGHT */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Weight:'}), 
+								Label($, {right:25, height:(application.height / 10), top: 0, active: true, editable: true, style:editLabelStyle, string:'  enter text', 
+									Behavior: class extends Behavior {onTouchEnded(label) {
+				                            label.string = "169 lbs",
+				                            label.style = labelStyle,
+										}
+									}, 
+								}),
+							]
+						}),
+						Line($, { left: 0, right: 0, height: 3, skin: separatorSkin }),
+					/* IBRUPROFEN */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Ibuprofen' }),
+								Picture($, { right:0, top:0, bottom:0, url:tick }),
+							]
+						}),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+					/* ADD MEDICATION */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Picture($, { left:0, top:0, bottom:0, url:plus, active: true, 
+									Behavior: class extends Behavior {
+										onTouchEnded(container, id, x, y, ticks) {
+											container.bubble( "onTriggerTransition", "patientToAddMedication");
+										}
+									},  									
+								}),
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Add Medication' }),
+							]
+						}),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+					/* BLANK SPACE */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height * 0.15), top: 0, style:labelStyle, skin: greySkin, string:'  ' }),
 							]
 						}),	
 					]
@@ -799,14 +932,6 @@ let JohnDoeScreen = Container.template($ => ({
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
-					/* ACETAMINOPHEN */
-						Line($, {left: 0, right: 0, top:0, bottom:0,
-							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Acetaminophen' }),
-								Picture($, { right:0, top:0, bottom:0, url:exclamation }),
-							]
-						}),
-						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
 					/* ADD MEDICATION */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
@@ -824,7 +949,7 @@ let JohnDoeScreen = Container.template($ => ({
 		/* BLANK SPACE */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height * 0.15), top: 0, style:labelStyle, skin: greySkin, string:'  ' }),
+								Label($, {left:0, right:0, height:(application.height * 0.22), top: 0, style:labelStyle, skin: greySkin, string:'  ' }),
 							]
 						}),	
 					]
@@ -1041,7 +1166,7 @@ let AddMedicationScreen = Container.template($ => ({
 								Picture($, { right:10, top:30, active: true, bottom:0, width:(application.width * 0.25), url: save, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
-											container.bubble( "onTriggerTransition", "addMedicationToPatient");
+											container.bubble( "onTriggerTransition", "addMedicationToPatientIbuprofen");
 										}
 									},  
 								}),
