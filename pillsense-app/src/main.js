@@ -499,7 +499,7 @@ let AddPatientScreen = Container.template($ => ({
 					/* LAST NAME */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  First Name:', 
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Last Name:', 
 									Behavior: class extends Behavior {
 										onTouchEnded(content) {
 											KEYBOARD.hide();
@@ -515,7 +515,7 @@ let AddPatientScreen = Container.template($ => ({
 					/* BIRTHDAY */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  First Name:', 
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Birthday:', 
 									Behavior: class extends Behavior {
 										onTouchEnded(content) {
 											KEYBOARD.hide();
@@ -531,7 +531,7 @@ let AddPatientScreen = Container.template($ => ({
 					/* GENDER */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  First Name:', 
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Gender:', 
 									Behavior: class extends Behavior {
 										onTouchEnded(content) {
 											KEYBOARD.hide();
@@ -547,7 +547,7 @@ let AddPatientScreen = Container.template($ => ({
 					/* HEIGHT */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  First Name:', 
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Height:', 
 									Behavior: class extends Behavior {
 										onTouchEnded(content) {
 											KEYBOARD.hide();
@@ -563,7 +563,7 @@ let AddPatientScreen = Container.template($ => ({
 					/* WEIGHT */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  First Name:', 
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Weight:', 
 									Behavior: class extends Behavior {
 										onTouchEnded(content) {
 											KEYBOARD.hide();
