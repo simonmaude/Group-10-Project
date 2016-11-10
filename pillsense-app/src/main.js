@@ -69,8 +69,8 @@ let edit = './assets/edit.png';
 let save = './assets/save.png';
 let plus = './assets/plus.png';
 let settingsPicture = './assets/settings.png';
-let feeder = './assets/dispenser.png';
-let feederDisconnect = './assets/dispenser_disconnect.png';
+let dispenser = './assets/dispenser.png';
+let dispenserDisconnect = './assets/dispenser_disconnect.png';
 let cat = './assets/cat.png';
 let splash = './assets/splash.png'
 let splashFilled = './assets/splashFilled.png'
@@ -361,7 +361,7 @@ let NewHomeScreen = Container.template($ => ({
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
 								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient A:' }),
-								ibuLevel = Picture($, { left:0, top:0, bottom:0, url:exclamation }),
+								Picture($, { left:0, top:0, bottom:0, url:exclamation }),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
@@ -369,7 +369,7 @@ let NewHomeScreen = Container.template($ => ({
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
 								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient Z' }),
-								aceLevel = Picture($, { left:0, top:0, bottom:0, url:exclamation }),
+								Picture($, { left:0, top:0, bottom:0, url:exclamation }),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
@@ -377,7 +377,7 @@ let NewHomeScreen = Container.template($ => ({
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
 								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient R:' }),
-								ibuLevel = Picture($, { left:0, top:0, bottom:0, url:exclamation }),
+								Picture($, { left:0, top:0, bottom:0, url:exclamation }),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
@@ -392,7 +392,7 @@ let NewHomeScreen = Container.template($ => ({
 										}
 									},
 								}),
-								aceLevel = Picture($, { left:0, top:0, bottom:0, url:tick }),
+								Picture($, { left:0, top:0, bottom:0, url:tick }),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
@@ -407,7 +407,7 @@ let NewHomeScreen = Container.template($ => ({
 										}
 									},
 								}),
-								aceLevel = Picture($, { left:0, top:0, bottom:0, url:tick }),
+								Picture($, { left:0, top:0, bottom:0, url:tick }),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
@@ -415,7 +415,7 @@ let NewHomeScreen = Container.template($ => ({
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
 								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient C:' }),
-								aceLevel = Picture($, { left:0, top:0, bottom:0, url:tick }),
+								Picture($, { left:0, top:0, bottom:0, url:tick }),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
@@ -423,7 +423,7 @@ let NewHomeScreen = Container.template($ => ({
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
 								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient D:' }),
-								aceLevel = Picture($, { left:0, top:0, bottom:0, url:tick }),
+								Picture($, { left:0, top:0, bottom:0, url:tick }),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
@@ -678,7 +678,7 @@ let PatientScreen = Container.template($ => ({
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
 								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Ibuprofen' }),
-								aceLevel = Picture($, { right:0, top:0, bottom:0, url:tick }),
+								Picture($, { right:0, top:0, bottom:0, url:tick }),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
@@ -686,7 +686,7 @@ let PatientScreen = Container.template($ => ({
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
 								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Acetaminophen' }),
-								aceLevel = Picture($, { right:0, top:0, bottom:0, url:exclamation }),
+								Picture($, { right:0, top:0, bottom:0, url:exclamation }),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
@@ -792,7 +792,7 @@ let JohnDoeScreen = Container.template($ => ({
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
 								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Ibuprofen' }),
-								aceLevel = Picture($, { right:0, top:0, bottom:0, url:tick }),
+								Picture($, { right:0, top:0, bottom:0, url:tick }),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
@@ -800,7 +800,7 @@ let JohnDoeScreen = Container.template($ => ({
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
 								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Acetaminophen' }),
-								aceLevel = Picture($, { right:0, top:0, bottom:0, url:exclamation }),
+								Picture($, { right:0, top:0, bottom:0, url:exclamation }),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
@@ -1209,7 +1209,7 @@ Container($, {left: 0, right: 0,
 					/* DEVICE TITLE */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								dispenserPicture = Picture($, { left:0, top:0, bottom:0, width:(application.width * 0.15), url:feederDisconnect}),
+								dispenserPicture = Picture($, { left:0, top:0, bottom:0, width:(application.width * 0.15), url:dispenserDisconnect}),
 								dispenserLabel = Label($, {left:0, right:0, height:(application.height / 8), width:(application.width * 0.85), top: 0, style:dispenserLabelStyle, string:' DISPENSER 1  ' }),
 							]
 						}),						
@@ -1233,8 +1233,8 @@ Container($, {left: 0, right: 0,
 					/* DEVICE TITLE */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								dispenserPicture = Picture($, { left:0, top:0, bottom:0, width:(application.width * 0.15), url:feederDisconnect}),
-								dispenserLabel = Label($, {left:0, right:0, height:(application.height / 8), width:(application.width * 0.85), top: 0, style:dispenserLabelStyle, string:' DISPENSER 2  ' }),
+								Picture($, { left:0, top:0, bottom:0, width:(application.width * 0.15), url:dispenserDisconnect}),
+								Label($, {left:0, right:0, height:(application.height / 8), width:(application.width * 0.85), top: 0, style:dispenserLabelStyle, string:' DISPENSER 2  ' }),
 							]
 						}),						
 						Line($, { left: 0, right: 0, height: 3, skin: separatorSkin }),
@@ -1242,7 +1242,7 @@ Container($, {left: 0, right: 0,
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
 								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Diazepam levels:' }),
-								ibuLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+								Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
@@ -1250,7 +1250,7 @@ Container($, {left: 0, right: 0,
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
 								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Haloperidol levels:' }),
-								aceLevel = Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
+								Picture($, { left:0, top:0, bottom:0, url:emptyDisconnect }),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
@@ -1306,20 +1306,14 @@ function getTimeDate(switcher) {
 }
 	
 /* Connection Updater for Labels */
-function updateFeederConnection(conn) {
+function updatedispenserConnection(conn) {
 	connected = conn;
 	if (conn) {
+		dispenserPicture.url = dispenser;
 		dispenserLabelStyle = capsStyle;
 		dispenserLabel.style = dispenserLabelStyle;
 		aceLevel.url = empty;
 		ibuLevel.url = empty;
-	   	level3 = empty;
-	   	trace(treatCount + "\n")
-	   	if (treatCount >= 4) level3 = full;
-	   	else if (treatCount >= 3) level3 = threeQuarter;
-	   	else if (treatCount >= 2) level3 = half;
-	   	else if (treatCount >= 1) level3 = oneQuarter;
-	   	treatLevel.url = level3;	
 		// dispenseButton.skin = buttonSkin;
 		// dispenseButton.style = buttonStyle;
 		// dispenseButton.string = 'DISPENSE TREAT';
@@ -1328,7 +1322,6 @@ function updateFeederConnection(conn) {
 		dispenserLabel.style = dispenserLabelStyle;
 		aceLevel.url = emptyDisconnect;
 		ibuLevel.url = emptyDisconnect;
-		treatLevel.url = emptyDisconnect;
 		// dispenseButton.skin = inactiveButtonSkin;
 		// dispenseButton.style = inactiveStyle;
 		// dispenseButton.string = 'DISCONNECTED';
@@ -1338,7 +1331,7 @@ function updateFeederConnection(conn) {
 /* Application sharing functions */
 Handler.bind("/discover", Behavior({
     onInvoke: function(handler, message){
-        trace("Found the cat feeder device.\n");  
+        trace("Handler found the dispenser device.\n");  
         deviceURL = JSON.parse(message.requestText).url;  
     }
 }));
@@ -1352,15 +1345,16 @@ Handler.bind("/forget", Behavior({
 
 /* Pins discovery helper function */
 function discovery() {
+    trace("Trying to connect to remote pins\n");
 	let discoveryInstance = Pins.discover(
         connectionDesc => {
             
             if (connectionDesc.name == "pillsense-device") {
-                updateFeederConnection(true);
-                trace("Connecting to remote pins\n");
+                trace("Connected to remote pins\n");
+                updatedispenserConnection(true);
                 remotePins = Pins.connect(connectionDesc);
                 remotePins.repeat("/pill1Button/read", 500, function(result1) {
-			      
+			    	  
 				});
 
 				remotePins.repeat("/pill2Button/read", 500, function(result2) {
@@ -1388,7 +1382,7 @@ function discovery() {
         }, 
         connectionDesc => {
             if (connectionDesc.name == "pillsense-device") {
-                updateFeederConnection(false);
+                updatedispenserConnection(false);
                 trace("Disconnected from remote pins\n");
                 remotePins = undefined;
             }
