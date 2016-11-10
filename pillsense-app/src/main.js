@@ -135,6 +135,9 @@ class MainScreenBehavior extends Behavior {
 				break;
 			case "patientEditToPatient":
 				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, toPatient );
+				break;				
+			case "patientEditToJohnDoe":
+				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, toJohnDoe );
 				break;			
 			case "patientToAddMedication":
 				container.run( new TRANSITION.Push({ direction : "left", duration : 400 }), container.last, toAddMedication );
@@ -863,7 +866,7 @@ let PatientEditScreen = Container.template($ => ({
 								Picture($, { right:10, top:30, active: true, bottom:0, width:(application.width * 0.25), url: save, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
-											container.bubble( "onTriggerTransition", "patientEditToPatient");
+											container.bubble( "onTriggerTransition", "patientEditToJohnDoe");
 										}
 									},  
 								}),

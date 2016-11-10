@@ -66,7 +66,7 @@ class AppBehavior extends Behavior {
             // },					 			 
         },  success => {
             if (success) {
-                Pins.share("ws", {zeroconf: true, name: "cat-feeder-device"});
+                Pins.share("ws", {zeroconf: true, name: "pillsense-device"});
                 application.add(new MainContainer({ string: "Connected!", backgroundColor: "#2D9CDB" }));
             } else {
                    application.add(new MainContainer({ string: "Error, no connection", backgroundColor: "red" }));
