@@ -1,3 +1,15 @@
+
+/* Classes Setup */
+import {
+    User,
+    Patient,
+    Med,
+    ibuprofen,
+    acetaminophen,
+    dayquil,
+    prozac
+} from 'classes';
+
 /* Transitions Setup */
 import TRANSITION from 'transitions';
 
@@ -15,6 +27,10 @@ import {
     FieldScrollerBehavior,
     FieldLabelBehavior
 } from 'field';
+
+/* Scroller Setup */
+// import THEME from './theme';
+// import SCROLLER from = './scroller';
 
 
 /* Skins and styles */
@@ -61,12 +77,15 @@ let ibuLevel;
 let aceLevel;
 let dispenseButton;
 let lastNameLabel;
+let popSwitch = true;
+let currentScreen;
 
 /* Assets */
 let back = './assets/back.png';
 let add = './assets/add.png';
 let edit = './assets/edit.png';
 let save = './assets/save.png';
+let ok = './assets/save.png';
 let plus = './assets/plus.png';
 let settingsPicture = './assets/settings.png';
 let dispenser = './assets/dispenser.png';
@@ -102,52 +121,68 @@ class MainScreenBehavior extends Behavior {
 		let toAddPatientIbuprofen =  new AddPatientIbuprofenScreen();
 		switch ( name ) {
 			case "home":
-				container.run( new TRANSITION.CrossFade({ duration : 900 }), container.last, toHome );
+				currentScreen = toHome;
+				container.run( new TRANSITION.CrossFade({ duration : 900 }), container.last, currentScreen );
 				break;			
 			case "splashFilled":
-				container.run( new TRANSITION.CrossFade({ duration : 900 }), container.last, toSplashFilled );
+				currentScreen = toSplashFilled;
+				container.run( new TRANSITION.CrossFade({ duration : 900 }), container.last, currentScreen );
 				break;
 			case "homeToSettings":
-				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, toSettings );
+				currentScreen = toSettings;
+				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, currentScreen );
 				break;
 			case "homeToPatient":
-				container.run( new TRANSITION.Push({ direction : "left", duration : 400 }), container.last, toPatient );
+				currentScreen = toPatient;
+				container.run( new TRANSITION.Push({ direction : "left", duration : 400 }), container.last, currentScreen );
 				break;
 			case "homeToJohnDoe":
-				container.run( new TRANSITION.Push({ direction : "left", duration : 400 }), container.last, toJohnDoe );
+				currentScreen = toJohnDoe;
+				container.run( new TRANSITION.Push({ direction : "left", duration : 400 }), container.last, currentScreen );
 				break;
 			case "homeToAddPatient":
-				container.run( new TRANSITION.Push({ direction : "left", duration : 400 }), container.last, toAddPatient );
+				currentScreen = toAddPatient;
+				container.run( new TRANSITION.Push({ direction : "left", duration : 400 }), container.last, currentScreen );
 				break; 		
 			case "addPatientToHome":
-				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, toHome );
+				currentScreen = toHome;
+				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, currentScreen );
 				break;
 			case "settingsToHome":
-				container.run( new TRANSITION.Push({ direction : "left", duration : 400 }), container.last, toHome );
+				currentScreen = toHome;
+				container.run( new TRANSITION.Push({ direction : "left", duration : 400 }), container.last, currentScreen );
 				break;			
 			case "patientToHome":
-				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, toHome );
+				currentScreen = toHome;
+				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, currentScreen );
 				break;
 			case "patientToNewHome":
-				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, toNewHome );
+				currentScreen = toNewHome;
+				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, currentScreen );
 				break;
 			case "patientToPatientEdit":
-				container.run( new TRANSITION.Push({ direction : "left", duration : 400 }), container.last, toPatientEdit );
+				currentScreen = toPatientEdit;
+				container.run( new TRANSITION.Push({ direction : "left", duration : 400 }), container.last, currentScreen  );
 				break;
 			case "patientEditToPatient":
-				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, toPatient );
+				currentScreen = toPatient;
+				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, currentScreen );
 				break;				
 			case "patientEditToJohnDoe":
-				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, toJohnDoe );
+				currentScreen = toJohnDoe;
+				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, currentScreen );
 				break;			
 			case "patientToAddMedication":
-				container.run( new TRANSITION.Push({ direction : "left", duration : 400 }), container.last, toAddMedication );
+				currentScreen = toAddMedication;
+				container.run( new TRANSITION.Push({ direction : "left", duration : 400 }), container.last, currentScreen );
 				break;
 			case "addMedicationToPatient":
-				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, toPatient );
+				currentScreen = toPatient;
+				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, currentScreen );
 				break;	
 			case "addMedicationToPatientIbuprofen":
-				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, toAddPatientIbuprofen );
+				currentScreen = toAddPatientIbuprofen;
+				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, currentScreen );
 				break;	
 		}
 	}
@@ -210,16 +245,126 @@ let SplashScreenFilled = Container.template($ => ({
 }));
 
 
-// /* Pop Up Screen */
-// let PopUpScreen = Container.template($ => ({ 
-// 	left: 100, right: 100, top: 100, bottom: 100, skin: whiteSkin, Behavior: MainScreenBehavior, active: true,
-// 	Behavior: class extends Behavior {
-// 		onTouchEnded(container, id, x, y, ticks) {
-//             let data = this.data;
-//             data.visible = false;
-// 		}
-// 	}, 
-// 	contents: [Picture($, { left:0, right:0, top:40, bottom:0, url:splash }),]
+/* Pop Up Screen */
+let PopUpScreen = new Container({skin: blackSkin, backgroundColor: "#2D9CDB", width: 200, height: 200, active: true,
+	Behavior: class extends Behavior {
+		onTouchEnded(container, id, x, y, ticks) {
+            popSwitch = true;
+            application.remove(PopUpScreen);
+		}
+	},
+	contents: [
+			new Column({left: 1, right: 1, top: 1, bottom: 1, skin: whiteSkin,
+			contents: [
+				new Label({left:0, right:0, height:60, style:labelStyle, string:'Edit Patient' }),
+				new Picture({height:60, width:60, url: save}),
+			]
+		}),
+	],  
+});
+
+
+/* Simulated User Login & Data*/
+let doctor = new User("Doctor_1", "password123");
+doctor.patientsBad.push(new Patient("Patient", "A", "01/01/92", "Male", "6ft", "160lbs", false));
+doctor.patientsBad.push(new Patient("Patient", "Z",  "01/01/92", "Female", "5ft, 6in", "130lbs", false));
+doctor.patientsBad.push(new Patient("Patient", "R",  "01/01/92", "Male", "6ft", "160lbs", false));
+doctor.patientsGood.push(new Patient("Patient", "X",  "01/01/92", "Male", "6ft", "160lbs", true));
+doctor.patientsGood.push(new Patient("Patient", "B",  "01/01/92", "Male", "6ft", "160lbs", true));
+doctor.patientsGood.push(new Patient("Patient", "C",  "01/01/92", "Male", "6ft", "160lbs", true));
+doctor.patientsGood.push(new Patient("Patient", "D",  "01/01/92", "Male", "6ft", "160lbs", true));
+
+
+/* Dynamic Populating Scroller */
+let listItems = []
+for(var i = 0; i < doctor.patientsBad.length; i++){
+	listItems.push({patient: doctor.patientsBad[i], button: exclamation});
+}
+for(var i = 0; i < doctor.patientsGood.length; i++){
+	listItems.push({patient: doctor.patientsGood[i], button: tick});
+}
+
+
+// var data2 = new Object();
+// var screen = new ScreenContainer(data2);
+
+// function ListBuilder(element, index, array) {
+// 	screen.scroller.menu.add(new ProcessorLine(element));
+// }
+
+// var ProcessorLine = Line.template($ =>  ({
+// 	left: 0, right: 0, active: true, skin: whiteSkin, 
+// 	contents: [
+// 		Column($, { left: 0, right: 0,
+// 			contents: [
+// 				Container($, { left: 4, right: 4, height: 52, 
+// 					contents: [
+// 						Label($, { right: 10, style: productDescriptionStyle, skin: whiteSkin, active: true, string: $.button,
+// 							behavior: Behavior({
+// 								onTouchEnded(label, id, x,  y, ticks) {	
+// 									if (clicked == true) {
+// 										clicked = false;
+// 										denom = 1;
+// 										for (i = 0; i < vals.length; i++) { 
+// 											vals[i] = originalVals[i];
+// 											trace(vals[i]+"\n")
+// 											screen.scroller.menu[i].first.first.first.string = vals[i];
+
+// 										}
+// 										counter = 1;
+// 										countButton.string = 1;
+// 									} else {
+// 										clicked = true;
+// 										denom = parseInt(label.string);
+// 										for (i = 0; i < vals.length; i++) { 
+// 											vals[i] = vals[i] / (denom * counter);
+// 											trace(i+"\n")
+// 											screen.scroller.menu[i].first.first.first.string = vals[i].toPrecision(2);
+// 										}
+// 										label.string = (denom * counter);
+// 									}
+// 								}
+// 							})
+// 						}),
+// 						Label($, { left: 20, style: productNameStyle, string: $.title,}),
+// 					]
+// 				}),
+// 	     		Line($, { left: 0, right: 0, height: 1, skin: separatorSkin })
+//      		]
+//      	}),
+//      ]
+//  }));
+
+// var HomeScreen = Container.template($ => ({
+// 	left:0, right:0, top:0, bottom:0, skin: whiteSkin, 
+// 	Behavior: MainScreenBehavior, 
+// 	contents: [
+// 		SCROLLER.VerticalScroller($, { 
+// 			name: 'scroller',
+// 			contents: [
+// 						Container($, {left: 0, right: 0, skin: blueSkin,
+// 							contents: [
+// 								Label($, {left:0, right:0, height:(application.height / 8), top: 30, style:titleStyle, string:'My Patients' }),
+// 								Picture($, { left:0, top:30, bottom:0, width:(application.width * 0.1), url: settingsPicture, active: true,
+// 									Behavior: class extends Behavior {
+// 										onTouchBegan(container, id, x, y, ticks) {
+// 											container.bubble( "onTriggerTransition", "homeToSettings" );
+// 										}
+// 									}, 
+// 								}),
+// 								Picture($, { right:10, top:30, active: true, bottom:0, width:(application.width * 0.1), url: add, active: true, 
+// 									Behavior: class extends Behavior {
+// 										onTouchEnded(container, id, x, y, ticks) {
+// 											container.bubble( "onTriggerTransition", "homeToAddPatient");
+// 										}
+// 									},  
+// 								}),
+// 							]
+// 						}),
+// 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),           			
+// 			]
+// 		})
+// 	]
 // }));
 
 
@@ -257,10 +402,20 @@ let HomeScreen = Container.template($ => ({
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
 								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient A:' }),
-								Picture($, { left:0, top:0, bottom:0, url:exclamation }),
+								Picture($, { left:0, top:0, bottom:0, url:exclamation, active:true,							
+									Behavior: class extends Behavior {
+										onTouchEnded(container, id, x, y, ticks) {
+											if (popSwitch){
+												trace("popSwitch \n");
+												popSwitch = false;
+												application.add(PopUpScreen);
+											}
+										}
+									},  
+								}),	
 							]
 						}),
-						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),	
 					/* PATIENT Z */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [

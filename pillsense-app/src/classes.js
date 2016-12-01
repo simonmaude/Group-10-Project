@@ -1,4 +1,5 @@
 export class User {
+
 	constructor(username, password) {
 		this.username = username;
 		this.password = password;
@@ -16,16 +17,18 @@ export class User {
 
 
 export class Patient {
+
 	constructor() {
 		this.meds = [];
 	}
-	create(first, last, birthday, gender, height, weight) {
+	create(first, last, birthday, gender, height, weight, status) {
 		this.first = first;
 	    this.last = last;
 	    this.birthday = birthday;
 	    this.gender = gender;
 	    this.height = height;
 	    this.weight = weight;
+	    this.statusGood = status;
 	}
 	addMed(med) {
 		this.meds.push(med);
@@ -33,6 +36,7 @@ export class Patient {
 }
 
 export class Med {
+
 	constructor() {
 		this.conflicts = {"ibuprofen" : ["dayquil"], "acetaminophen": ["dayquil"], "dayquil" : ["ibuprofen", "acetaminophen"]};
 	}
