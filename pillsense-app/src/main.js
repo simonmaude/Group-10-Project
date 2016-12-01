@@ -266,7 +266,7 @@ let PopUpScreen = new Container({skin: blackSkin, backgroundColor: "#2D9CDB", wi
 
 /* Simulated User Login & Data*/
 let doctor = new User("Doctor_1", "password123");
-doctor.patientsBad.push(new Patient("Patient", "A", "01/01/92", "Male", "6ft", "160lbs", false));
+doctor.patientsBad.push(new Patient("Patient", "YOLO", "01/01/92", "Male", "6ft", "160lbs", false));
 doctor.patientsBad.push(new Patient("Patient", "Z",  "01/01/92", "Female", "5ft, 6in", "130lbs", false));
 doctor.patientsBad.push(new Patient("Patient", "R",  "01/01/92", "Male", "6ft", "160lbs", false));
 doctor.patientsGood.push(new Patient("Patient", "X",  "01/01/92", "Male", "6ft", "160lbs", true));
@@ -368,6 +368,34 @@ for(var i = 0; i < doctor.patientsGood.length; i++){
 // }));
 
 
+/*
+
+from my proj3, was working, for example
+let buttonTemplate = Button.template($ => ({
+    top: $.top, bottom: $.bottom, left: 20, right: 20,
+    contents: [
+        Label($, {left: 0, right: 0, height: 55, string: $.textForLabel, style: buttonText})
+    ],
+    Behavior: class extends ButtonBehavior {
+        onTap(button){
+          sensorPage.visible = true;
+          mainCon.visible = false;
+        }
+    }
+}));
+*/
+
+let patientTemplate = Label.template($ => ({
+    left: 0, right: 0, top:0, bottom:0, active: true,
+    contents: [
+        Label($, {left:0, right:0, height: $.height, style:labelStyle, string: '  ' + String($.first) + ' ' + String($.last)}),
+		Picture($, { left:0, top:0, bottom:0, url: $.status})]
+}));
+
+var seperatorTemplate = Line.template($ => ({
+	left: 0, right: 0, height: 1, skin: separatorSkin,
+}));
+
 /* Home Screen */
 let HomeScreen = Container.template($ => ({ 
 	left: 0, right: 0, top: 0, bottom: 0, skin: whiteSkin, 
@@ -417,6 +445,7 @@ let HomeScreen = Container.template($ => ({
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),	
 					/* PATIENT Z */
+						/*
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
 								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient Z' }),
@@ -424,6 +453,13 @@ let HomeScreen = Container.template($ => ({
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+					    */
+					    new patientTemplate({height: (application.height / 10), first: "YOLO", last: "SWAG", status: exclamation}),
+					    new seperatorTemplate(),
+
+
+
+					    
 					/* PATIENT R */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
