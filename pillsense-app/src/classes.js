@@ -18,10 +18,8 @@ export class User {
 
 export class Patient {
 
-	constructor() {
+	constructor(first, last, birthday, gender, height, weight, status) {
 		this.meds = [];
-	}
-	create(first, last, birthday, gender, height, weight, status) {
 		this.first = first;
 	    this.last = last;
 	    this.birthday = birthday;
@@ -30,8 +28,18 @@ export class Patient {
 	    this.weight = weight;
 	    this.statusGood = status;
 	}
+	
 	addMed(med) {
 		this.meds.push(med);
+	}
+
+	getFirst() {
+		// trace(this.first + " from getFirst \n")
+		return this.first;
+	}
+	
+	getLast() {
+		return this.last;
 	}
 }
 

@@ -34,7 +34,7 @@ export class FieldLabelBehavior extends  Behavior {
 		KEYBOARD.show();
 	}
 	onKeyPressed(label, key) {
-		if (key) {
+		if (key && label.focused) {
 			var code = key.charCodeAt(0);
 			var edited = false;
 			switch (code) {
@@ -121,7 +121,7 @@ export class FieldLabelBehavior extends  Behavior {
 		this.onReveal(label);
 		if (edited)
 			this.onEdited(label);
-		return true;
+
 	}
 	onReveal(label) {
 		label.container.reveal(label.selectionBounds);

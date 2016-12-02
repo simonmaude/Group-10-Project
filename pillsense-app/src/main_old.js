@@ -79,11 +79,9 @@ let dispenseButton;
 let lastNameLabel;
 let popSwitch = true;
 let currentScreen;
-let popupScreen;
 
 /* Assets */
 let back = './assets/back.png';
-let logo = './assets/logo.png';
 let add = './assets/add.png';
 let edit = './assets/edit.png';
 let save = './assets/save.png';
@@ -111,9 +109,12 @@ class MainScreenBehavior extends Behavior {
         content.focus();
     }
 	onTriggerTransition(container, name) {
-		let toSplashScreen = new SplashScreen();
 		let toSplashFilled =  new SplashScreenFilled();
-		let toHome =  new HomeScreen();
+
+var data2 = new Object();
+
+		let toHome =  new HomeScreen(data2);
+		let toNewHome =  new NewHomeScreen();
 		let toSettings =  new SettingsScreen();
 		let toPatient =  new PatientScreen();
 		let toJohnDoe =  new JohnDoeScreen();
@@ -124,13 +125,10 @@ class MainScreenBehavior extends Behavior {
 		switch ( name ) {
 			case "home":
 				currentScreen = toHome;
-				addAllPatients();
+				// listItems.forEach(ListBuilder);
 				container.run( new TRANSITION.CrossFade({ duration : 900 }), container.last, currentScreen );
+				// currentScreen.add(screen);
 				break;			
-			case "logoToSplash":
-				currentScreen = toSplashScreen;
-				container.run( new TRANSITION.CrossFade({ duration : 900 }), container.last, currentScreen );
-				break;
 			case "splashFilled":
 				currentScreen = toSplashFilled;
 				container.run( new TRANSITION.CrossFade({ duration : 900 }), container.last, currentScreen );
@@ -153,17 +151,18 @@ class MainScreenBehavior extends Behavior {
 				break; 		
 			case "addPatientToHome":
 				currentScreen = toHome;
-				addAllPatients();
 				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, currentScreen );
 				break;
 			case "settingsToHome":
 				currentScreen = toHome;
-				addAllPatients();
 				container.run( new TRANSITION.Push({ direction : "left", duration : 400 }), container.last, currentScreen );
 				break;			
 			case "patientToHome":
 				currentScreen = toHome;
-				addAllPatients();
+				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, currentScreen );
+				break;
+			case "patientToNewHome":
+				currentScreen = toNewHome;
 				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, currentScreen );
 				break;
 			case "patientToPatientEdit":
@@ -224,81 +223,6 @@ let MyField = Container.template($ => ({
 }));
 
 
-/* Simulated User Login & Data*/
-let doctor = new User("Doctor_1", "password123");
-doctor.patientsBad.push(new Patient("Patient", "YOLO", "01/01/92", "Male", "6ft", "160lbs", false));
-doctor.patientsBad.push(new Patient("Patient", "Z",  "01/01/92", "Female", "5ft, 6in", "130lbs", false));
-doctor.patientsBad.push(new Patient("Patient", "R",  "01/01/92", "Male", "6ft", "160lbs", false));
-doctor.patientsGood.push(new Patient("Patient", "X",  "01/01/92", "Male", "6ft", "160lbs", true));
-doctor.patientsGood.push(new Patient("Patient", "B",  "01/01/92", "Male", "6ft", "160lbs", true));
-doctor.patientsGood.push(new Patient("Patient", "C",  "01/01/92", "Male", "6ft", "160lbs", true));
-doctor.patientsGood.push(new Patient("Patient", "D",  "01/01/92", "Male", "6ft", "160lbs", true));
-
-
-/* Dynamic Patient Rows Templates and Functions*/
-function createPatientHomeScreen(patient) {
-	if (patient.statusGood == true) {
-		return new patientTemplate({height: (application.height / 10), first: patient.first, last: patient.last, status: tick});
-	} else {
-		return new patientTemplate({height: (application.height / 10), first: patient.first, last: patient.last, status: exclamation});
-	}
-}
-
-let patientTemplate = Line.template($ => ({
-    left: 0, right: 0, top:0, bottom:0, active: true,
-    contents: [
-        Label($, {left:0, right:0, height: $.height, active: true, style:labelStyle, string: '  ' + String($.first) + ' ' + String($.last),
-			Behavior: class extends Behavior {
-				onTouchEnded(container, id, x, y, ticks) {
-					container.bubble( "onTriggerTransition", "homeToPatient" );
-				}
-			}, 
-    	}),
-		Picture($, { left:0, top:0, bottom:0, url: $.status, active: true,
-			Behavior: class extends Behavior {
-				onTouchEnded(container, id, x, y, ticks) {
-					if (popSwitch){
-						popSwitch = false;
-						currentScreen.active = false;
-						popupScreen = new PopUpScreen()
-						application.add(popupScreen);
-					}
-				}
-			}, 
-		}),
-	]
-}));
-
-var seperatorTemplate = Line.template($ => ({
-	left: 0, right: 0, height: 1, skin: separatorSkin,
-}));
-
-
-var blackScreen = Line.template($ => ({
-    left: 0, right: 0, top:0, bottom:0,
-	contents: [
-		Label($, {left:0, right:0, height: $.height, top: 0, style:labelStyle, skin: greySkin, string:'  ' })]
-	}));	
-
-
-function addAllPatients() {
-	var i;
-	for (i = 0; i < doctor.patientsBad.length; i++) {
-		var curPatient = createPatientHomeScreen(doctor.patientsBad[i]);
-		currentScreen.lel.homeScreenAddHere.add(curPatient);
-		currentScreen.lel.homeScreenAddHere.add(new seperatorTemplate());
-	}
-	for (i = 0; i < doctor.patientsGood.length; i++) {
-		var curPatient = createPatientHomeScreen(doctor.patientsGood[i]);
-		currentScreen.lel.homeScreenAddHere.add(curPatient);
-		currentScreen.lel.homeScreenAddHere.add(new seperatorTemplate());
-	}
-	var blankBottomLength = application.height - (60 * (doctor.patientsBad.length + doctor.patientsGood.length));
-	currentScreen.lel.homeScreenAddHere.add( new blackScreen({height : blankBottomLength}));
-}
-
-
-
 /* Screens */
 let MainScreen = Container.template($ =>({ 
 	left: 0, right: 0, top: 0, bottom: 0, active: true, skin: blueSkin, 
@@ -306,28 +230,12 @@ let MainScreen = Container.template($ =>({
 }));
 
 
-/* Logo Screen */
-let LogoScreen = Container.template($ => ({ 
-	left: 0, right: 0, top: 0, bottom: 0, skin: blueSkin, Behavior: MainScreenBehavior, active: true,
-	Behavior: class extends Behavior {
-		// onTouchEnded(container, id, x, y, ticks) {
-		onDisplayed(container, id, x, y, ticks) {
-			var date = new Date();
-			var curDate;
-			do { curDate = new Date(); } 
-			while(curDate-date < 2000);
-			container.bubble( "onTriggerTransition", "logoToSplash");
-		}
-	}, 
-	contents: [Picture($, { left:0, right:0, top:40, bottom:0, url:logo }),]
-}));
-
 /* Splash Screen */
 let SplashScreen = Container.template($ => ({ 
 	left: 0, right: 0, top: 0, bottom: 0, skin: blueSkin, Behavior: MainScreenBehavior, active: true,
 	Behavior: class extends Behavior {
 		onTouchEnded(container, id, x, y, ticks) {container.bubble( "onTriggerTransition", "splashFilled");}
-	}, 	
+	}, 
 	contents: [Picture($, { left:0, right:0, top:40, bottom:0, url:splash }),]
 }));
 
@@ -343,29 +251,158 @@ let SplashScreenFilled = Container.template($ => ({
 
 
 /* Pop Up Screen */
-let PopUpScreen = Container.template($ => ({
-	skin: blackSkin, backgroundColor: "#2D9CDB", width: 300, height: 400, 
+let PopUpScreen = new Container.template($ => ({skin: blackSkin, backgroundColor: "#2D9CDB", width: 200, height: 200, active: true,
+	Behavior: class extends Behavior {
+		onTouchEnded(container, id, x, y, ticks) {
+            popSwitch = true;
+            application.remove(PopUpScreen);
+		}
+	},
 	contents: [
-		Column($, {left: 1, right: 1, top: 1, bottom: 1, skin: whiteSkin,
+			new Column({left: 1, right: 1, top: 1, bottom: 1, skin: whiteSkin,
 			contents: [
-				Container($, {left: 0, right: 0, skin: blueSkin,
-					contents: [
-						Label($, {left:50, right:50, height:60, style:labelStyle, string:'Error Details' }),
-						Picture($, { right:10, top:10, active: true, bottom:0,  url: ok, active: true, 
-							Behavior: class extends Behavior {
-								onTouchEnded(container, id, x, y, ticks) {
-						            popSwitch = true;
-									currentScreen.active = true;
-						            application.remove(popupScreen);
-								}
-							},
+				new Label(),
+				new Picture({height:60, width:60, url: save}),
+				new Container($, {left: 0, right: 0, skin: blueSkin,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height / 8), top: 30, style:titleStyle, string:'Error Message' }),
+								Picture($, { left:0, top:30, bottom:0, width:(application.width * 0.1), url: settingsPicture, active: true,
+									Behavior: class extends Behavior {
+										onTouchBegan(container, id, x, y, ticks) {
+											container.bubble( "onTriggerTransition", "homeToSettings" );
+										}
+									}, 
+								}),
+								Picture($, { right:10, top:30, active: true, bottom:0, width:(application.width * 0.1), url: add, active: true, 
+									Behavior: class extends Behavior {
+										onTouchEnded(container, id, x, y, ticks) {
+											container.bubble( "onTriggerTransition", "homeToAddPatient");
+										}
+									},  
+								}),
+							]
 						}),
-					]
-				})	
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
 			]
 		}),
 	],  
 }));
+
+
+/* Simulated User Login & Data*/
+let doctor = new User("Doctor_1", "password123");
+doctor.patientsBad.push(new Patient("Patient", "A", "01/01/92", "Male", "6ft", "160lbs", false));
+doctor.patientsBad.push(new Patient("Patient", "Z",  "01/01/92", "Female", "5ft, 6in", "130lbs", false));
+doctor.patientsBad.push(new Patient("Patient", "R",  "01/01/92", "Male", "6ft", "160lbs", false));
+doctor.patientsGood.push(new Patient("Patient", "X",  "01/01/92", "Male", "6ft", "160lbs", true));
+doctor.patientsGood.push(new Patient("Patient", "B",  "01/01/92", "Male", "6ft", "160lbs", true));
+doctor.patientsGood.push(new Patient("Patient", "C",  "01/01/92", "Male", "6ft", "160lbs", true));
+doctor.patientsGood.push(new Patient("Patient", "D",  "01/01/92", "Male", "6ft", "160lbs", true));
+// trace("doctor.patientsBad: " + doctor.patientsBad + "\n")
+// trace("doctor.patientsBad.first: " + doctor.patientsBad[0].getFirst() + "\n")
+
+
+/* Dynamic Populating Scroller */
+// let listItems = [
+// {patient: "Patient A", button: exclamation},
+// {patient: "Patient R", button: exclamation},
+// {patient: "Patient Z", button: exclamation},
+// {patient: "Patient X", button: tick},
+// {patient: "Patient B", button: tick},
+// {patient: "Patient C", button: tick},
+// {patient: "Patient D", button: tick},
+// ];
+let listItems = [];
+for(var i = 0; i < doctor.patientsBad.length; i++){
+	listItems.push({patient: (doctor.patientsBad[i].getFirst() + " " + doctor.patientsBad[i].getLast()), button: exclamation});
+	// trace((doctor.patientsBad[i].getFirst() + " " + doctor.patientsBad[i].getLast())+ "\n")
+}
+for(var i = 0; i < doctor.patientsGood.length; i++){
+	listItems.push({patient: (doctor.patientsGood[i].first + " " + doctor.patientsGood[i].last), button: tick});
+}
+// trace(listItems + "\n");
+
+
+var ScreenContainer = Container.template($ => ({
+	left:0, right:0, top:30, bottom:0,
+	contents: [
+		// SCROLLER.VerticalScroller($, { 
+		// 	name: 'scroller',
+		// 	contents: [
+				Column($, { left: 0, right: 0, top: 0, name: 'menu' })             			
+		// 	]
+		// })
+	]
+}));
+
+var ProcessorLine = Container.template($ =>  ({
+	left: 0, right: 0, active: true, skin: whiteSkin, 
+	contents: [
+		// Column($, { left: 0, right: 0,
+		// 	contents: [
+				Container($, { left: 0, right: 0, height: 52, skin: greySkin,
+					contents: [
+	trace($.patient + " " + $.button + "\n"),
+						Label($, { right: 10, style: productDescriptionStyle, skin: whiteSkin, active: true, string: $.patient,
+							behavior: Behavior({
+								onTouchEnded(label, id, x,  y, ticks) {	
+									
+								}
+							})
+						}),
+						Label($, { left: 20, style: productNameStyle, active: true, string: $.button,}),
+					]
+				}),
+	     		Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+     	// 	]
+     	// }),
+     ]
+ }));
+
+// var data2 = new Object();
+// var screen = new ScreenContainer();
+
+function ListBuilder(element, index, array) {
+	currentScreen.first.add(new ProcessorLine(element));
+	// currentScreen.add(new Container({left: 0, right: 0, height: 30, skin: greySkin }));
+}
+
+
+// var HomeScreen = Container.template($ => ({
+// 	left:0, right:0, top:0, bottom:0, skin: whiteSkin, 
+// 	Behavior: MainScreenBehavior, 
+// 	contents: [
+// 		// SCROLLER.VerticalScroller($, { 
+// 		// 	name: 'scroller',
+// 		// 	contents: [
+// 				Column($, { left: 0, right: 0,
+// 					contents: [
+// 						Container($, {left: 0, right: 0, bottom: 470, skin: blueSkin, name: 'menu',
+// 							contents: [
+// 								Label($, {left:0, right:0, height:(application.height / 8), top: 30, style:titleStyle, string:'My Patients' }),
+// 								Picture($, { left:0, top:30, bottom:0, width:(application.width * 0.1), url: settingsPicture, active: true,
+// 									Behavior: class extends Behavior {
+// 										onTouchBegan(container, id, x, y, ticks) {
+// 											container.bubble( "onTriggerTransition", "homeToSettings" );
+// 										}
+// 									}, 
+// 								}),
+// 								Picture($, { right:10, top:30, active: true, bottom:0, width:(application.width * 0.1), url: add, active: true, 
+// 									Behavior: class extends Behavior {
+// 										onTouchEnded(container, id, x, y, ticks) {
+// 											container.bubble( "onTriggerTransition", "homeToAddPatient");
+// 										}
+// 									},  
+// 								}),
+// 							]
+// 						}),
+// 						Line($, { left: 0, right: 0, top: 66, height: 1, skin: separatorSkin }),           			
+// 					]
+// 				})
+// 			// ]
+// 		// })
+// 	]
+// }));
 
 
 /* Home Screen */
@@ -373,31 +410,113 @@ let HomeScreen = Container.template($ => ({
 	left: 0, right: 0, top: 0, bottom: 0, skin: whiteSkin, 
 	Behavior: MainScreenBehavior, 
 	contents: [
-		Container($, {left: 0, right: 0, name: 'lel',
+		Container($, {left: 0, right: 0,
 			contents: [ 		
-				Column($, {left: 0, right: 0, name: 'homeScreenAddHere',
+				Column($, {left: 0, right: 0,
 					contents: [ 
 					/* HOME */
 						Container($, {left: 0, right: 0, skin: blueSkin,
 							contents: [
-								Label($, {left:0, right:0, height:70, top: 14, style:titleStyle, string:'My Patients' }),
-								Picture($, { left:0, top:19, bottom:0, width:(application.width * 0.1), url: settingsPicture, active: true,
+								Label($, {left:0, right:0, height:(application.height / 8), top: 30, style:titleStyle, string:'My Patients' }),
+								Picture($, { left:0, top:30, bottom:0, width:(application.width * 0.1), url: settingsPicture, active: true,
 									Behavior: class extends Behavior {
-										onTouchEnded(container, id, x, y, ticks) {
-											if (popSwitch) container.bubble( "onTriggerTransition", "homeToSettings" );
+										onTouchBegan(container, id, x, y, ticks) {
+											container.bubble( "onTriggerTransition", "homeToSettings" );
 										}
 									}, 
 								}),
-								Picture($, { right:10, top:18, active: true, bottom:0, width:(application.width * 0.1), url: add, active: true, 
+								Picture($, { right:10, top:30, active: true, bottom:0, width:(application.width * 0.1), url: add, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
-											if (popSwitch) container.bubble( "onTriggerTransition", "homeToAddPatient");
+											container.bubble( "onTriggerTransition", "homeToAddPatient");
 										}
 									},  
 								}),
 							]
 						}),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+					/* PATIENT A */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient A:' }),
+								Picture($, { left:0, top:0, bottom:0, url:exclamation, active:true,							
+									Behavior: class extends Behavior {
+										onTouchEnded(container, id, x, y, ticks) {
+											if (popSwitch){
+												popSwitch = false;
+												application.add(PopUpScreen);
+											}
+										}
+									},  
+								}),	
+							]
+						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),	
+					/* PATIENT Z */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient Z' }),
+								Picture($, { left:0, top:0, bottom:0, url:exclamation }),
+							]
+						}),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+					/* PATIENT R */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient R:' }),
+								Picture($, { left:0, top:0, bottom:0, url:exclamation }),
+							]
+						}),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+					/* PATIENT X */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Patient X:',
+									Behavior: class extends Behavior {
+										onTouchBegan(container, id, x, y, ticks) {
+											container.bubble( "onTriggerTransition", "homeToPatient" );
+										}
+									},
+								}),
+								Picture($, { left:0, top:0, bottom:0, url:tick,
+									Behavior: class extends Behavior {
+										onTouchEnded(container, id, x, y, ticks) {
+										}
+									},
+								 }),
+							]
+						}),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+					/* PATIENT B */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient B:' }),
+								Picture($, { left:0, top:0, bottom:0, url:tick }),
+							]
+						}),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+					/* PATIENT C */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient C:' }),
+								Picture($, { left:0, top:0, bottom:0, url:tick }),
+							]
+						}),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+					/* PATIENT D */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient D:' }),
+								Picture($, { left:0, top:0, bottom:0, url:tick }),
+							]
+						}),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+					/* BLANK SPACE */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height * 0.22), top: 0, style:labelStyle, skin: greySkin, string:'  ' }),
+							]
+						}),	
 					]
 				})
 
@@ -405,7 +524,120 @@ let HomeScreen = Container.template($ => ({
 		})
 	] 
 }));
-	
+
+/* New Home Screen */
+let NewHomeScreen = Container.template($ => ({ 
+	left: 0, right: 0, top: 0, bottom: 0, skin: whiteSkin, 
+	Behavior: MainScreenBehavior, 
+	contents: [
+		Container($, {left: 0, right: 0,
+			contents: [ 		
+				Column($, {left: 0, right: 0,
+					contents: [ 
+					/* HOME */
+						Container($, {left: 0, right: 0, skin: blueSkin,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height / 8), top: 30, style:titleStyle, string:'My Patients' }),
+								Picture($, { left:0, top:30, bottom:0, width:(application.width * 0.1), url: settingsPicture, active: true,
+									Behavior: class extends Behavior {
+										onTouchBegan(container, id, x, y, ticks) {
+											container.bubble( "onTriggerTransition", "homeToSettings" );
+										}
+									}, 
+								}),
+								Picture($, { right:10, top:30, active: true, bottom:0, width:(application.width * 0.1), url: add, active: true, 
+									Behavior: class extends Behavior {
+										onTouchEnded(container, id, x, y, ticks) {
+											container.bubble( "onTriggerTransition", "homeToAddPatient");
+										}
+									},  
+								}),
+							]
+						}),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+					/* PATIENT A */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient A:' }),
+								Picture($, { left:0, top:0, bottom:0, url:exclamation }),
+							]
+						}),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+					/* PATIENT Z */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient Z' }),
+								Picture($, { left:0, top:0, bottom:0, url:exclamation }),
+							]
+						}),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+					/* PATIENT R */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient R:' }),
+								Picture($, { left:0, top:0, bottom:0, url:exclamation }),
+							]
+						}),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+					/* JOHN DOE */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  John Doe:',
+									Behavior: class extends Behavior {
+										onTouchBegan(container, id, x, y, ticks) {
+											trace("out \n");
+											container.bubble( "onTriggerTransition", "homeToJohnDoe" );
+										}
+									},
+								}),
+								Picture($, { left:0, top:0, bottom:0, url:tick }),
+							]
+						}),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+					/* PATIENT X */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Patient X:',
+									Behavior: class extends Behavior {
+										onTouchBegan(container, id, x, y, ticks) {
+											trace("out \n");
+											container.bubble( "onTriggerTransition", "homeToPatient" );
+										}
+									},
+								}),
+								Picture($, { left:0, top:0, bottom:0, url:tick }),
+							]
+						}),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+					/* PATIENT C */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient C:' }),
+								Picture($, { left:0, top:0, bottom:0, url:tick }),
+							]
+						}),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+					/* PATIENT D */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient D:' }),
+								Picture($, { left:0, top:0, bottom:0, url:tick }),
+							]
+						}),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+					/* BLANK SPACE */
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								Label($, {left:0, right:0, height:(application.height * 0.22), top: 0, style:labelStyle, skin: greySkin, string:'  ' }),
+							]
+						}),	
+					]
+				})
+
+			]
+		})
+	] 
+}));
 
 
 /* Add Patient Screen */
@@ -428,19 +660,18 @@ let AddPatientScreen = Container.template($ => ({
 /* PATIENT X TITLE */
 						Container($, {left: 0, right: 0, skin: blueSkin,
 							contents: [
-								Label($, {left:0, right:0, height:70, top: 30, style:titleStyle, string:'Add Patient' }),
+								Label($, {left:0, right:0, height:(application.height / 8), top: 30, style:titleStyle, string:'Add Patient' }),
 								Picture($, { left:0, top:30, active: true, bottom:0, width:(application.width * 0.1), url: back, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
-											if (popSwitch) container.bubble( "onTriggerTransition", "patientToHome");
+											container.bubble( "onTriggerTransition", "patientToHome");
 										}
 									},  
 								}),
 								Picture($, { right:10, top:30, active: true, bottom:0, width:(application.width * 0.25), url: save, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
-											// CODE THAT COPIES NEW PATIENT TO DATASTRUCTURE
-											if (popSwitch) container.bubble( "onTriggerTransition", "patientToHome");
+											container.bubble( "onTriggerTransition", "patientToNewHome");
 										}
 									},  
 								}),
@@ -580,7 +811,7 @@ let AddPatientIbuprofenScreen = Container.template($ => ({
 /* PATIENT X TITLE */
 						Container($, {left: 0, right: 0, skin: blueSkin,
 							contents: [
-								Label($, {left:0, right:0, height:70, top: 30, style:titleStyle, string:'Add Patient' }),
+								Label($, {left:0, right:0, height:(application.height / 8), top: 30, style:titleStyle, string:'Add Patient' }),
 								Picture($, { left:0, top:30, active: true, bottom:0, width:(application.width * 0.1), url: back, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
@@ -713,7 +944,7 @@ let PatientScreen = Container.template($ => ({
 					/* PATIENT X TITLE */
 						Container($, {left: 0, right: 0, skin: blueSkin,
 							contents: [
-								Label($, {left:0, right:0, height:70, top: 30, style:titleStyle, string:'Patient X' }),
+								Label($, {left:0, right:0, height:(application.height / 8), top: 30, style:titleStyle, string:'Patient X' }),
 								Picture($, { left:0, top:30, active: true, bottom:0, width:(application.width * 0.1), url: back, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
@@ -827,7 +1058,7 @@ let JohnDoeScreen = Container.template($ => ({
 					/* PATIENT X TITLE */
 						Container($, {left: 0, right: 0, skin: blueSkin,
 							contents: [
-								Label($, {left:0, right:0, height:70, top: 30, style:titleStyle, string:'John Doe' }),
+								Label($, {left:0, right:0, height:(application.height / 8), top: 30, style:titleStyle, string:'John Doe' }),
 								Picture($, { left:0, top:30, active: true, bottom:0, width:(application.width * 0.1), url: back, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
@@ -1115,7 +1346,7 @@ let AddMedicationScreen = Container.template($ => ({
 /* PATIENT X TITLE */
 						Container($, {left: 0, right: 0, skin: blueSkin,
 							contents: [
-								Label($, {left:0, right: 20, height:70, top: 30, style:titleStyle, string:'Add Medication' }),
+								Label($, {left:0, right: 20, height:(application.height / 8), top: 30, style:titleStyle, string:'Add Medication' }),
 								Picture($, { left:0, top:30, active: true, bottom:0, width:(application.width * 0.1), url: back, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
@@ -1290,7 +1521,7 @@ Container($, {left: 0, right: 0,
 										}
 									},  
 								}),
-								Label($, {left:0, right:0, top: 10, height:70, top: 0, style:titleStyle, string:'Settings' }),
+								Label($, {left:0, right:0, top: 10, height:(application.height / 7), top: 0, style:titleStyle, string:'Settings' }),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
@@ -1479,14 +1710,15 @@ function discovery() {
 }
 
 
+
 /* Application set-up */
 let mainScreen = new MainScreen({});
-let logoScreen = new LogoScreen();
+let splashScreen = new SplashScreen();
 
 class AppBehavior extends Behavior {
 	onLaunch(application) {
 		application.add( mainScreen );
-		mainScreen.add( logoScreen );
+		mainScreen.add( splashScreen );
         discovery();
     } 
     onDisplayed(application) {
