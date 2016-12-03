@@ -30,7 +30,12 @@ import {
 
 /* Scroller Setup */
 // import THEME from './theme';
-// import SCROLLER from = './scroller';
+import {
+		VerticalScroller,
+		VerticalScrollbar,
+		TopScrollerShadow,
+		BottomScrollerShadow
+} from "scroller";
 
 
 /* Skins and styles */
@@ -124,6 +129,7 @@ let half = './assets/half.png';
 let oneQuarter = './assets/oneQuarter.png';
 let empty = './assets/empty.png';
 let emptyDisconnect = './assets/empty_disconnect.png';
+let myPatientsTitle = './assets/empty_disconnect.png';
 
 /* Transitions */
 class MainScreenBehavior extends Behavior {
@@ -155,63 +161,49 @@ class MainScreenBehavior extends Behavior {
 				currentScreen = toSplashFilled;
 				container.run( new TRANSITION.CrossFade({ duration : 900 }), container.last, currentScreen );
 				break;
-			case "homeToSettings":
+			case "toSettings":
 				currentScreen = toSettings;
 				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, currentScreen );
 				break;
-			case "homeToPatient":
+			case "toPatientLeft":
 				currentScreen = toPatient;
 				container.run( new TRANSITION.Push({ direction : "left", duration : 400 }), container.last, currentScreen );
 				break;
-			case "homeToJohnDoe":
-				currentScreen = toJohnDoe;
-				container.run( new TRANSITION.Push({ direction : "left", duration : 400 }), container.last, currentScreen );
+			case "toPatientRight":
+				currentScreen = toPatient;
+				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, currentScreen );
 				break;
-			case "homeToAddPatient":
+			case "toAddPatientLeft":
 				currentScreen = toAddPatient;
 				container.run( new TRANSITION.Push({ direction : "left", duration : 400 }), container.last, currentScreen );
+				break; 
+			case "toAddPatientRight":
+				currentScreen = toAddPatient;
+				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, currentScreen );
 				break; 		
-			case "addPatientToHome":
+			case "toHomeRight":
 				currentScreen = toHome;
 				addAllPatients();
 				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, currentScreen );
 				break;
-			case "settingsToHome":
+			case "toHomeLeft":
 				currentScreen = toHome;
 				addAllPatients();
 				container.run( new TRANSITION.Push({ direction : "left", duration : 400 }), container.last, currentScreen );
-				break;			
-			case "patientToHome":
-				currentScreen = toHome;
-				addAllPatients();
-				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, currentScreen );
 				break;
-			case "patientToPatientEdit":
+			case "toPatientEditLeft":
 				currentScreen = toPatientEdit;
-				container.run( new TRANSITION.Push({ direction : "left", duration : 400 }), container.last, currentScreen  );
-				break;
-			case "patientEditToPatient":
-				currentScreen = toPatient;
-				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, currentScreen );
+				container.run( new TRANSITION.Push({ direction : "left", duration : 400 }), container.last, currentScreen );
 				break;				
-			case "patientEditToJohnDoe":
-				currentScreen = toJohnDoe;
-				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, currentScreen );
-				break;			
-			case "patientToAddMedication":
+			case "toAddMedicationLeft":
 				currentScreen = toAddMedication;
 				container.run( new TRANSITION.Push({ direction : "left", duration : 400 }), container.last, currentScreen );
 				break;
-			case "addMedicationToPatient":
-				currentScreen = toPatient;
-				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, currentScreen );
-				break;
-			case "toContactPatient":
+			case "toContactPatientRight":
 				trace("toContactPatient Reached\n")
 				currentScreen = toContactPatient;
 				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, currentScreen );
 				break;	
-
 		}
 	}
 }
@@ -232,7 +224,7 @@ let MyField = Container.template($ => ({
                             let data = this.data;
                             data.name = label.string;
                             label.container.hint.visible = (data.name.length == 0);
-                            trace(data.name+"\n");
+                            trace(Object.keys(this.data) + ", data.name: " + data.name+"\n");
                         }
                     },
                 }),
@@ -248,13 +240,13 @@ let MyField = Container.template($ => ({
 
 /* Simulated User Login & Data*/
 let doctor = new User("Doctor_1", "password123");
-doctor.patientsBad.push(new Patient("Alfie", "YOLO", "01/01/92", "Male", "6ft", "160lbs", false, "ibuprofen", getTimeDate(), "no message", "no message"));
-doctor.patientsBad.push(new Patient("Amelia", "LOL",  "02/02/91", "Female", "5ft, 6in", "130lbs", false, "acetaminophen", getTimeDate(), "no message", "no message"));
-doctor.patientsBad.push(new Patient("Archie", "ROFL",  "03/03/90", "Male", "6ft 3in", "180lbs", false, "prozac", getTimeDate(), "no message", "no message" ));
-doctor.patientsGood.push(new Patient("Ava", "GG",  "04/04/89", "Female", "5ft 2in", "140lbs", true, "ibuprofen", getTimeDate(), "no message","no message" ));
-doctor.patientsGood.push(new Patient("Abe", "NVM",  "05/05/88", "Declined to say", "5ft 6in", "165lbs", true, "acetaminophen", getTimeDate(), "no message","no message"));
-doctor.patientsGood.push(new Patient("Aaron", "TBH",  "06/06/87", "Male", "5ft 11in", "174lbs", true, "prozac", getTimeDate(), "no message","no message"));
-doctor.patientsGood.push(new Patient("Anna", "CBA",  "07/07/86", "Female", "5ft 10in", "168lbs", true, "ibuprofen", getTimeDate(), "no message","no message"));
+doctor.patientsBad.push(new Patient("Alfie", "YOLO", "01/01/92", "Male", "6ft", "160lbs", false, "ibuprofen", getTimeDate(false), "no message", "no message"));
+doctor.patientsBad.push(new Patient("Amelia", "LOL",  "02/02/91", "Female", "5ft, 6in", "130lbs", false, "acetaminophen", getTimeDate(false), "no message", "no message"));
+doctor.patientsBad.push(new Patient("Archie", "ROFL",  "03/03/90", "Male", "6ft 3in", "180lbs", false, "prozac", getTimeDate(false), "no message", "no message" ));
+doctor.patientsGood.push(new Patient("Ava", "GG",  "04/04/89", "Female", "5ft 2in", "140lbs", true, "ibuprofen", getTimeDate(false), "no message","no message" ));
+doctor.patientsGood.push(new Patient("Abe", "NVM",  "05/05/88", "Declined to say", "5ft 6in", "165lbs", true, "acetaminophen", getTimeDate(false), "no message","no message"));
+doctor.patientsGood.push(new Patient("Aaron", "TBH",  "06/06/87", "Male", "5ft 11in", "174lbs", true, "prozac", getTimeDate(false), "no message","no message"));
+doctor.patientsGood.push(new Patient("Anna", "CBA",  "07/07/86", "Female", "5ft 10in", "168lbs", true, "ibuprofen", getTimeDate(false), "no message","no message"));
 currentPatient = doctor.patientsBad[0];
 
 
@@ -277,7 +269,7 @@ let patientTemplate = Line.template($ => ({
 						currentPatient = $.pat;
 						currentPatientName = String($.pat.first) + ' ' + String($.pat.last);
 					}	
-					container.bubble( "onTriggerTransition", "homeToPatient" );
+					container.bubble( "onTriggerTransition", "toPatientLeft" );
 				}
 			}, 
     	}),
@@ -519,14 +511,14 @@ let HomeScreen = Container.template($ => ({
 								Picture($, { left:0, top:19, bottom:0, width:(application.width * 0.1), url: settingsPicture, active: true,
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
-											if (popSwitch) container.bubble( "onTriggerTransition", "homeToSettings" );
+											if (popSwitch) container.bubble( "onTriggerTransition", "toSettings" );
 										}
 									}, 
 								}),
 								Picture($, { right:10, top:18, active: true, bottom:0, width:(application.width * 0.1), url: add, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
-											if (popSwitch) container.bubble( "onTriggerTransition", "homeToAddPatient");
+											if (popSwitch) container.bubble( "onTriggerTransition", "toAddPatientLeft");
 										}
 									},  
 								}),
@@ -560,14 +552,14 @@ let AddPatientScreen = Container.template($ => ({
 		    			}
 		    		},
     				contents: [ 
-/* PATIENT X TITLE */
+					/* ADD PATIENT TITLE */
 						Container($, {left: 0, right: 0, skin: blueSkin,
 							contents: [
-								Label($, {left:0, right:0, height:70, top: 30, style:titleStyle, string:'Add Patient' }),
+								Label($, {left:10, right:40, height:70, top: 30, style:titleStyle, string:'Add Patient' }),
 								Picture($, { left:0, top:30, active: true, bottom:0, width:(application.width * 0.1), url: back, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
-											if (popSwitch) container.bubble( "onTriggerTransition", "patientToHome");
+											if (popSwitch) container.bubble( "onTriggerTransition", "toHomeRight");
 										}
 									},  
 								}),
@@ -575,7 +567,7 @@ let AddPatientScreen = Container.template($ => ({
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
 											// CODE THAT COPIES NEW PATIENT TO DATASTRUCTURE
-											if (popSwitch) container.bubble( "onTriggerTransition", "patientToHome");
+											if (popSwitch) container.bubble( "onTriggerTransition", "toHomeRight");
 										}
 									},  
 								}),
@@ -672,7 +664,7 @@ let AddPatientScreen = Container.template($ => ({
 								Picture($, { left:0, top:0, bottom:0, url:plus, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
-											container.bubble( "onTriggerTransition", "patientToAddMedication");
+											container.bubble( "onTriggerTransition", "toAddMedicationLeft");
 										}
 									},  									
 								}),
@@ -712,14 +704,14 @@ let PatientScreen = Container.template($ => ({
 								Picture($, { left:0, top:45, active: true, bottom:0, width:(application.width * 0.1), url: back, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
-											container.bubble( "onTriggerTransition", "patientToHome");
+											container.bubble( "onTriggerTransition", "toHomeRight");
 										}
 									},  
 								}),
 								Picture($, { right:10, top:45, active: true, bottom:0, width:(application.width * 0.25), url: edit, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
-											container.bubble( "onTriggerTransition", "patientToPatientEdit");
+											container.bubble( "onTriggerTransition", "toPatientEditLeft");
 										}
 									},  
 								}),
@@ -787,7 +779,7 @@ let PatientScreen = Container.template($ => ({
 								Picture($, { left:0, top:0, bottom:0, url:plus, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
-											container.bubble( "onTriggerTransition", "patientToAddMedication");
+											container.bubble( "onTriggerTransition", "toAddMedicationLeft");
 										}
 									},  									
 								}),
@@ -834,7 +826,7 @@ let PatientEditScreen = Container.template($ => ({
 								Picture($, { left:0, top:30, active: true, bottom:0, width:(application.width * 0.1), url: back, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
-											container.bubble( "onTriggerTransition", "patientToHome");
+											container.bubble( "onTriggerTransition", "toHomeRight");
 										}
 									},  
 								}),
@@ -842,13 +834,15 @@ let PatientEditScreen = Container.template($ => ({
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
 											currentPatient.first = String(editFirst.name);
-											trace(currentPatient.first + "\n")
+											trace(" TEST: " + editFirst.name + "\n");
+											trace(" TEST: " + editFirst+ "\n");
 											currentPatient.last = String(editLast.name);
 											currentPatient.birthday = String(editBirthday.name);
 											currentPatient.gender = String(editGender.name);
 											currentPatient.height = String(editHeight.name);
 											currentPatient.weight = String(editWeight.name);
-											container.bubble( "onTriggerTransition", "patientEditToPatient");
+											currentPatientName = currentPatient.first + ' ' + currentPatient.last;
+											container.bubble( "onTriggerTransition", "toPatientRight");
 										}
 									},  
 								}),
@@ -981,7 +975,7 @@ let PatientEditScreen = Container.template($ => ({
 								Picture($, { left:0, top:0, bottom:0, url:plus, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
-											container.bubble( "onTriggerTransition", "patientToAddMedication");
+											container.bubble( "onTriggerTransition", "toAddMedicationLeft");
 											SystemKeyboard.hide();
 											container.focus();
 										}
@@ -1021,7 +1015,7 @@ let AddMedicationScreen = Container.template($ => ({
 								Picture($, { left:0, top:30, active: true, bottom:0, width:(application.width * 0.1), url: back, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
-											container.bubble( "onTriggerTransition", "addMedicationToPatient");
+											container.bubble( "onTriggerTransition", "toPatientRight");
 										}
 									},  
 								}),
@@ -1029,7 +1023,7 @@ let AddMedicationScreen = Container.template($ => ({
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
 											currentPatient.add("ibuprofen");
-											container.bubble( "onTriggerTransition", "addMedicationToPatient");
+											container.bubble( "onTriggerTransition", "toPatientRight");
 										}
 									},  
 								}),
@@ -1189,7 +1183,7 @@ Container($, {left: 0, right: 0,
 									Behavior: MainScreenBehavior, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
-											container.bubble( "onTriggerTransition", "settingsToHome");
+											container.bubble( "onTriggerTransition", "toHomeLeft");
 										}
 									},  
 								}),
@@ -1282,6 +1276,7 @@ function getTimeDate(switcher) {
     let seconds = currentTime.getSeconds()
     let date = currentTime.getDate()
     let month = currentTime.getMonth()
+    let year = currentTime.getYear()
 
     if (minutes < 10) {
         minutes = "0" + minutes
@@ -1289,9 +1284,9 @@ function getTimeDate(switcher) {
     if (seconds < 10) {
         seconds = "0" + seconds
     }
-    str += hours + ":" + minutes + ":" + seconds + ", " + (month+1) + "/" + date + '  ';
+    str += hours + ":" + minutes + ":" + seconds + ", " + (month+1) + "/" + date + '  ' + "/" + year ;
 	if (switcher){
-	    return ((parseInt(hours, 10) * 100) + parseInt(minutes)); 
+	    return ((parseInt(year, 10) * 100000000) + (parseInt(month, 10) * 1000000) + (parseInt(day, 10) * 10000) +  (parseInt(hours, 10) * 100) + parseInt(minutes)); 
 	}
 	return str;	
 }
@@ -1332,6 +1327,14 @@ Handler.bind("/forget", Behavior({
         deviceURL = "";
     }
 }));
+
+
+function checkTaken(patient, med){
+	let timeNow = getTimeDate(true);
+	medIndex = patient.meds.indexOf(med);
+	let freq = patient.meds[medIndex].freq;
+	return (timeNow < (patient.meds[medIndex].lastTakenTime + (2400 / feq)))
+}
 
 
 /* Pins discovery helper function */

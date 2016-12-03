@@ -28,9 +28,6 @@ export class Patient {
 	    this.weight = weight;
 	    this.statusGood = status;
 		this.lastTaken = lastTaken;
-		this.lastTakenTime = lastTakenTime;
-		this.errorMessage = errorMessage;
-		this.patientMessage = patientMessage;
 	}
 	
 	addMed(med) {
@@ -52,27 +49,30 @@ export class Med {
 	constructor() {
 		this.conflicts = {"ibuprofen" : ["dayquil"], "acetaminophen": ["dayquil"], "dayquil" : ["ibuprofen", "acetaminophen"]};
 	}
-	create(name, dosageAmount, unit, time, dayWeek, intake, side) {
+	create(name, dosageAmount, unit, freq, dayWeek, intake, side, lastTakenTime, errorMessage, patientMessage) {
 		this.name = name;
 	    this.dosageAmount = dosageAmount;
 	    this.unit = unit;
-	    this.time = time;
+	    this.freq = freq;
 	    this.dayWeek = dayWeek;
 	    this.intake = intake;
 	    this.side = side;
+		this.lastTakenTime = lastTakenTime;
+		this.errorMessage = errorMessage;
+		this.patientMessage = patientMessage;
 	}
 }
 
 
 export var ibuprofen = new Med();
-ibuprofen.create("ibuprofen", "300", "mg", "3 times", "day", "None", "Can cause anemia, vomiting");
+ibuprofen.create("ibuprofen", "300", "mg", 4, "day", "None", "Can cause anemia, vomiting");
 
 export var acetaminophen = new Med();
-acetaminophen.create("acetaminophen", "325", "mg", "4 times", "day", "None", "Can cause diarrhea");
+acetaminophen.create("acetaminophen", "325", "mg", 3, "day", "None", "Can cause diarrhea");
 
 export var dayquil = new Med();
-dayquil.create("dayquil", "40", "ml", "3 times", "day", "None", "Can cause sore throat");
+dayquil.create("dayquil", "40", "ml", 2, "day", "None", "Can cause sore throat");
 
 export var prozac = new Med();
-prozac.create("prozac", "20", "mg", "1 time", "day", "None", "Can cause anxiety");
+prozac.create("prozac", "20", "mg", 1, "day", "None", "Can cause anxiety");
 
