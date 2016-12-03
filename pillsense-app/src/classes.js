@@ -18,7 +18,7 @@ export class User {
 
 export class Patient {
 
-	constructor(first, last, birthday, gender, height, weight, status) {
+	constructor(first, last, birthday, gender, height, weight, status, lastTaken, lastTakenTime, errorMessage, patientMessage) {
 		this.meds = [];
 		this.first = first;
 	    this.last = last;
@@ -27,6 +27,10 @@ export class Patient {
 	    this.height = height;
 	    this.weight = weight;
 	    this.statusGood = status;
+		this.lastTaken = lastTaken;
+		this.lastTakenTime = lastTakenTime;
+		this.errorMessage = errorMessage;
+		this.patientMessage = patientMessage;
 	}
 	
 	addMed(med) {
