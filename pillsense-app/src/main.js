@@ -420,32 +420,7 @@ let PopUpErrorScreen = Container.template($ => ({
 			]
 		}),
 	],  
-<<<<<<< HEAD
 }));
-=======
-});
-
-
-/* Simulated User Login & Data*/
-let doctor = new User("Doctor_1", "password123");
-doctor.patientsBad.push(new Patient("Patient", "YOLO", "01/01/92", "Male", "6ft", "160lbs", false));
-doctor.patientsBad.push(new Patient("Patient", "Z",  "01/01/92", "Female", "5ft, 6in", "130lbs", false));
-doctor.patientsBad.push(new Patient("Patient", "R",  "01/01/92", "Male", "6ft", "160lbs", false));
-doctor.patientsGood.push(new Patient("Patient", "X",  "01/01/92", "Male", "6ft", "160lbs", true));
-doctor.patientsGood.push(new Patient("Patient", "B",  "01/01/92", "Male", "6ft", "160lbs", true));
-doctor.patientsGood.push(new Patient("Patient", "C",  "01/01/92", "Male", "6ft", "160lbs", true));
-doctor.patientsGood.push(new Patient("Patient", "D",  "01/01/92", "Male", "6ft", "160lbs", true));
-
-
-/* Dynamic Populating Scroller */
-let listItems = []
-for(var i = 0; i < doctor.patientsBad.length; i++){
-	listItems.push({patient: doctor.patientsBad[i], button: exclamation});
-}
-for(var i = 0; i < doctor.patientsGood.length; i++){
-	listItems.push({patient: doctor.patientsGood[i], button: tick});
-}
->>>>>>> 662bff8f9c3c8fc56f62a72ed988fdb59edb9a3c
 
 
 /* Pop Up Tick Screen */
@@ -489,41 +464,8 @@ let PopUpTickScreen = Container.template($ => ({
 }));
 
 
-<<<<<<< HEAD
 /* Contact Patient Screen */
 let ContactPatientScreen = Container.template($ => ({ 
-=======
-/*
-
-from my proj3, was working, for example
-let buttonTemplate = Button.template($ => ({
-    top: $.top, bottom: $.bottom, left: 20, right: 20,
-    contents: [
-        Label($, {left: 0, right: 0, height: 55, string: $.textForLabel, style: buttonText})
-    ],
-    Behavior: class extends ButtonBehavior {
-        onTap(button){
-          sensorPage.visible = true;
-          mainCon.visible = false;
-        }
-    }
-}));
-*/
-
-let patientTemplate = Label.template($ => ({
-    left: 0, right: 0, top:0, bottom:0, active: true,
-    contents: [
-        Label($, {left:0, right:0, height: $.height, style:labelStyle, string: '  ' + String($.first) + ' ' + String($.last)}),
-		Picture($, { left:0, top:0, bottom:0, url: $.status})]
-}));
-
-var seperatorTemplate = Line.template($ => ({
-	left: 0, right: 0, height: 1, skin: separatorSkin,
-}));
-
-/* Home Screen */
-let HomeScreen = Container.template($ => ({ 
->>>>>>> 662bff8f9c3c8fc56f62a72ed988fdb59edb9a3c
 	left: 0, right: 0, top: 0, bottom: 0, skin: whiteSkin, 
 	Behavior: MainScreenBehavior, 
 	contents: [
@@ -544,64 +486,11 @@ let HomeScreen = Container.template($ => ({
 								}),
 							]
 						}),
-<<<<<<< HEAD
 						Line($, { left: 0, right: 0, height: 10, }),
 						Label($, {left:10, right:10, height:30, style:boldLabelStyle, string: 'Message:',}),
 						Label($, {left:10, right:10, height:50, active: true, editable: true, style:editLabelStyle, string:'  enter text', 
 									Behavior: class extends Behavior {onTouchEnded(label) {
 				                            label.style = labelStyle,
-=======
-						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
-					/* PATIENT A */
-						Line($, {left: 0, right: 0, top:0, bottom:0,
-							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient A:' }),
-								Picture($, { left:0, top:0, bottom:0, url:exclamation, active:true,							
-									Behavior: class extends Behavior {
-										onTouchEnded(container, id, x, y, ticks) {
-											if (popSwitch){
-												trace("popSwitch \n");
-												popSwitch = false;
-												application.add(PopUpScreen);
-											}
-										}
-									},  
-								}),	
-							]
-						}),
-						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),	
-					/* PATIENT Z */
-						/*
-						Line($, {left: 0, right: 0, top:0, bottom:0,
-							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient Z' }),
-								Picture($, { left:0, top:0, bottom:0, url:exclamation }),
-							]
-						}),
-						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
-					    */
-					    new patientTemplate({height: (application.height / 10), first: "YOLO", last: "SWAG", status: exclamation}),
-					    new seperatorTemplate(),
-
-
-
-					    
-					/* PATIENT R */
-						Line($, {left: 0, right: 0, top:0, bottom:0,
-							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Patient R:' }),
-								Picture($, { left:0, top:0, bottom:0, url:exclamation }),
-							]
-						}),
-						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
-					/* PATIENT X */
-						Line($, {left: 0, right: 0, top:0, bottom:0,
-							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Patient X:',
-									Behavior: class extends Behavior {
-										onTouchBegan(container, id, x, y, ticks) {
-											container.bubble( "onTriggerTransition", "homeToPatient" );
->>>>>>> 662bff8f9c3c8fc56f62a72ed988fdb59edb9a3c
 										}
 									}, 
 								}),
