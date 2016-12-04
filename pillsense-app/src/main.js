@@ -70,7 +70,7 @@ let hugeLabelStyle = new Style({ color: 'black', font: 'bold 125px', horizontal:
 
 let fieldStyle = new Style({ color: 'black', font: 'bold 24px', horizontal: 'left',
     vertical: 'middle', left: 5, right: 5, top: 5, bottom: 5 });
-let fieldHintStyle = new Style({ color: '#aaa', font: '24px', horizontal: 'left',
+let fieldHintStyle = new Style({ color: '#aaa', font: '20px', horizontal: 'left',
     vertical: 'middle', left: 5, right: 5, top: 5, bottom: 5 });
 let fieldLabelSkin = new Skin({ fill: ['transparent', 'transparent', '#C0C0C0', '#acd473'] });
 let nameInputSkin = new Skin({ borders: { left: 2, right: 2, top: 2, bottom: 2 }, stroke: 'gray' });
@@ -100,6 +100,7 @@ let editBirthday;
 let editGender;
 let editHeight;
 let editWeight;
+let textFieldInputs = {};
 
 /* Assets */
 let back = './assets/back.png';
@@ -109,6 +110,7 @@ let logo = './assets/logo.png';
 let add = './assets/add.png';
 let edit = './assets/edit.png';
 let save = './assets/save.png';
+let search = './assets/search.png';
 let ok = './assets/save.png';
 let contactPatientBlue = './assets/contactPatientBlue.png';
 let contactPatientGreen = './assets/contactPatientGreen.png';
@@ -223,8 +225,9 @@ let MyField = Container.template($ => ({
                         onEdited(label) {
                             let data = this.data;
                             data.name = label.string;
+                            textFieldInputs[$.ind] = data.name;
                             label.container.hint.visible = (data.name.length == 0);
-                            trace(Object.keys(this.data) + ", data.name: " + data.name+"\n");
+                            // trace(Object.keys(this.data) + ", data.name: " + data.name+"\n");
                         }
                     },
                 }),
@@ -253,9 +256,9 @@ currentPatient = doctor.patientsBad[0];
 /* Dynamic Patient Rows Templates and Functions*/
 function createPatientHomeScreen(patient) {
 	if (patient.statusGood == true) {
-		return new patientTemplate({height: (application.height / 10), pat: patient, status: tick});
+		return new patientTemplate({height: 50, pat: patient, status: tick});
 	} else {
-		return new patientTemplate({height: (application.height / 10), pat: patient, status: exclamation});
+		return new patientTemplate({height: 50, pat: patient, status: exclamation});
 	}
 }
 
@@ -282,10 +285,10 @@ let patientTemplate = Line.template($ => ({
 						currentPatient = $.pat;
 						currentPatientName = String($.pat.first) + ' ' + String($.pat.last);
 						if ($.status == exclamation) {
-							popupErrorScreen = new PopUpErrorScreen()
+							popupErrorScreen = new PopUpErrorScreen({cont: container})
 							application.add(popupErrorScreen);
 						} else {
-							popupTickScreen = new PopUpTickScreen()
+							popupTickScreen = new PopUpTickScreen({cont: container})
 							application.add(popupTickScreen);
 						} 
 					}
@@ -319,7 +322,7 @@ function addAllPatients() {
 		currentScreen.lel.homeScreenAddHere.add(curPatient);
 		currentScreen.lel.homeScreenAddHere.add(new seperatorTemplate());
 	}
-	var blankBottomLength = application.height - (60 * (doctor.patientsBad.length + doctor.patientsGood.length));
+	var blankBottomLength = 536;
 	currentScreen.lel.homeScreenAddHere.add( new blackScreen({height : blankBottomLength}));
 }
 
@@ -405,7 +408,10 @@ let PopUpErrorScreen = Container.template($ => ({
 				            popSwitch = true; 
 							currentScreen.active = true;
 				            application.remove(popupErrorScreen);
-				            container.bubble( "onTriggerTransition", "toContactPatient" );
+				            // $.cont.bubble( "onTriggerTransition", "toContactPatient" );
+				            let toContactPatient =  new ContactPatientScreen();
+				            currentScreen = toContactPatient;
+				            application.add(toContactPatient);
 						}
 					},
 				}),
@@ -446,7 +452,10 @@ let PopUpTickScreen = Container.template($ => ({
 				            popSwitch = true; 
 							currentScreen.active = true;
 				            application.remove(popupTickScreen);
-				            container.bubble( "onTriggerTransition", "toContactPatient" );
+				            // $.cont.bubble( "onTriggerTransition", "toContactPatient" );	
+				            let toContactPatient =  new ContactPatientScreen();
+				            currentScreen = toContactPatient;
+				            application.add(toContactPatient);
 						}
 					},
 				}),	
@@ -497,7 +506,7 @@ let ContactPatientScreen = Container.template($ => ({
 
 /* Home Screen */
 let HomeScreen = Container.template($ => ({ 
-	left: 0, right: 0, top: 0, bottom: 0, skin: whiteSkin, 
+	left: 0, right: 0, top: 0, skin: whiteSkin, 
 	Behavior: MainScreenBehavior, 
 	contents: [
 		Container($, {left: 0, right: 0, name: 'lel',
@@ -507,15 +516,15 @@ let HomeScreen = Container.template($ => ({
 					/* HOME */
 						Container($, {left: 0, right: 0, skin: blueSkin,
 							contents: [
-								Label($, {left:0, right:0, height:70, top: 14, style:titleStyle, string:'My Patients' }),
-								Picture($, { left:0, top:19, bottom:0, width:(application.width * 0.1), url: settingsPicture, active: true,
+								Label($, {left:0, right:0, height: 70, top: 0, style:titleStyle, string:'My Patients' }),
+								Picture($, { left: 10, top: 5, bottom:0, width: 32, url: settingsPicture, active: true,
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
 											if (popSwitch) container.bubble( "onTriggerTransition", "toSettings" );
 										}
 									}, 
 								}),
-								Picture($, { right:10, top:18, active: true, bottom:0, width:(application.width * 0.1), url: add, active: true, 
+								Picture($, { right:10, top:3, active: true, bottom:0, width: 32, url: add, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
 											if (popSwitch) container.bubble( "onTriggerTransition", "toAddPatientLeft");
@@ -527,7 +536,6 @@ let HomeScreen = Container.template($ => ({
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),	
 					]
 				})
-
 			]
 		})
 	] 
@@ -833,14 +841,12 @@ let PatientEditScreen = Container.template($ => ({
 								Picture($, { right:10, top:30, active: true, bottom:0, width:(application.width * 0.25), url: save, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
-											currentPatient.first = String(editFirst.name);
-											trace(" TEST: " + editFirst.name + "\n");
-											trace(" TEST: " + editFirst+ "\n");
-											currentPatient.last = String(editLast.name);
-											currentPatient.birthday = String(editBirthday.name);
-											currentPatient.gender = String(editGender.name);
-											currentPatient.height = String(editHeight.name);
-											currentPatient.weight = String(editWeight.name);
+											currentPatient.first = textFieldInputs.first;
+											currentPatient.last = textFieldInputs.last;
+											currentPatient.birthday = textFieldInputs.birthday;
+											currentPatient.gender = textFieldInputs.gender;
+											currentPatient.height = textFieldInputs.height;
+											currentPatient.weight = textFieldInputs.weight;
 											currentPatientName = currentPatient.first + ' ' + currentPatient.last;
 											container.bubble( "onTriggerTransition", "toPatientRight");
 										}
@@ -863,7 +869,7 @@ let PatientEditScreen = Container.template($ => ({
     									}
     								},
     							}),
-								editFirst = new MyField({name: String(currentPatient.getFirst())}),
+								editFirst = new MyField({name: currentPatient.first, ind: 'first'}),
 								// new MyField({name: "John"}),
 							]
 						}),
@@ -883,7 +889,7 @@ let PatientEditScreen = Container.template($ => ({
     								},
     							}),
 
-								editLast =  new MyField({name: currentPatient.last}),
+								editLast =  new MyField({name: currentPatient.last, ind: 'last'}),
 								// new MyField({name: "Doe"}),
 
 							]
@@ -904,7 +910,7 @@ let PatientEditScreen = Container.template($ => ({
     								},
     							}),
 
-								editBirthday = new MyField({name: currentPatient.birthday}),
+								editBirthday = new MyField({name: currentPatient.birthday, ind: 'birthday'}),
 								// new MyField({name: "01/01/92"}),
 							]
 						}),
@@ -924,7 +930,7 @@ let PatientEditScreen = Container.template($ => ({
     								},
     							}),
 
-								editGender = new MyField({name: currentPatient.gender}),
+								editGender = new MyField({name: currentPatient.gender, ind: 'gender'}),
 								// new MyField({name: "Male"}),
 							]
 						}),
@@ -944,7 +950,7 @@ let PatientEditScreen = Container.template($ => ({
     								},
     							}),
 
-								editHeight = new MyField({name: currentPatient.height}),
+								editHeight = new MyField({name: currentPatient.height, ind: 'height'}),
 								// new MyField({name: "6ft"}),
 							]
 						}),
@@ -964,7 +970,7 @@ let PatientEditScreen = Container.template($ => ({
     								},
     							}),
 
-								editWeight = new MyField({name: currentPatient.weight}),
+								editWeight = new MyField({name: currentPatient.weight, ind: 'weight'}),
 								// new MyField({name: "169lbs"}),
 							]
 						}),
@@ -1007,6 +1013,14 @@ let AddMedicationScreen = Container.template($ => ({
 		Container($, {left: 0, right: 0,
 			contents: [ 		
 				Column($, {left: 0, right: 0,
+					Behavior: class extends Behavior {
+						onTouchEnded(content) {
+			        		//SystemKeyboard.hide();
+			        		trace("hide keyboard moom \n");
+			        		//SystemKeyBoard.hide();
+			        		content.focus();
+		    			}
+    				},
 					contents: [ 
 /* PATIENT X TITLE */
 						Container($, {left: 0, right: 0, skin: blueSkin,
@@ -1034,22 +1048,33 @@ let AddMedicationScreen = Container.template($ => ({
 
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Medicine Name' }),
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Medicine:', 
+									Behavior: class extends Behavior {
+										onTouchEnded(content) {
+											KEYBOARD.hide();
+        									//SystemKeyboard.hide();
+        									system.keyboard.visible = false;
+        									//SystemKeyBoard.hide();
+        									content.focus();
+    									}
+    								},
+    							}),
+								new MyField({name: ' ', ind: 'medName'}),
+								// new MyField({name: "John"}),
 							]
 						}),
 						Line($, {height:(application.height / 15), left: 0, right: 0, top:0, bottom:0, active: true,
 							contents: [
-								Label($, {active: true, editable: true, left: 50, right: 20, style:editLabelStyle, string:'', 
+								Label($, {active: true, editable: true, left: 50, right: 20, style:fieldHintStyle, string:' Enter med code to search ', 
 												
 											}),
-								Label($, {active: true, editable: true, left: 60, right: 20, style:editLabelStyle, string:'Medicine', 
-												Behavior: class extends Behavior {onTouchEnded(label) {
-							                            this.left = 50,
-							                            label.string = "Ibuprofen",
-							                            label.style = labelStyle,
-													}
-												}, 
-											}),
+								Picture($, { right:0, top:0, active: true, bottom:0, width: 50, url: search, active: true, 
+									Behavior: class extends Behavior {
+										onTouchEnded(container, id, x, y, ticks) {
+
+										}
+									},  
+								}),
 							],
 						}),
 
