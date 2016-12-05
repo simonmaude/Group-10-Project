@@ -3,11 +3,7 @@
 import {
     User,
     Patient,
-    Med,
-    ibuprofen,
-    acetaminophen,
-    dayquil,
-    prozac
+    Med
 } from 'classes';
 
 /* Transitions Setup */
@@ -20,7 +16,7 @@ let connected = false;
 let deviceURL = "";
 
 /* Keyboard Setup */
-import KEYBOARD from './keyboard';
+import KEYBOARD from 'keyboard';
 
 /* Scroll Setup */
 import {
@@ -28,15 +24,19 @@ import {
     FieldLabelBehavior
 } from 'field';
 
+/* Buttons Setup */
+import { 
+    Button,
+    ButtonBehavior 
+} from 'buttons';
+
 /* Scroller Setup */
-// import THEME from './theme';
 import {
 		VerticalScroller,
 		VerticalScrollbar,
 		TopScrollerShadow,
 		BottomScrollerShadow
 } from "scroller";
-
 
 /* Skins and styles */
 let blackSkin = new Skin({ fill: 'black' });
@@ -70,8 +70,7 @@ let hugeLabelStyle = new Style({ color: 'black', font: 'bold 125px', horizontal:
 
 let fieldStyle = new Style({ color: 'black', font: 'bold 24px', horizontal: 'left',
     vertical: 'middle', left: 5, right: 5, top: 5, bottom: 5 });
-let fieldHintStyle = new Style({ color: '#aaa', font: '20px', horizontal: 'left',
-    vertical: 'middle', left: 5, right: 5, top: 5, bottom: 5 });
+let fieldHintStyle = new Style({ color: '#aaa', font: '20px', left: 5, right: 5, top: 5, bottom: 5 });
 let fieldLabelSkin = new Skin({ fill: ['transparent', 'transparent', '#C0C0C0', '#acd473'] });
 let nameInputSkin = new Skin({ borders: { left: 2, right: 2, top: 2, bottom: 2 }, stroke: 'gray' });
 
@@ -88,6 +87,7 @@ let popSwitch = true;
 let currentScreen;
 let popupErrorScreen;
 let popupTickScreen;
+let devicePatient;
 let currentPatient;
 let currentPatientName;
 let currentMed;
@@ -101,6 +101,12 @@ let editGender;
 let editHeight;
 let editWeight;
 let textFieldInputs = {};
+let doctorMessage = "";
+let sendButton;
+let receivedPatientMessage = "";
+let receivedMessageLabel = new Label({ left:0, right:0, string:"", style: labelStyle});
+let addMedName;
+
 
 /* Assets */
 let back = './assets/back.png';
@@ -135,6 +141,12 @@ let myPatientsTitle = './assets/empty_disconnect.png';
 
 /* Transitions */
 class MainScreenBehavior extends Behavior {
+	// onLaunch(application) {
+ //          application.shared = true;
+ //    }
+ //    onQuit(application) {
+ //          application.shared = false;
+ //    }
     onTouchEnded(content) {
         KEYBOARD.hide();
         content.focus();
@@ -148,7 +160,7 @@ class MainScreenBehavior extends Behavior {
 		let toPatientEdit =  new PatientEditScreen();
 		let toAddMedication =  new AddMedicationScreen();
 		let toAddPatient =  new AddPatientScreen();
-		let toContactPatient =  new ContactPatientScreen();
+		let toMessageScreen =  new MessageScreen();
 		switch ( name ) {
 			case "home":
 				currentScreen = toHome;
@@ -163,16 +175,22 @@ class MainScreenBehavior extends Behavior {
 				currentScreen = toSplashFilled;
 				container.run( new TRANSITION.CrossFade({ duration : 900 }), container.last, currentScreen );
 				break;
-			case "toSettings":
+			case "toSettingsLeft":
+				currentScreen = toSettings;
+				container.run( new TRANSITION.Push({ direction : "left", duration : 400 }), container.last, currentScreen );
+				break;
+			case "toSettingsRight":
 				currentScreen = toSettings;
 				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, currentScreen );
 				break;
 			case "toPatientLeft":
 				currentScreen = toPatient;
+				createPatientMedicineScreen(currentPatient);
 				container.run( new TRANSITION.Push({ direction : "left", duration : 400 }), container.last, currentScreen );
 				break;
 			case "toPatientRight":
 				currentScreen = toPatient;
+				createPatientMedicineScreen(currentPatient);
 				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, currentScreen );
 				break;
 			case "toAddPatientLeft":
@@ -201,9 +219,8 @@ class MainScreenBehavior extends Behavior {
 				currentScreen = toAddMedication;
 				container.run( new TRANSITION.Push({ direction : "left", duration : 400 }), container.last, currentScreen );
 				break;
-			case "toContactPatientRight":
-				trace("toContactPatient Reached\n")
-				currentScreen = toContactPatient;
+			case "toMessageRight":
+				currentScreen = toMessageScreen;
 				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, currentScreen );
 				break;	
 		}
@@ -241,6 +258,82 @@ let MyField = Container.template($ => ({
 }));
 
 
+
+function updateMessageBox(labelOrVar) {
+	doctorMessage = labelOrVar;
+	return doctorMessage;
+}
+
+/* A Message Box Specific Field */
+let MessageField = Container.template($ => ({ 
+    width: 200, height: 36, skin: nameInputSkin, contents: [
+        Scroller($, { 
+            left: 4, right: 4, top: 4, bottom: 4, active: true, 
+            Behavior: FieldScrollerBehavior, clip: true, 
+            contents: [
+                Label($, { 
+                    left: 0, top: 0, bottom: 0, skin: fieldLabelSkin, 
+                    style: labelStyle, horizontal:"right", anchor: 'NAME',
+                    editable: true, string: $.name,
+                    Behavior: class extends FieldLabelBehavior {
+                        onEdited(label) {
+                            let data = this.data;
+                            data.name = label.string;
+                            doctorMessage = updateMessageBox(data.name);
+                            label.container.hint.visible = (data.name.length == 0);
+                            trace(data.name+"\n");
+                        }
+                    },
+                }),
+                Label($, {
+                    left: 4, right: 4, top: 4, bottom: 4, style: fieldHintStyle,
+                    string: "Tap to add text...", name: "hint"
+                }),
+            ]
+        })
+    ]
+}));
+
+var messageBox = new MessageField({name: "  Mando"});
+
+/*Refresh Button Template*/ 
+let RefreshButtonTemplate = Button.template($ => ({
+    top: 0, bottom: 0, left: 0, right: 0,  width: (application.width / 2) - 10,
+    contents: [
+        Label($, {left: 0, right: 0, string: $.textForLabel, style: labelStyle})
+    ],
+    Behavior: class extends ButtonBehavior {
+        onTap(button){
+        	trace("refresh button in device tapped\n");
+			if (deviceURL != "") new Message(deviceURL + "patientMessage").invoke(Message.JSON).then(json => { receivedPatientMessage = json.patientMessage; }); //trace("device received message: "+json.doctorMessage+"\n");
+			receivedMessageLabel.string = receivedPatientMessage;
+        }
+    }
+}));
+
+
+/* Button Template*/ 
+let SendButtonTemplate = Button.template($ => ({
+    top: 0, bottom: 0, left: 0, right: 0,  width: (application.width / 2) - 10,
+    contents: [
+        Label($, {left: 0, right: 0, string: $.textForLabel, style: labelStyle})
+    ],
+    Behavior: class extends ButtonBehavior {
+        onTap(button){
+			trace("messageBox: "+messageBox.text+"\n");
+			trace("doctor message: "+doctorMessage+"\n");
+			/*Handler.bind("/doctorMessage", Behavior({
+    			onInvoke: function(handler, message){
+        			message.responseText = JSON.stringify({doctorMessage: doctorMessage});
+        			message.status = 200;
+    			}
+			}));*/
+			//if (deviceURL != "") new Message(deviceURL + "getDeviceMessage").invoke(Message.JSON).then(json => { receivedMessageLabel.string = json.messageVal; trace(json.messageVal+"\n");});
+        }
+    }
+}));
+
+
 /* Simulated User Login & Data*/
 let doctor = new User("Doctor_1", "password123");
 doctor.patientsBad.push(new Patient("Alfie", "YOLO", "01/01/92", "Male", "6ft", "160lbs", false, "ibuprofen", getTimeDate(false), "no message", "no message"));
@@ -251,6 +344,7 @@ doctor.patientsGood.push(new Patient("Abe", "NVM",  "05/05/88", "Declined to say
 doctor.patientsGood.push(new Patient("Aaron", "TBH",  "06/06/87", "Male", "5ft 11in", "174lbs", true, "prozac", getTimeDate(false), "no message","no message"));
 doctor.patientsGood.push(new Patient("Anna", "CBA",  "07/07/86", "Female", "5ft 10in", "168lbs", true, "ibuprofen", getTimeDate(false), "no message","no message"));
 currentPatient = doctor.patientsBad[0];
+devicePatient = doctor.patientsGood[0];
 
 
 /* Dynamic Patient Rows Templates and Functions*/
@@ -420,6 +514,44 @@ let PopUpErrorScreen = Container.template($ => ({
 	],  
 }));
 
+/* Contact Patient Screen */
+let ContactPatientScreen = Container.template($ => ({ 
+	left: 0, right: 0, top: 0, bottom: 0, skin: whiteSkin, 
+	Behavior: MainScreenBehavior, 
+	contents: [
+		Container($, {left: 0, right: 0,
+			contents: [ 		
+				Column($, {left: 0, right: 0,
+					contents: [ 
+					/* HOME */
+						Container($, {left: 0, right: 0, skin: blueSkin,
+							contents: [
+								Label($, {left:0, right:0, height:70, top: 14, style:titleStyle, string:'Send Message to ' + String(currentPatientName), }),
+								Picture($, { left:0, top:19, bottom:0, width:25, url: back, active: true,
+									Behavior: class extends Behavior {
+										onTouchEnded(container, id, x, y, ticks) {
+											if (popSwitch) container.bubble( "onTriggerTransition", "home" );
+										}
+									}, 
+								}),
+							]
+						}),
+						Line($, { left: 0, right: 0, height: 10, }),
+						Label($, {left:10, right:10, height:30, style:boldLabelStyle, string: 'Message:',}),
+						Label($, {left:10, right:10, height:50, active: true, editable: true, style:editLabelStyle, string:'  enter text', 
+									Behavior: class extends Behavior {onTouchEnded(label) {
+				                            label.style = labelStyle,
+										}
+									}, 
+								}),
+						
+					]
+				})
+
+			]
+		})
+	] 
+}));
 
 /* Pop Up Tick Screen */
 let PopUpTickScreen = Container.template($ => ({
@@ -465,45 +597,6 @@ let PopUpTickScreen = Container.template($ => ({
 }));
 
 
-/* Contact Patient Screen */
-let ContactPatientScreen = Container.template($ => ({ 
-	left: 0, right: 0, top: 0, bottom: 0, skin: whiteSkin, 
-	Behavior: MainScreenBehavior, 
-	contents: [
-		Container($, {left: 0, right: 0,
-			contents: [ 		
-				Column($, {left: 0, right: 0,
-					contents: [ 
-					/* HOME */
-						Container($, {left: 0, right: 0, skin: blueSkin,
-							contents: [
-								Label($, {left:0, right:0, height:70, top: 14, style:titleStyle, string:'Send Message to ' + String(currentPatientName), }),
-								Picture($, { left:0, top:19, bottom:0, width:25, url: back, active: true,
-									Behavior: class extends Behavior {
-										onTouchEnded(container, id, x, y, ticks) {
-											if (popSwitch) container.bubble( "onTriggerTransition", "home" );
-										}
-									}, 
-								}),
-							]
-						}),
-						Line($, { left: 0, right: 0, height: 10, }),
-						Label($, {left:10, right:10, height:30, style:boldLabelStyle, string: 'Message:',}),
-						Label($, {left:10, right:10, height:50, active: true, editable: true, style:editLabelStyle, string:'  enter text', 
-									Behavior: class extends Behavior {onTouchEnded(label) {
-				                            label.style = labelStyle,
-										}
-									}, 
-								}),
-						
-					]
-				})
-
-			]
-		})
-	] 
-}));
-
 /* Home Screen */
 let HomeScreen = Container.template($ => ({ 
 	left: 0, right: 0, top: 0, skin: whiteSkin, 
@@ -520,7 +613,7 @@ let HomeScreen = Container.template($ => ({
 								Picture($, { left: 10, top: 5, bottom:0, width: 32, url: settingsPicture, active: true,
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
-											if (popSwitch) container.bubble( "onTriggerTransition", "toSettings" );
+											if (popSwitch) container.bubble( "onTriggerTransition", "toSettingsRight" );
 										}
 									}, 
 								}),
@@ -564,7 +657,7 @@ let AddPatientScreen = Container.template($ => ({
 						Container($, {left: 0, right: 0, skin: blueSkin,
 							contents: [
 								Label($, {left:10, right:40, height:70, top: 30, style:titleStyle, string:'Add Patient' }),
-								Picture($, { left:0, top:30, active: true, bottom:0, width:(application.width * 0.1), url: back, active: true, 
+								Picture($, { left:10, top:30, active: true, bottom:0, width:(application.width * 0.1), url: back, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
 											if (popSwitch) container.bubble( "onTriggerTransition", "toHomeRight");
@@ -574,7 +667,8 @@ let AddPatientScreen = Container.template($ => ({
 								Picture($, { right:10, top:30, active: true, bottom:0, width:(application.width * 0.25), url: save, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
-											// CODE THAT COPIES NEW PATIENT TO DATASTRUCTURE
+											var newPatient = new Patient("John", "Doe", "01/01/1989", "Male", "6ft", "169 lbs", true, "None");
+											doctor.patientsGood.push(newPatient);
 											if (popSwitch) container.bubble( "onTriggerTransition", "toHomeRight");
 										}
 									},  
@@ -696,27 +790,68 @@ let AddPatientScreen = Container.template($ => ({
 
 
 
+function createPatientMedicineScreen(patient) {
+	var i;
+	for (i = 0; i < patient.meds.length; i++) {
+		var curMed = patient.meds[i];
+		var takenMed = checkTaken(patient, curMed);
+		if (takenMed == true) {
+			currentScreen.patientFirst.patientSecond.add(new medicineTemplate({height: (application.height / 10), name: "   " + curMed.name, url: tick}));
+		}
+		else {
+			currentScreen.patientFirst.patientSecond.add(new medicineTemplate({height: (application.height / 10), name: "   " + curMed.name, url: exclamation}));
+		}
+		currentScreen.patientFirst.patientSecond.add(new seperatorTemplate());
+	}
+	currentScreen.patientFirst.patientSecond.add(new addMedTemplate());
+	currentScreen.patientFirst.patientSecond.add( new blackScreen({height : 536}));
+}
+
+// height, name, url
+let medicineTemplate = Line.template($ => ({
+    left: 0, right: 0, top:0, bottom:0, active: true,
+    contents: [
+    	Label($, {left:0, right:0, height: $.height, top: 0, style:labelStyle, string: $.name}),
+		Picture($, { right:0, top:0, bottom:0, url: $.url}),
+	]
+}));
+
+let addMedTemplate = Line.template($ =>  ({
+	left: 0, right: 0, top:0, bottom:0,
+	contents: [
+		Picture($, { left:0, top:0, bottom:0, url:plus, active: true, 
+			Behavior: class extends Behavior {
+				onTouchEnded(container, id, x, y, ticks) {
+					container.bubble( "onTriggerTransition", "toAddMedicationLeft");
+				}
+			},  									
+		}),
+		Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Add Medication' }),
+	]
+}));
+
+
 /* Patient Screen */
 let PatientScreen = Container.template($ => ({ 
-	left: 0, right: 0, top: 0, bottom: 0, skin: whiteSkin, 
+	left: 0, right: 0, top: 0, skin: whiteSkin, 
 	Behavior: MainScreenBehavior, 
 	contents: [
-		Container($, {left: 0, right: 0,
+		Container($, {left: 0, right: 0, name: "patientFirst",
 			contents: [ 		
-				Column($, {left: 0, right: 0,
+				Column($, {left: 0, right: 0, name: "patientSecond",
 					contents: [ 
 					/* PATIENT X TITLE */
 						Container($, {left: 0, right: 0, skin: blueSkin,
 							contents: [
-								Label($, {left:10, right:40, height:70, top: 40, style:titleStyle, string:currentPatientName }),
-								Picture($, { left:0, top:45, active: true, bottom:0, width:(application.width * 0.1), url: back, active: true, 
+								Label($, {left:10, right:40, height: 55, top: 10, style:titleStyle, string:currentPatientName }),
+								Picture($, { left:10, top:12, active: true, bottom:0, width:(application.width * 0.1), url: back, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
 											container.bubble( "onTriggerTransition", "toHomeRight");
 										}
 									},  
 								}),
-								Picture($, { right:10, top:45, active: true, bottom:0, width:(application.width * 0.25), url: edit, active: true, 
+								Picture($, { right:10, top:12, active: true, bottom:0, width:(application.width * 0.25), url: edit, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
 											container.bubble( "onTriggerTransition", "toPatientEditLeft");
@@ -765,42 +900,44 @@ let PatientScreen = Container.template($ => ({
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
-					/* IBRUPROFEN */
-						Line($, {left: 0, right: 0, top:0, bottom:0,
-							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Ibuprofen' }),
-								Picture($, { right:0, top:0, bottom:0, url:tick }),
-							]
-						}),
-						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
-					/* ACETAMINOPHEN */
-						Line($, {left: 0, right: 0, top:0, bottom:0,
-							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Acetaminophen' }),
-								Picture($, { right:0, top:0, bottom:0, url:exclamation }),
-							]
-						}),
-						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
-					/* ADD MEDICATION */
-						Line($, {left: 0, right: 0, top:0, bottom:0,
-							contents: [
-								Picture($, { left:0, top:0, bottom:0, url:plus, active: true, 
-									Behavior: class extends Behavior {
-										onTouchEnded(container, id, x, y, ticks) {
-											container.bubble( "onTriggerTransition", "toAddMedicationLeft");
-										}
-									},  									
-								}),
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Add Medication' }),
-							]
-						}),
-						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
-		/* BLANK SPACE */
-						Line($, {left: 0, right: 0, top:0, bottom:0,
-							contents: [
-								Label($, {left:0, right:0, height:(application.height * 0.15), top: 0, style:labelStyle, skin: greySkin, string:'  ' }),
-							]
-						}),	
+					
+		// 			/* IBRUPROFEN */
+		// 				Line($, {left: 0, right: 0, top:0, bottom:0,
+		// 					contents: [
+		// 						Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Ibuprofen' }),
+		// 						Picture($, { right:0, top:0, bottom:0, url:tick }),
+		// 					]
+		// 				}),
+		// 				Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+		// 			/* ACETAMINOPHEN */
+		// 				Line($, {left: 0, right: 0, top:0, bottom:0,
+		// 					contents: [
+		// 						Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Acetaminophen' }),
+		// 						Picture($, { right:0, top:0, bottom:0, url:exclamation }),
+		// 					]
+		// 				}),
+		// 				Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+		// 			/* ADD MEDICATION */
+		// 				Line($, {left: 0, right: 0, top:0, bottom:0,
+		// 					contents: [
+		// 						Picture($, { left:0, top:0, bottom:0, url:plus, active: true, 
+		// 							Behavior: class extends Behavior {
+		// 								onTouchEnded(container, id, x, y, ticks) {
+		// 									container.bubble( "onTriggerTransition", "toAddMedicationLeft");
+		// 								}
+		// 							},  									
+		// 						}),
+		// 						Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Add Medication' }),
+		// 					]
+		// 				}),
+		// 				Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+		// /* BLANK SPACE */
+		// 				Line($, {left: 0, right: 0, top:0, bottom:0,
+		// 					contents: [
+		// 						Label($, {left:0, right:0, height:(application.height * 0.15), top: 0, style:labelStyle, skin: greySkin, string:'  ' }),
+		// 					]
+		// 				}),	
+					
 					]
 				})
 
@@ -1005,14 +1142,15 @@ let PatientEditScreen = Container.template($ => ({
 	] 
 }));
 
-//////////////////////////////////////////////////////////////////////////////
+
+/* Add Medication Screen */
 let AddMedicationScreen = Container.template($ => ({ 
 	left: 0, right: 0, top: 0, bottom: 0, skin: whiteSkin, 
 	Behavior: MainScreenBehavior, 
 	contents: [
-		Container($, {left: 0, right: 0,
+		Container($, {left: 0, right: 0, name: "addMedFirst",
 			contents: [ 		
-				Column($, {left: 0, right: 0,
+				Column($, {left: 0, right: 0, name: "addMedSecond",
 					Behavior: class extends Behavior {
 						onTouchEnded(content) {
 			        		//SystemKeyboard.hide();
@@ -1036,7 +1174,22 @@ let AddMedicationScreen = Container.template($ => ({
 								Picture($, { right:10, top:30, active: true, bottom:0, width:(application.width * 0.25), url: save, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
-											currentPatient.add("ibuprofen");
+											trace(currentPatient.first + "\n");	
+                                            // constructor(name, dosageAmount, unit, freq, dayWeek, intake, side, lastTakenTime, errorMessage, patientMessage)
+                                            
+											var newMed = new Med(addMedName, currentScreen.addMedFirst.addMedSecond.dosageAmount.dosageAmountString.string, 
+												currentScreen.addMedFirst.addMedSecond.dosageAmount.dosageUnitString.string,
+												parseInt(currentScreen.addMedFirst.addMedSecond.frequencyBox.frequencyTimes.string.substring(0, 1)),
+												currentScreen.addMedFirst.addMedSecond.frequencyBox.frequencyDay.string,
+												currentScreen.addMedFirst.addMedSecond.intakeInstructions.intakeInstructionsString.string,
+												currentScreen.addMedFirst.addMedSecond.sideEffects.sideEffectsString.string,
+												getTimeDate(true),
+												"None",
+												"None");
+											
+											// ADD MED TIME
+
+											currentPatient.addMed(newMed);
 											container.bubble( "onTriggerTransition", "toPatientRight");
 										}
 									},  
@@ -1060,18 +1213,85 @@ let AddMedicationScreen = Container.template($ => ({
     								},
     							}),
 								new MyField({name: ' ', ind: 'medName'}),
-								// new MyField({name: "John"}),
 							]
 						}),
-						Line($, {height:(application.height / 15), left: 0, right: 0, top:0, bottom:0, active: true,
+						Line($, {height:(application.height / 12), left: 0, right: 0, top:0, bottom:0, active: true,
 							contents: [
-								Label($, {active: true, editable: true, left: 50, right: 20, style:fieldHintStyle, string:' Enter med code to search ', 
-												
+								Label($, {active: true, editable: true, left: 10, bottom: 8, right: 10, style:fieldHintStyle, string:' Enter med code to search ', 
+									Behavior: class extends Behavior {
+										onTouchEnded(content) {
+											KEYBOARD.hide();
+        									//SystemKeyboard.hide();
+        									system.keyboard.visible = false;
+        									//SystemKeyBoard.hide();
+        									content.focus();
+    									}
+    								},			
 											}),
-								Picture($, { right:0, top:0, active: true, bottom:0, width: 50, url: search, active: true, 
+								Picture($, { right:0, top:0, active: true, bottom:8, height: 50, width: 100, url: search, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
-
+											trace(textFieldInputs.medName + "\n");
+											if (textFieldInputs.medName == "ibu" || textFieldInputs.medName == "ibuprofen") {
+												addMedName = "ibuprofen";
+												currentScreen.addMedFirst.addMedSecond.dosageAmount.dosageAmountString.string = "300";
+												currentScreen.addMedFirst.addMedSecond.dosageAmount.dosageAmountString.style = labelStyle;
+												currentScreen.addMedFirst.addMedSecond.dosageAmount.dosageUnitString.string = "mg";
+												currentScreen.addMedFirst.addMedSecond.dosageAmount.dosageUnitString.style = labelStyle;
+												currentScreen.addMedFirst.addMedSecond.frequencyBox.frequencyTimes.string = "4 times";
+												currentScreen.addMedFirst.addMedSecond.frequencyBox.frequencyTimes.style = labelStyle;
+												currentScreen.addMedFirst.addMedSecond.frequencyBox.frequencyDay.string = "day";
+												currentScreen.addMedFirst.addMedSecond.frequencyBox.frequencyDay.style = labelStyle;
+												currentScreen.addMedFirst.addMedSecond.intakeInstructions.intakeInstructionsString.string = "None";
+												currentScreen.addMedFirst.addMedSecond.intakeInstructions.intakeInstructionsString.style = labelStyle;
+												currentScreen.addMedFirst.addMedSecond.sideEffects.sideEffectsString.string = "Can cause anemia, vomiting";
+												currentScreen.addMedFirst.addMedSecond.sideEffects.sideEffectsString.style = labelStyle;
+											}
+											if (textFieldInputs.medName == "acet" || textFieldInputs.medName == "acetaminophen") {
+												addMedName = "acetaminophen";
+												currentScreen.addMedFirst.addMedSecond.dosageAmount.dosageAmountString.string = "325";
+												currentScreen.addMedFirst.addMedSecond.dosageAmount.dosageAmountString.style = labelStyle;
+												currentScreen.addMedFirst.addMedSecond.dosageAmount.dosageUnitString.string = "mg";
+												currentScreen.addMedFirst.addMedSecond.dosageAmount.dosageUnitString.style = labelStyle;
+												currentScreen.addMedFirst.addMedSecond.frequencyBox.frequencyTimes.string = "3 times";
+												currentScreen.addMedFirst.addMedSecond.frequencyBox.frequencyTimes.style = labelStyle;
+												currentScreen.addMedFirst.addMedSecond.frequencyBox.frequencyDay.string = "day";
+												currentScreen.addMedFirst.addMedSecond.frequencyBox.frequencyDay.style = labelStyle;
+												currentScreen.addMedFirst.addMedSecond.intakeInstructions.intakeInstructionsString.string = "None";
+												currentScreen.addMedFirst.addMedSecond.intakeInstructions.intakeInstructionsString.style = labelStyle;
+												currentScreen.addMedFirst.addMedSecond.sideEffects.sideEffectsString.string = "Can cause diarrhea";
+												currentScreen.addMedFirst.addMedSecond.sideEffects.sideEffectsString.style = labelStyle;
+											}
+											if (textFieldInputs.medName == "day" || textFieldInputs.medName == "dayquil") {
+												addMedName = "dayquil";
+												currentScreen.addMedFirst.addMedSecond.dosageAmount.dosageAmountString.string = "40";
+												currentScreen.addMedFirst.addMedSecond.dosageAmount.dosageAmountString.style = labelStyle;
+												currentScreen.addMedFirst.addMedSecond.dosageAmount.dosageUnitString.string = "ml";
+												currentScreen.addMedFirst.addMedSecond.dosageAmount.dosageUnitString.style = labelStyle;
+												currentScreen.addMedFirst.addMedSecond.frequencyBox.frequencyTimes.string = "2 times";
+												currentScreen.addMedFirst.addMedSecond.frequencyBox.frequencyTimes.style = labelStyle;
+												currentScreen.addMedFirst.addMedSecond.frequencyBox.frequencyDay.string = "day";
+												currentScreen.addMedFirst.addMedSecond.frequencyBox.frequencyDay.style = labelStyle;
+												currentScreen.addMedFirst.addMedSecond.intakeInstructions.intakeInstructionsString.string = "None";
+												currentScreen.addMedFirst.addMedSecond.intakeInstructions.intakeInstructionsString.style = labelStyle;
+												currentScreen.addMedFirst.addMedSecond.sideEffects.sideEffectsString.string = "Can cause sore throat";
+												currentScreen.addMedFirst.addMedSecond.sideEffects.sideEffectsString.style = labelStyle;
+											}
+											if (textFieldInputs.medName == "pro" || textFieldInputs.medName == "prozac") {
+												addMedName = "prozac";
+												currentScreen.addMedFirst.addMedSecond.dosageAmount.dosageAmountString.string = "20";
+												currentScreen.addMedFirst.addMedSecond.dosageAmount.dosageAmountString.style = labelStyle;
+												currentScreen.addMedFirst.addMedSecond.dosageAmount.dosageUnitString.string = "mg";
+												currentScreen.addMedFirst.addMedSecond.dosageAmount.dosageUnitString.style = labelStyle;
+												currentScreen.addMedFirst.addMedSecond.frequencyBox.frequencyTimes.string = "1 time";
+												currentScreen.addMedFirst.addMedSecond.frequencyBox.frequencyTimes.style = labelStyle;
+												currentScreen.addMedFirst.addMedSecond.frequencyBox.frequencyDay.string = "day";
+												currentScreen.addMedFirst.addMedSecond.frequencyBox.frequencyDay.style = labelStyle;
+												currentScreen.addMedFirst.addMedSecond.intakeInstructions.intakeInstructionsString.string = "None";
+												currentScreen.addMedFirst.addMedSecond.intakeInstructions.intakeInstructionsString.style = labelStyle;
+												currentScreen.addMedFirst.addMedSecond.sideEffects.sideEffectsString.string = "Can cause anxiety";
+												currentScreen.addMedFirst.addMedSecond.sideEffects.sideEffectsString.style = labelStyle;
+											}
 										}
 									},  
 								}),
@@ -1085,19 +1305,19 @@ let AddMedicationScreen = Container.template($ => ({
 								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Dosage' }),
 							]
 						}),
-						Line($, {height:(application.height / 15), left: 0, right: 0, top:0, bottom:0, active: true,
+						Line($, {height:(application.height / 15), left: 0, right: 0, top:0, bottom:0, active: true, name: "dosageAmount",
 							contents: [
-								Label($, {active: true, editable: true, left: 40, right: 20, style:editLabelStyle, string:'amount', 
+								Label($, {active: true, editable: true, left: 40, width: 30, right: 40, style:editLabelStyle, string:'amount', name: "dosageAmountString",
 												Behavior: class extends Behavior {onTouchEnded(label) {
 							                            label.string = "300",
 							                            label.style = labelStyle,
 													}
 												}, 
 											}),
-								Label($, {active: true, editable: true, left: 40, right: 20, style:editLabelStyle, string:'', 
+								//Label($, {active: true, editable: true, left: 0, right: 20, style:editLabelStyle, string:'', 
 												
-											}),
-								Label($, {active: true, editable: true, left: 40, right: 20, style:editLabelStyle, string:'unit', 
+								//			}),
+								Label($, {active: true, editable: true, left: 85, right: 20, style:editLabelStyle, string:'unit', name: "dosageUnitString",
 												Behavior: class extends Behavior {onTouchEnded(label) {
 							                            label.string = "mg",
 							                            label.style = labelStyle,
@@ -1114,19 +1334,19 @@ let AddMedicationScreen = Container.template($ => ({
 								Label($, {left:0, right:0, height:(application.height / 15), top: 0, style:labelStyle, string:'  Frequency' }),
 							]
 						}),
-						Line($, {height:(application.height / 15), left: 0, right: 0, top:0, bottom:0, active: true,
+						Line($, {height:(application.height / 15), left: 0, right: 0, top:0, bottom:0, active: true, name: "frequencyBox",
 							contents: [
-								Label($, {active: true, editable: true, left: 40, right: 20, style:editLabelStyle, string:'X times', 
+								Label($, {active: true, editable: true, left: 40, right: 50, style:editLabelStyle, string:'times', name: "frequencyTimes",
 												Behavior: class extends Behavior {onTouchEnded(label) {
 							                            label.string = "3 times",
 							                            label.style = labelStyle,
 													}
 												}, 
 											}),
-								Label($, {active: true, editable: true, left: 40, right: 20, style:editLabelStyle, string:'per', 
+								Label($, {active: true, editable: true, left: 0, right: 20, style:editLabelStyle, string:'per', 
 												
 											}),
-								Label($, {active: true, editable: true, left: 40, right: 20, style:editLabelStyle, string:'day', 
+								Label($, {active: true, editable: true, left: 30, right: 20, style:editLabelStyle, string:'day', name: "frequencyDay",
 												Behavior: class extends Behavior {onTouchEnded(label) {
 							                            label.string = "day",
 							                            label.style = labelStyle,
@@ -1143,9 +1363,9 @@ let AddMedicationScreen = Container.template($ => ({
 								Label($, {left:0, right:0, height:(application.height / 15), top: 0, style:labelStyle, string:'  Intake Instructions' }),
 							]
 						}),
-						Line($, {height:(application.height / 7.5), left: 0, right: 0, top:0, bottom:0, active: true,
+						Line($, {height:(application.height / 7.5), left: 0, right: 0, top:0, bottom:0, active: true, name: "intakeInstructions",
 							contents: [
-								Label($, {active: true, editable: true, left: 40, right: 20, style:editLabelStyle, string:'None', 
+								Label($, {active: true, editable: true, left: 40, right: 20, style:editLabelStyle, string:'None', name: "intakeInstructionsString",
 												Behavior: class extends Behavior {onTouchEnded(label) {
 							                            label.string = "None",
 							                            label.style = labelStyle,
@@ -1160,9 +1380,9 @@ let AddMedicationScreen = Container.template($ => ({
 								Label($, {left:0, right:0, height:(application.height / 15), top: 0, style:labelStyle, string:'  Side Effects / Warnings' }),
 							]
 						}),
-						Line($, {height:(application.height / 7.5), left: 0, right: 0, top:0, bottom:0, active: true,
+						Line($, {height:(application.height / 7.5), left: 0, right: 0, top:0, bottom:0, active: true, name: "sideEffects",
 							contents: [
-								Label($, {active: true, editable: true, left: 40, right: 20, style:editLabelStyle, string:'None', 
+								Label($, {active: true, editable: true, left: 40, right: 20, style:editLabelStyle, string:'None', name: "sideEffectsString",
 												Behavior: class extends Behavior {onTouchEnded(label) {
 							                            label.string = "None",
 							                            label.style = labelStyle,
@@ -1189,7 +1409,6 @@ let AddMedicationScreen = Container.template($ => ({
 		})
 	] 
 }));
-/////////////////////////////////////////////////////////////
 
 
 
@@ -1267,8 +1486,25 @@ Container($, {left: 0, right: 0,
 				/* BLANK SPACE */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height * 0.2), top: 0, style:labelStyle, skin: greySkin, string:'  ' }),
-							]
+								Label($, {left:0, right:0, height:(application.height * 0.2), top: 0, style:labelStyle, skin: greySkin, string:' zulu nation ',
+											
+										}),
+								Picture($, { left:0, top:10, active: true, bottom:0, width:(application.width * 0.1), url: back,
+									Behavior: MainScreenBehavior, 
+									Behavior: class extends Behavior {
+										onTouchEnded(container, id, x, y, ticks) {
+											container.bubble( "onTriggerTransition", "toMessageRight");
+											trace("pic touched\n");
+										}
+									},  
+								}),
+							],
+							Behavior: class extends Behavior {
+								onTouchEnded(container, id, x, y, ticks) {
+									container.bubble( "onTriggerTransition", "toMessageRight");
+									trace("line touched\n");
+								}
+							}, 	
 						}),						
 					]			
 				})
@@ -1276,6 +1512,72 @@ Container($, {left: 0, right: 0,
 		})
 	]
 }));
+
+
+/* Messaging Screen */
+let MessageScreen = Container.template($ => ({ 
+	left: 0, right: 0, top: 0, bottom: 0, skin: whiteSkin, 
+	contents: [
+		Container($, {left: 0, right: 0,
+			contents: [ 		
+				Column($, {left: 0, right: 0,
+					contents: [ 
+					/* MESSAGING */
+						Container($, {left: 0, right: 0, skin: blueSkin,
+							contents: [
+								Picture($, { left:0, top:10, active: true, bottom:0, width:(application.width * 0.1), url: back,
+									Behavior: MainScreenBehavior, 
+									Behavior: class extends Behavior {
+										onTouchEnded(container, id, x, y, ticks) {
+											container.bubble( "onTriggerTransition", "toSettingsLeft");
+										}
+									},  
+								}),
+								Label($, {left:0, right:0, top: 10, height:(application.height / 7), top: 0, style:titleStyle, string:'Messaging' }),
+							]
+						}),
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								// where the error occurs
+								//messageBox
+								new RefreshButtonTemplate({ textForLabel: "Refresh", width: 10})
+								
+								
+							]
+						}),
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								//button
+								//on touch ended, send a message to device using handler.bind
+								//sendButton
+								receivedMessageLabel = new Label({ left:0, right:0, string:"", style: labelStyle})					
+							]
+							
+						}),	
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								// where the error occurs
+								//messageBox
+								messageBox = new MessageField({string:"mongoos", name: "messageBox"})
+								
+							]
+						}),
+						Line($, {left: 0, right: 0, top:0, bottom:0,
+							contents: [
+								//button
+								//on touch ended, send a message to device using handler.bind
+								//sendButton
+								new SendButtonTemplate({ textForLabel: "Send", width: 10, align: "center" })							
+							]
+							
+						}),						
+					]			
+				})
+			]
+		})
+	]
+}));
+
 
 
 /* DEVICE INTERACTION */
@@ -1302,6 +1604,7 @@ function getTimeDate(switcher) {
     let date = currentTime.getDate()
     let month = currentTime.getMonth()
     let year = currentTime.getYear()
+    let day = currentTime.getDay()
 
     if (minutes < 10) {
         minutes = "0" + minutes
@@ -1356,9 +1659,9 @@ Handler.bind("/forget", Behavior({
 
 function checkTaken(patient, med){
 	let timeNow = getTimeDate(true);
-	medIndex = patient.meds.indexOf(med);
+	let medIndex = patient.meds.indexOf(med);
 	let freq = patient.meds[medIndex].freq;
-	return (timeNow < (patient.meds[medIndex].lastTakenTime + (2400 / feq)))
+	return (timeNow < (patient.meds[medIndex].lastTakenTime + (2400 / freq)));
 }
 
 
@@ -1373,11 +1676,38 @@ function discovery() {
                 updatedispenserConnection(true);
                 remotePins = Pins.connect(connectionDesc);
                 remotePins.repeat("/pill1Button/read", 500, function(result1) {
-			    	  
+			    	if (devicePatient.meds.length <= 1){
+			    		devicePatient.lastTaken = devicePatient.med[0].name;
+			    		devicePatient.med[0].lastTakenTime = getTimeDate(false);
+			    	}   
 				});
 
 				remotePins.repeat("/pill2Button/read", 500, function(result2) {
+					if (devicePatient.meds.length <= 2){
+			    		devicePatient.lastTaken = devicePatient.med[1].name;
+			    		devicePatient.med[1].lastTakenTime = getTimeDate(false);
+			    	}   
+				});
 
+                remotePins.repeat("/pill3Button/read", 500, function(result3) {
+			    	 if (devicePatient.meds.length <= 3){
+			    		devicePatient.lastTaken = devicePatient.med[2].name;
+			    		devicePatient.med[2].lastTakenTime = getTimeDate(false);
+			    	}    
+				});
+
+				remotePins.repeat("/pill4Button/read", 500, function(result4) {
+					if (devicePatient.meds.length <= 4){
+						devicePatient.lastTaken = devicePatient.med[3].name;
+			    		devicePatient.med[3].lastTakenTime = getTimeDate(false);		    		
+			    	}   
+				});
+
+				remotePins.repeat("/pill5Button/read", 500, function(result5) {
+					if (devicePatient.meds.length <= 5){
+			    		devicePatient.lastTaken = devicePatient.med[4].name;
+			    		devicePatient.med[4].lastTakenTime = getTimeDate(false);
+			    	}   
 				});
 
 		        remotePins.repeat("/ibuLevel/read", 500, function(result) {
@@ -1416,6 +1746,7 @@ let logoScreen = new LogoScreen();
 
 class AppBehavior extends Behavior {
 	onLaunch(application) {
+		application.shared = true;
 		application.add( mainScreen );
 		mainScreen.add( logoScreen );
         discovery();
@@ -1425,6 +1756,7 @@ class AppBehavior extends Behavior {
     }
     onQuit(application) {
         application.forget("pillsense-device.app");
+		application.shared = false;
     }
 }
 application.behavior = new AppBehavior();
