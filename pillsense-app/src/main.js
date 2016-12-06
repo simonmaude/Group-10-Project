@@ -62,6 +62,7 @@ let explainStyle = new Style({  font: '12px', horizontal: 'left', vertical: 'mid
 let capsStyle = new Style({ color: 'black', font: 'bold 20px', horizontal: 'right'});
 let capsStyleDisconnect = new Style({ color: '#BDBDBD', font: 'bold 20px', horizontal: 'right'});
 let labelStyle = new Style({ color: 'black', font: '20px', horizontal: 'left'});
+let bigBoldLabelStyle = new Style({ color: 'black', font: 'bold 24px', horizontal: 'left'});
 let boldLabelStyle = new Style({ color: 'black', font: 'bold 20px', horizontal: 'left'});
 let editLabelStyle = new Style({ color: '#E6E6E6', font: 'bold 20px', horizontal: 'left'});
 let textStyle = new Style({ color: 'black', font: '20px', horizontal: 'right'});
@@ -85,8 +86,6 @@ let dispenseButton;
 let lastNameLabel;
 let popSwitch = true;
 let currentScreen;
-let popupErrorScreen;
-let popupTickScreen;
 let devicePatient;
 let currentPatient;
 let currentPatientName;
@@ -106,6 +105,8 @@ let sendButton;
 let receivedPatientMessage = "";
 let receivedMessageLabel = new Label({ left:0, right:0, string:"", style: labelStyle});
 let addMedName;
+let refreshPic;
+let sendPic;
 
 
 /* Assets */
@@ -138,6 +139,8 @@ let oneQuarter = './assets/oneQuarter.png';
 let empty = './assets/empty.png';
 let emptyDisconnect = './assets/empty_disconnect.png';
 let myPatientsTitle = './assets/empty_disconnect.png';
+let refreshPicURL = './assets/refreshbutton.png';
+let sendPicURL = './assets/sendbutton.png';
 
 /* Transitions */
 class MainScreenBehavior extends Behavior {
@@ -161,11 +164,18 @@ class MainScreenBehavior extends Behavior {
 		let toAddMedication =  new AddMedicationScreen();
 		let toAddPatient =  new AddPatientScreen();
 		let toMessageScreen =  new MessageScreen();
+		let popupErrorScreen = new PopUpErrorScreen({cont: container})
+		let popupTickScreen = new PopUpTickScreen({cont: container})
 		switch ( name ) {
 			case "home":
 				currentScreen = toHome;
 				addAllPatients();
 				container.run( new TRANSITION.CrossFade({ duration : 900 }), container.last, currentScreen );
+				break;				
+			case "toHomeFade":
+				currentScreen = toHome;
+				addAllPatients();
+				container.run( new TRANSITION.CrossFade({ duration : 450 }), container.last, currentScreen );
 				break;			
 			case "logoToSplash":
 				currentScreen = toSplashScreen;
@@ -223,6 +233,19 @@ class MainScreenBehavior extends Behavior {
 				currentScreen = toMessageScreen;
 				container.run( new TRANSITION.Push({ direction : "right", duration : 400 }), container.last, currentScreen );
 				break;	
+			case "toMessagingFade":
+				currentScreen = toMessageScreen ;
+				container.run( new TRANSITION.CrossFade({ duration : 450 }), container.last, currentScreen );
+				break;
+			case "toPopUpTickFade":
+				currentScreen = popupTickScreen;
+				container.run( new TRANSITION.CrossFade({ duration : 450 }), container.last, currentScreen );
+				break;	
+			case "toPopUpExclamationFade":
+				currentScreen = popupErrorScreen;
+				container.run( new TRANSITION.CrossFade({ duration : 450 }), container.last, currentScreen );
+				break;	
+
 		}
 	}
 }
@@ -266,7 +289,7 @@ function updateMessageBox(labelOrVar) {
 
 /* A Message Box Specific Field */
 let MessageField = Container.template($ => ({ 
-    width: 200, height: 36, skin: nameInputSkin, contents: [
+    width: application.width, height: 36, skin: nameInputSkin, contents: [
         Scroller($, { 
             left: 4, right: 4, top: 4, bottom: 4, active: true, 
             Behavior: FieldScrollerBehavior, clip: true, 
@@ -281,7 +304,7 @@ let MessageField = Container.template($ => ({
                             data.name = label.string;
                             doctorMessage = updateMessageBox(data.name);
                             label.container.hint.visible = (data.name.length == 0);
-                            trace(data.name+"\n");
+                            // trace(data.name+"\n");
                         }
                     },
                 }),
@@ -298,15 +321,18 @@ var messageBox = new MessageField({name: "  Mando"});
 
 /*Refresh Button Template*/ 
 let RefreshButtonTemplate = Button.template($ => ({
-    top: 0, bottom: 0, left: 0, right: 0,  width: (application.width / 2) - 10,
+    top: 0, bottom: 0, left: 0, right: 0,
     contents: [
-        Label($, {left: 0, right: 0, string: $.textForLabel, style: labelStyle})
+    	refreshPic = Picture($, { left:0, top:0, bottom:0, url:refreshPicURL }),
+        //Label($, {left: 0, right: 0, string: $.textForLabel, style: labelStyle}),
+        
     ],
     Behavior: class extends ButtonBehavior {
         onTap(button){
-        	trace("refresh button in device tapped\n");
+        	// trace("refresh button in app tapped\n");
 			if (deviceURL != "") new Message(deviceURL + "patientMessage").invoke(Message.JSON).then(json => { receivedPatientMessage = json.patientMessage; }); //trace("device received message: "+json.doctorMessage+"\n");
-			receivedMessageLabel.string = receivedPatientMessage;
+			receivedMessageLabel.string = "last message: "+receivedPatientMessage;
+			//receivedMessageLabel.string = receivedPatientMessage;
         }
     }
 }));
@@ -316,12 +342,12 @@ let RefreshButtonTemplate = Button.template($ => ({
 let SendButtonTemplate = Button.template($ => ({
     top: 0, bottom: 0, left: 0, right: 0,  width: (application.width / 2) - 10,
     contents: [
-        Label($, {left: 0, right: 0, string: $.textForLabel, style: labelStyle})
+        sendPic = Picture($, { left:0, top:0, bottom:0, url:sendPicURL }),
     ],
     Behavior: class extends ButtonBehavior {
         onTap(button){
-			trace("messageBox: "+messageBox.text+"\n");
-			trace("doctor message: "+doctorMessage+"\n");
+			// trace("messageBox: "+messageBox.text+"\n");
+			// trace("doctor message: "+doctorMessage+"\n");
 			/*Handler.bind("/doctorMessage", Behavior({
     			onInvoke: function(handler, message){
         			message.responseText = JSON.stringify({doctorMessage: doctorMessage});
@@ -335,14 +361,37 @@ let SendButtonTemplate = Button.template($ => ({
 
 
 /* Simulated User Login & Data*/
+
+//BAD: 
+let badTime = new Date();
+badTime.setDate(badTime.getDate() -1);
+// trace(badTime + " = BADTIME \n")
+
+//GOOD:
+let goodTime = new Date();
+goodTime.setHours(goodTime.getHours() - 1); 
+// trace(goodTime + " = GOODTIME \n")
+
 let doctor = new User("Doctor_1", "password123");
-doctor.patientsBad.push(new Patient("Alfie", "YOLO", "01/01/92", "Male", "6ft", "160lbs", false, "ibuprofen", getTimeDate(false), "no message", "no message"));
-doctor.patientsBad.push(new Patient("Amelia", "LOL",  "02/02/91", "Female", "5ft, 6in", "130lbs", false, "acetaminophen", getTimeDate(false), "no message", "no message"));
-doctor.patientsBad.push(new Patient("Archie", "ROFL",  "03/03/90", "Male", "6ft 3in", "180lbs", false, "prozac", getTimeDate(false), "no message", "no message" ));
-doctor.patientsGood.push(new Patient("Ava", "GG",  "04/04/89", "Female", "5ft 2in", "140lbs", true, "ibuprofen", getTimeDate(false), "no message","no message" ));
-doctor.patientsGood.push(new Patient("Abe", "NVM",  "05/05/88", "Declined to say", "5ft 6in", "165lbs", true, "acetaminophen", getTimeDate(false), "no message","no message"));
-doctor.patientsGood.push(new Patient("Aaron", "TBH",  "06/06/87", "Male", "5ft 11in", "174lbs", true, "prozac", getTimeDate(false), "no message","no message"));
-doctor.patientsGood.push(new Patient("Anna", "CBA",  "07/07/86", "Female", "5ft 10in", "168lbs", true, "ibuprofen", getTimeDate(false), "no message","no message"));
+doctor.patientsBad.push(new Patient("Alfie", "YOLO", "01/01/92", "Male", "6ft", "160lbs", false, "ibuprofen", badTime, "no message", "no message"));
+doctor.patientsBad.push(new Patient("Amelia", "LOL",  "02/02/91", "Female", "5ft, 6in", "130lbs", false, "acetaminophen", badTime, "no message", "no message"));
+doctor.patientsBad.push(new Patient("Archie", "ROFL",  "03/03/90", "Male", "6ft 3in", "180lbs", false, "prozac", badTime, "no message", "no message" ));
+doctor.patientsGood.push(new Patient("Ava", "GG",  "04/04/89", "Female", "5ft 2in", "140lbs", true, "ibuprofen", goodTime, "no message","no message" ));
+doctor.patientsGood.push(new Patient("Abe", "NVM",  "05/05/88", "Declined to say", "5ft 6in", "165lbs", true, "acetaminophen", goodTime, "no message","no message"));
+doctor.patientsGood.push(new Patient("Aaron", "TBH",  "06/06/87", "Male", "5ft 11in", "174lbs", true, "prozac", goodTime, "no message","no message"));
+doctor.patientsGood.push(new Patient("Anna", "CBA",  "07/07/86", "Female", "5ft 10in", "168lbs", true, "ibuprofen", goodTime, "no message","no message"));
+
+doctor.patientsBad[0].addMed(new Med("ibuprofen", "300", "mg", 4, "day", "None", "Can cause anemia, vomiting", badTime, "None", "None"));
+doctor.patientsBad[0].addMed(new Med("prozac", "20", "mg", 1, "day", "None", "Can cause anxiety", goodTime, "None", "None"));
+doctor.patientsBad[1].addMed(new Med("prozac", "20", "mg", 1, "day", "None", "Can cause anxiety", badTime, "None", "None"));
+doctor.patientsBad[2].addMed(new Med("acetaminophen", "325", "mg", 3, "day", "None", "Can cause diarrhea", badTime, "None", "None"));
+doctor.patientsGood[0].addMed(new Med("ibuprofen", "300", "mg", 4, "day", "None", "Can cause anemia, vomiting", goodTime, "None", "None"));
+doctor.patientsGood[1].addMed(new Med("ibuprofen", "300", "mg", 4, "day", "None", "Can cause anemia, vomiting", goodTime, "None", "None"));
+doctor.patientsGood[1].addMed(new Med("dayquil", "40", "ml", 2, "day", "None", "Can cause sore throat", goodTime, "None", "None"));
+doctor.patientsGood[2].addMed(new Med("acetaminophen", "325", "mg", 3, "day", "None", "Can cause diarrhea", goodTime, "None", "None"));
+doctor.patientsGood[3].addMed(new Med("ibuprofen", "300", "mg", 4, "day", "None", "Can cause anemia, vomiting", goodTime, "None", "None"));
+doctor.patientsGood[3].addMed(new Med("acetaminophen", "325", "mg", 3, "day", "None", "Can cause diarrhea", goodTime, "None", "None"));
+
 currentPatient = doctor.patientsBad[0];
 devicePatient = doctor.patientsGood[0];
 
@@ -379,11 +428,9 @@ let patientTemplate = Line.template($ => ({
 						currentPatient = $.pat;
 						currentPatientName = String($.pat.first) + ' ' + String($.pat.last);
 						if ($.status == exclamation) {
-							popupErrorScreen = new PopUpErrorScreen({cont: container})
-							application.add(popupErrorScreen);
+							container.bubble( "onTriggerTransition", "toPopUpExclamationFade" );
 						} else {
-							popupTickScreen = new PopUpTickScreen({cont: container})
-							application.add(popupTickScreen);
+							container.bubble( "onTriggerTransition", "toPopUpTickFade" );
 						} 
 					}
 				}
@@ -420,6 +467,42 @@ function addAllPatients() {
 	currentScreen.lel.homeScreenAddHere.add( new blackScreen({height : blankBottomLength}));
 }
 
+function movePatient(patient) {
+	for (var i = 0; i < doctor.patientsBad.length; i++) {
+		if (doctor.patientsBad[i] == patient) {
+			doctor.patientsBad.splice(i);
+		    doctor.patientsGood.push(patient);
+		    return;
+		}
+	}
+	for (var i = 0; i < doctor.patientsGood.length; i++) {
+		if (doctor.patientsGood[i] == patient) {
+			doctor.patientsGood.splice(i);
+		    doctor.patientsBad.push(patient);
+		    return;
+		}
+	}
+}
+
+function patientCorrectPlace(patient, good) {
+	// good is a boolean of good array or bad array
+	if (good == true) {
+		for (var i = 0; i < doctor.patientsGood.length; i++) {
+			if (doctor.patientsGood[i] == patient) {
+				return true;
+			}
+		}
+		return false;
+	}
+	if (good == false) {
+		for (var i = 0; i < doctor.patientsBad.length; i++) {
+			if (doctor.patientsBad[i] == patient) {
+				return true;
+			}
+		}
+		return false;
+	}
+}
 
 
 /* Screens */
@@ -467,7 +550,7 @@ let SplashScreenFilled = Container.template($ => ({
 
 /* Pop Up Error Screen */
 let PopUpErrorScreen = Container.template($ => ({
-	skin: blackSkin, backgroundColor: "#2D9CDB", width: 300, height: 400, 
+	skin: blackSkin, backgroundColor: "#2D9CDB", left: 0, right: 0, top: 0, bottom: 0, 
 	contents: [
 		Column($, {left: 1, right: 1, top: 1, bottom: 1, skin: whiteSkin,
 			contents: [
@@ -477,8 +560,7 @@ let PopUpErrorScreen = Container.template($ => ({
 							Behavior: class extends Behavior {
 								onTouchEnded(container, id, x, y, ticks) {
 						            popSwitch = true;
-									currentScreen.active = true;
-						            application.remove(popupErrorScreen);
+						            container.bubble( "onTriggerTransition", "toHomeFade" );
 								}
 							},
 						}),
@@ -486,26 +568,22 @@ let PopUpErrorScreen = Container.template($ => ({
 					]
         // Label($, {left:0, right:0, height: $.height, active: true, style:labelStyle, string: '  ' + String($.first) + ' ' + String($.last),
 				}),	
-				Line($, {left:10, right:10, height:20,}),
-				Label($, {left:60, right:10, height:25, vertical: "middle", style:boldLabelStyle, string: String(currentPatient.first) + ' ' + String(currentPatient.last) + ' failed',}),
-				Label($, {left:60, right:10, height:25, vertical: "middle", style:boldLabelStyle, string: 'to take ' + String(currentPatient.lastTaken),}),
-				Label($, {left:60, right:10, height:25, vertical: "middle", style:boldLabelStyle, string: 'at ' + String(currentPatient.lastTakenTime),}),
+				Line($, {left:10, right:10, height:60,}),
+				Label($, {left:60, right:10, height:25, vertical: "middle", style:bigBoldLabelStyle, string: String(currentPatient.first) + ' ' + String(currentPatient.last) + ' failed',}),
+				Label($, {left:60, right:10, height:25, vertical: "middle", style:bigBoldLabelStyle, string: 'to take ' + String(currentPatient.lastTaken),}),
+				Label($, {left:60, right:10, height:25, vertical: "middle", style:bigBoldLabelStyle, string: 'at ' + String(currentPatient.lastTakenTime),}),
 				Line($, {left:10, right:10, height:50,}),
 				Label($, {left:10, right:10, height:30, style:boldLabelStyle, string: 'Error Message:',}),
 				Label($, {left:10, right:10, height:30, style:labelStyle, string: String(currentPatient.errorMessage),}),
-				Line($, {left:10, right:10, height:10,}),
+				Line($, {left:10, right:10, height:50,}),
 				Label($, {left:10, right:10, height:30, style:boldLabelStyle, string: 'Patient\'s Message:',}),
 				Label($, {left:10, right:10, height:30, style:labelStyle, editable: false, string: String(currentPatient.patientMessage),}),
+				Line($, {left:10, right:10, height:50,}),
 				Picture($, { left:10, right: 10, active: true, width:25, url: contactPatientRed, active: true, 							
 					Behavior: class extends Behavior {
 						onTouchEnded(container, id, x, y, ticks) {
 				            popSwitch = true; 
-							currentScreen.active = true;
-				            application.remove(popupErrorScreen);
-				            // $.cont.bubble( "onTriggerTransition", "toContactPatient" );
-				            let toContactPatient =  new ContactPatientScreen();
-				            currentScreen = toContactPatient;
-				            application.add(toContactPatient);
+				            container.bubble( "onTriggerTransition", "toMessagingFade" );
 						}
 					},
 				}),
@@ -555,7 +633,7 @@ let ContactPatientScreen = Container.template($ => ({
 
 /* Pop Up Tick Screen */
 let PopUpTickScreen = Container.template($ => ({
-	skin: blackSkin, backgroundColor: "#2D9CDB", width: 300, height: 400, 
+	skin: blackSkin, backgroundColor: "#2D9CDB", left: 0, right: 0, top: 0, bottom: 0,  
 	contents: [
 		Column($, {left: 1, right: 1, top: 1, bottom: 1, skin: whiteSkin,
 			contents: [
@@ -565,29 +643,23 @@ let PopUpTickScreen = Container.template($ => ({
 							Behavior: class extends Behavior {
 								onTouchEnded(container, id, x, y, ticks) {
 						            popSwitch = true;
-									currentScreen.active = true;
-						            application.remove(popupTickScreen);
+						            container.bubble( "onTriggerTransition", "toHomeFade" );
 								}
 							},
 						}),
 						Label($, {left:82, right:50, height:50, style:titleStyle, string:'Details' }),
 					]
 				}),
-				Line($, {left:10, right:10, height:20,}),
-				Label($, {left:60, right:10, height:25, vertical: "middle", style:boldLabelStyle, string: String(currentPatient.first) + ' ' + String(currentPatient.last) + ' last',}),
-				Label($, {left:60, right:10, height:25, vertical: "middle", style:boldLabelStyle, string: 'took ' + String(currentPatient.lastTaken),}),
-				Label($, {left:60, right:10, height:25, vertical: "middle", style:boldLabelStyle, string: 'at ' + String(currentPatient.lastTakenTime),}),
-				Line($, {left:10, right:10, height:180,}),
+				Line($, {left:10, right:10, height:60,}),
+				Label($, {left:60, right:10, height:25, vertical: "middle", style:bigBoldLabelStyle, string: String(currentPatient.first) + ' ' + String(currentPatient.last) + ' last',}),
+				Label($, {left:60, right:10, height:25, vertical: "middle", style:bigBoldLabelStyle, string: 'took ' + String(currentPatient.lastTaken),}),
+				Label($, {left:60, right:10, height:25, vertical: "middle", style:bigBoldLabelStyle, string: 'at ' + String(currentPatient.lastTakenTime),}),
+				Line($, {left:10, right:10, height:260,}),
 				Picture($, { left:10, right: 10, active: true, width:25, url: contactPatientGreen, active: true, 							
 					Behavior: class extends Behavior {
 						onTouchEnded(container, id, x, y, ticks) {
 				            popSwitch = true; 
-							currentScreen.active = true;
-				            application.remove(popupTickScreen);
-				            // $.cont.bubble( "onTriggerTransition", "toContactPatient" );	
-				            let toContactPatient =  new ContactPatientScreen();
-				            currentScreen = toContactPatient;
-				            application.add(toContactPatient);
+				            container.bubble( "onTriggerTransition", "toMessagingFade" );
 						}
 					},
 				}),	
@@ -794,6 +866,7 @@ function createPatientMedicineScreen(patient) {
 	var i;
 	for (i = 0; i < patient.meds.length; i++) {
 		var curMed = patient.meds[i];
+		// trace("createPatientMedicineScreen says: " + patient.first + " " + curMed.name + ' \n' );
 		var takenMed = checkTaken(patient, curMed);
 		if (takenMed == true) {
 			currentScreen.patientFirst.patientSecond.add(new medicineTemplate({height: (application.height / 10), name: "   " + curMed.name, url: tick}));
@@ -807,12 +880,27 @@ function createPatientMedicineScreen(patient) {
 	currentScreen.patientFirst.patientSecond.add( new blackScreen({height : 536}));
 }
 
+
 // height, name, url
 let medicineTemplate = Line.template($ => ({
     left: 0, right: 0, top:0, bottom:0, active: true,
     contents: [
     	Label($, {left:0, right:0, height: $.height, top: 0, style:labelStyle, string: $.name}),
-		Picture($, { right:0, top:0, bottom:0, url: $.url}),
+		Picture($, { right:0, top:0, bottom:0, url: $.url, active: true,
+		Behavior: class extends Behavior {
+				onTouchEnded(container) {
+					if (popSwitch){
+						popSwitch = false;
+						currentScreen.active = false;
+						currentPatientName = String(currentPatient.first) + ' ' + String(currentPatient.last);
+						if ($.status == exclamation) {
+							container.bubble( "onTriggerTransition", "toPopUpExclamationFade" );
+						} else {
+							container.bubble( "onTriggerTransition", "toPopUpTickFade" );
+						} 
+					}
+				}
+			}}),
 	]
 }));
 
@@ -1174,7 +1262,7 @@ let AddMedicationScreen = Container.template($ => ({
 								Picture($, { right:10, top:30, active: true, bottom:0, width:(application.width * 0.25), url: save, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
-											trace(currentPatient.first + "\n");	
+											// trace(currentPatient.first + "\n");	
                                             // constructor(name, dosageAmount, unit, freq, dayWeek, intake, side, lastTakenTime, errorMessage, patientMessage)
                                             
 											var newMed = new Med(addMedName, currentScreen.addMedFirst.addMedSecond.dosageAmount.dosageAmountString.string, 
@@ -1183,7 +1271,7 @@ let AddMedicationScreen = Container.template($ => ({
 												currentScreen.addMedFirst.addMedSecond.frequencyBox.frequencyDay.string,
 												currentScreen.addMedFirst.addMedSecond.intakeInstructions.intakeInstructionsString.string,
 												currentScreen.addMedFirst.addMedSecond.sideEffects.sideEffectsString.string,
-												getTimeDate(true),
+												new Date(),
 												"None",
 												"None");
 											
@@ -1536,16 +1624,7 @@ let MessageScreen = Container.template($ => ({
 								Label($, {left:0, right:0, top: 10, height:(application.height / 7), top: 0, style:titleStyle, string:'Messaging' }),
 							]
 						}),
-						Line($, {left: 0, right: 0, top:0, bottom:0,
-							contents: [
-								// where the error occurs
-								//messageBox
-								new RefreshButtonTemplate({ textForLabel: "Refresh", width: 10})
-								
-								
-							]
-						}),
-						Line($, {left: 0, right: 0, top:0, bottom:0,
+						Line($, {left: 0, right: 0, top:0, bottom:0, height: application.height/5+70,
 							contents: [
 								//button
 								//on touch ended, send a message to device using handler.bind
@@ -1553,8 +1632,17 @@ let MessageScreen = Container.template($ => ({
 								receivedMessageLabel = new Label({ left:0, right:0, string:"", style: labelStyle})					
 							]
 							
+						}),
+						Line($, {left: 25, right: 25, top:0, bottom:0, height: 50, width: 100,
+							contents: [
+								// where the error occurs
+								//messageBox
+								new RefreshButtonTemplate({ textForLabel: "Refresh", width: 10})
+								
+								
+							]
 						}),	
-						Line($, {left: 0, right: 0, top:0, bottom:0,
+						Line($, {left: 0, right: 0, top:0, bottom:0, height: application.height/5+70,
 							contents: [
 								// where the error occurs
 								//messageBox
@@ -1562,7 +1650,7 @@ let MessageScreen = Container.template($ => ({
 								
 							]
 						}),
-						Line($, {left: 0, right: 0, top:0, bottom:0,
+						Line($, {left: 25, right: 25, top:0, bottom:0, height: 50, width: 100,
 							contents: [
 								//button
 								//on touch ended, send a message to device using handler.bind
@@ -1595,9 +1683,8 @@ Handler.bind("/flashLED", {
 });
 
 /* Timings helper function */
-function getTimeDate(switcher) {
+function getTimeDateString(currentTime) {
     let str = "";
-    let currentTime = new Date()
     let hours = currentTime.getHours()
     let minutes = currentTime.getMinutes()
     let seconds = currentTime.getSeconds()
@@ -1613,10 +1700,19 @@ function getTimeDate(switcher) {
         seconds = "0" + seconds
     }
     str += hours + ":" + minutes + ":" + seconds + ", " + (month+1) + "/" + date + '  ' + "/" + year ;
-	if (switcher){
-	    return ((parseInt(year, 10) * 100000000) + (parseInt(month, 10) * 1000000) + (parseInt(day, 10) * 10000) +  (parseInt(hours, 10) * 100) + parseInt(minutes)); 
-	}
 	return str;	
+}
+
+/* Timings helper function */
+function getTimeDateInt(currentTime) {
+    let hours = currentTime.getHours()
+    let minutes = currentTime.getMinutes()
+    let seconds = currentTime.getSeconds()
+    let date = currentTime.getDate()
+    let month = currentTime.getMonth()
+    let year = currentTime.getYear()
+    let day = currentTime.getDay()
+	return ((parseInt(year, 10) * 100000000) + (parseInt(month, 10) * 1000000) + (parseInt(day, 10) * 10000) +  (parseInt(hours, 10) * 100) + parseInt(minutes)); 
 }
 	
 /* Connection Updater for Labels */
@@ -1665,10 +1761,13 @@ Handler.bind("/doctorMessage", Behavior({
 }));
 
 function checkTaken(patient, med){
-	let timeNow = getTimeDate(true);
+	let timeNow = new Date();
+	trace(patient.meds[0].lastTakenTime + "\n")
 	let medIndex = patient.meds.indexOf(med);
 	let freq = patient.meds[medIndex].freq;
-	return (timeNow < (patient.meds[medIndex].lastTakenTime + (2400 / freq)));
+	let nextTaken = getTimeDateInt(patient.meds[medIndex].lastTakenTime) + (2400/freq);
+	timeNow = getTimeDateInt(timeNow);
+	return (timeNow < nextTaken);
 }
 
 
@@ -1685,35 +1784,41 @@ function discovery() {
                 remotePins.repeat("/pill1Button/read", 500, function(result1) {
 			    	if (devicePatient.meds.length <= 1){
 			    		devicePatient.lastTaken = devicePatient.med[0].name;
-			    		devicePatient.med[0].lastTakenTime = getTimeDate(false);
+			    		devicePatient.med[0].lastTakenTime = new Date();
 			    	}   
+			    	for (var i = 0; i < patientsGood.length; i++) {
+			    		if (!patientCorrectPlace(patientsGood[i], devicePatient.statusGood)) movePatient(patientsGood[i]);
+			    	};
+			    	for (var i = 0; i < patientsBad.length; i++) {
+			    		if (!patientCorrectPlace(patientsBad[i], devicePatient.statusGood)) movePatient(patientsBad[i]);
+			    	};
 				});
 
 				remotePins.repeat("/pill2Button/read", 500, function(result2) {
 					if (devicePatient.meds.length <= 2){
 			    		devicePatient.lastTaken = devicePatient.med[1].name;
-			    		devicePatient.med[1].lastTakenTime = getTimeDate(false);
+			    		devicePatient.med[1].lastTakenTime = new Date();
 			    	}   
 				});
 
                 remotePins.repeat("/pill3Button/read", 500, function(result3) {
 			    	 if (devicePatient.meds.length <= 3){
 			    		devicePatient.lastTaken = devicePatient.med[2].name;
-			    		devicePatient.med[2].lastTakenTime = getTimeDate(false);
+			    		devicePatient.med[2].lastTakenTime = new Date();
 			    	}    
 				});
 
 				remotePins.repeat("/pill4Button/read", 500, function(result4) {
 					if (devicePatient.meds.length <= 4){
 						devicePatient.lastTaken = devicePatient.med[3].name;
-			    		devicePatient.med[3].lastTakenTime = getTimeDate(false);		    		
+			    		devicePatient.med[3].lastTakenTime = new Date();		    		
 			    	}   
 				});
 
 				remotePins.repeat("/pill5Button/read", 500, function(result5) {
 					if (devicePatient.meds.length <= 5){
 			    		devicePatient.lastTaken = devicePatient.med[4].name;
-			    		devicePatient.med[4].lastTakenTime = getTimeDate(false);
+			    		devicePatient.med[4].lastTakenTime = new Date();
 			    	}   
 				});
 
@@ -1723,7 +1828,10 @@ function discovery() {
 				   	else if (result >= 0.60) level1 = threeQuarter;
 				   	else if (result >= 0.35) level1 = half;
 				   	else if (result >= 0.1) level1 = oneQuarter;
-				   	// else devicePatient.statusGood = ;
+				   	else {
+				   		devicePatient.statusGood = false;
+				   		// let medIndex = getIndex(devicePatient.meds[])
+					}
 				   	ibuLevel.url = level1;
 				});
 

@@ -13,6 +13,12 @@ var deviceURL = "";
 /* variables */
 var receivedMessage = "";
 var patientMessage = "";
+let refreshPic;
+let sendPic;
+
+/*assets */
+let refreshPicURL = './assets/refreshbutton.png';
+let sendPicURL = './assets/sendbutton.png';
 
 /* skins*/
 let nameInputSkin = new Skin({ borders: { left: 2, right: 2, top: 2, bottom: 2 }, stroke: 'gray' });
@@ -27,20 +33,20 @@ function updateMessageBox(labelOrVar) {
 	return patientMessage;
 }
 
-/* A Message Box Specific Field */let MessageField = Container.template($ => ({     width: 200, height: 36, skin: nameInputSkin, contents: [        Scroller($, {             left: 4, right: 4, top: 4, bottom: 4, active: true,             Behavior: FieldScrollerBehavior, clip: true,             contents: [                Label($, {                     left: 0, top: 0, bottom: 0, skin: fieldLabelSkin,                     style: labelStyle, horizontal:"right", anchor: 'NAME',                    editable: true, string: $.name,                    Behavior: class extends FieldLabelBehavior {                        onEdited(label) {                            let data = this.data;                            data.name = label.string;
+/* A Message Box Specific Field */let MessageField = Container.template($ => ({     width: application.width, height: 36, skin: nameInputSkin, contents: [        Scroller($, {             left: 4, right: 4, top: 4, bottom: 4, active: true,             Behavior: FieldScrollerBehavior, clip: true,             contents: [                Label($, {                     left: 0, top: 0, bottom: 0, skin: fieldLabelSkin,                     style: labelStyle, horizontal:"right", anchor: 'NAME',                    editable: true, string: $.name,                    Behavior: class extends FieldLabelBehavior {                        onEdited(label) {                            let data = this.data;                            data.name = label.string;
                             patientMessage = updateMessageBox(data.name);                            label.container.hint.visible = (data.name.length == 0);                            trace(data.name+"\n");                        }                    },                }),                Label($, {                    left: 4, right: 4, top: 4, bottom: 4, style: fieldHintStyle,                    string: "Tap to add text...", name: "hint"                }),            ]        })    ]}));
 
 var messageBox = new MessageField({string:"mongoos", name: "messageBox"});
 
 /*Refresh Button Template*/ 
-let RefreshButtonTemplate = Button.template($ => ({    top: 0, bottom: 0, left: 0, right: 0,  width: (application.width / 2) - 10,    contents: [        Label($, {left: 0, right: 0, string: $.textForLabel, style: labelStyle})    ],    Behavior: class extends ButtonBehavior {        onTap(button){
+let RefreshButtonTemplate = Button.template($ => ({    top: 0, bottom: 0, left: 0, right: 0,  width: (application.width / 2) - 10,    contents: [        refreshPic = Picture($, { left:0, top:0, bottom:0, url:refreshPicURL }),    ],    Behavior: class extends ButtonBehavior {        onTap(button){
         	trace("refresh button in device tapped\n");			if (deviceURL != "") new Message(deviceURL + "doctorMessage").invoke(Message.JSON).then(json => { receivedMessage = json.doctorMessage; }); //trace("device received message: "+json.doctorMessage+"\n");
-			labelOne.string = receivedMessage;
+			labelOne.string = "last message: "+receivedMessage;
         }
         /*onTouchEnded(content) {			KEYBOARD.hide();       		system.keyboard.visible = false;       		content.focus();   		}*/    }}));
 
 /*Send Button Template*/ 
-let SendButtonTemplate = Button.template($ => ({    top: 0, bottom: 0, left: 0, right: 0,  width: (application.width / 2) - 10,    contents: [        Label($, {left: 0, right: 0, string: $.textForLabel, style: labelStyle})    ],    Behavior: class extends ButtonBehavior {        onTap(button){
+let SendButtonTemplate = Button.template($ => ({    top: 0, bottom: 0, left: 0, right: 0,  width: (application.width / 2) - 10,    contents: [        sendPic = Picture($, { left:0, top:0, bottom:0, url:sendPicURL }),    ],    Behavior: class extends ButtonBehavior {        onTap(button){
         	trace("send button in device tapped\n");        }
         onTouchEnded(content) {			KEYBOARD.hide();       		system.keyboard.visible = false;        	content.focus();    	}    }}));
 
@@ -115,7 +121,7 @@ class AppBehavior extends Behavior {
         },  success => {
             if (success) {
                 Pins.share("ws", {zeroconf: true, name: "pillsense-device"});
-                application.add(new MainContainer({ string: "Connected!", backgroundColor: "#2D9CDB" }));
+                application.add(new MainContainer({ string: "Connected!", backgroundColor: "white" }));
                 Pins.repeat("/pill1Button/read", 20, result => {
                 	//trace("pill1Button mangos\n");
                 	//trace(deviceURL+"\n");
@@ -174,7 +180,7 @@ Handler.bind("/patientMessage", Behavior({    onInvoke: function(handler, messa
 
 
 let textStyle = new Style({ font: "bold 30px", color: "white" });
-var labelOne = new Label({ top: 10, bottom: 10, left: 0, right: 0, height: application.height / 2, style: textStyle,  string: "", active: true,});
+var labelOne = new Label({ top: 10, bottom: 10, left: 0, right: 0, height: 36, style: labelStyle,  string: "last message: ", active: true,});
 
 
 
@@ -187,6 +193,11 @@ let MainContainer = Container.template($ => ({
     		Behavior: class extends Behavior {				onTouchEnded(content) {					KEYBOARD.hide();       				system.keyboard.visible = false;        			content.focus();    			}    		},
 			contents: [
 				Line($, {left: 0, right: 0, top:0, bottom:0, height: application.height / 4, width: application.width / 4,
+					contents: [
+    					labelOne,
+    				]
+    			}),
+				Line($, {left: 25, right: 25, top:10, bottom:10, height: application.height / 4, width: application.width / 4,
 					Behavior: class extends Behavior {						onTouchEnded(content) {							KEYBOARD.hide();       						system.keyboard.visible = false;        					content.focus();    					}    				},
 					contents: [
     					new RefreshButtonTemplate({ textForLabel: "Refresh", width: 10 }),
@@ -194,19 +205,15 @@ let MainContainer = Container.template($ => ({
     			}),
     			Line($, {left: 0, right: 0, top:0, bottom:0, height: application.height / 4, width: application.width / 4,
 					contents: [
-    					labelOne,
+    					messageBox = new MessageField({string:"mongoos", name: "lazlobox"}),
     				]
     			}),
-    				Line($, {left: 0, right: 0, top:0, bottom:0, height: application.height / 4, width: application.width / 4,
+    				Line($, {left: 25, right: 25, top:10, bottom:10, height: application.height / 4, width: application.width / 4,
 					contents: [
     					new SendButtonTemplate({ textForLabel: "Send", width: 10 }),
     				]
     			}),
-    			Line($, {left: 0, right: 0, top:0, bottom:0, height: application.height / 4, width: application.width / 4,
-					contents: [
-    					messageBox = new MessageField({string:"mongoos", name: "lazlobox"}),
-    				]
-    			}),
+
     		]
     	}),
     	Column($, {left: 0, right: 0, top:0, bottom:0, height: application.height / 4, width: application.width / 4,
