@@ -1657,6 +1657,13 @@ Handler.bind("/forget", Behavior({
 }));
 
 
+Handler.bind("/doctorMessage", Behavior({
+    onInvoke: function(handler, message){
+        message.responseText = JSON.stringify({doctorMessage: doctorMessage});
+        message.status = 200;
+    }
+}));
+
 function checkTaken(patient, med){
 	let timeNow = getTimeDate(true);
 	let medIndex = patient.meds.indexOf(med);
@@ -1716,6 +1723,7 @@ function discovery() {
 				   	else if (result >= 0.60) level1 = threeQuarter;
 				   	else if (result >= 0.35) level1 = half;
 				   	else if (result >= 0.1) level1 = oneQuarter;
+				   	// else devicePatient.statusGood = ;
 				   	ibuLevel.url = level1;
 				});
 
