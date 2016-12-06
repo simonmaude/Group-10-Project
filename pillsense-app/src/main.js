@@ -107,7 +107,7 @@ let receivedMessageLabel = new Label({ left:0, right:0, string:"", style: labelS
 let addMedName;
 let refreshPic;
 let sendPic;
-let contactPicture;
+let contactPic;
 
 
 /* Assets */
@@ -124,6 +124,7 @@ let contactPatientBlue = './assets/contactPatientBlue.png';
 let contactPatientGreen = './assets/contactPatientGreen.png';
 let contactPatientRed = './assets/contactPatientRed.png';
 let contactPatientGrey = './assets/contactPatientGrey.png';
+let contactPicture = contactPatientGrey;
 let send = './assets/send.png';
 let plus = './assets/plus.png';
 let settingsPicture = './assets/settings.png';
@@ -573,13 +574,16 @@ let PopUpErrorScreen = Container.template($ => ({
 				Line($, {left:10, right:10, height:60,}),
 				Label($, {left:60, right:10, height:25, vertical: "middle", style:bigBoldLabelStyle, string: String(currentPatient.first) + ' ' + String(currentPatient.last) + ' failed',}),
 				Label($, {left:60, right:10, height:25, vertical: "middle", style:bigBoldLabelStyle, string: 'to take ' + String(currentPatient.lastTaken),}),
-				Label($, {left:60, right:10, height:25, vertical: "middle", style:bigBoldLabelStyle, string: 'at ' + String(currentPatient.lastTakenTime),}),
+				// Label($, {left:60, right:10, height:25, vertical: "middle", style:bigBoldLabelStyle, string: 'at ' + String(currentPatient.lastTakenTime),}),
+				Label($, {left:60, right:10, height:25, vertical: "middle", style:bigBoldLabelStyle, string: 'at ' + getTimeDateString(badTime),}),
 				Line($, {left:10, right:10, height:50,}),
 				Label($, {left:10, right:10, height:30, style:boldLabelStyle, string: 'Error Message:',}),
-				Label($, {left:10, right:10, height:30, style:labelStyle, string: String(currentPatient.errorMessage),}),
+				// Label($, {left:10, right:10, height:30, style:labelStyle, string: String(currentPatient.errorMessage),}),
+				Label($, {left:10, right:10, height:30, style:labelStyle, string: "Patient failed to take medication on time",}),
 				Line($, {left:10, right:10, height:50,}),
 				Label($, {left:10, right:10, height:30, style:boldLabelStyle, string: 'Patient\'s Message:',}),
-				Label($, {left:10, right:10, height:30, style:labelStyle, editable: false, string: String(currentPatient.patientMessage),}),
+				// Label($, {left:10, right:10, height:30, style:labelStyle, editable: false, string: String(currentPatient.patientMessage),}),
+				Label($, {left:10, right:10, height:30, style:labelStyle, editable: false, string: "no message recorded",}),
 				Line($, {left:10, right:10, height:50,}),
 				Picture($, { left:10, right: 10, active: true, width:25, url: contactPatientRed, active: true, 							
 					Behavior: class extends Behavior {
@@ -655,7 +659,8 @@ let PopUpTickScreen = Container.template($ => ({
 				Line($, {left:10, right:10, height:60,}),
 				Label($, {left:60, right:10, height:25, vertical: "middle", style:bigBoldLabelStyle, string: String(currentPatient.first) + ' ' + String(currentPatient.last) + ' last',}),
 				Label($, {left:60, right:10, height:25, vertical: "middle", style:bigBoldLabelStyle, string: 'took ' + String(currentPatient.lastTaken),}),
-				Label($, {left:60, right:10, height:25, vertical: "middle", style:bigBoldLabelStyle, string: 'at ' + String(currentPatient.lastTakenTime),}),
+				// Label($, {left:60, right:10, height:25, vertical: "middle", style:bigBoldLabelStyle, string: 'at ' + String(currentPatient.lastTakenTime),}),
+				Label($, {left:60, right:10, height:25, vertical: "middle", style:bigBoldLabelStyle, string: 'at ' + getTimeDateString(goodTime),}),
 				Line($, {left:10, right:10, height:260,}),
 				Picture($, { left:10, right: 10, active: true, width:25, url: contactPatientGreen, active: true, 							
 					Behavior: class extends Behavior {
@@ -1549,7 +1554,7 @@ Container($, {left: 0, right: 0,
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
-						contactPicture = Picture($, { left:0, right:0, height:50, active: true, url: contactPatientGrey,
+						contactPic = Picture($, { left:0, right:0, height:50, active: true, url: contactPicture,
 							Behavior: MainScreenBehavior, 
 							Behavior: class extends Behavior {
 								onTouchEnded(container, id, x, y, ticks) {
@@ -1703,7 +1708,7 @@ function getTimeDateString(currentTime) {
     if (seconds < 10) {
         seconds = "0" + seconds
     }
-    str += hours + ":" + minutes + ":" + seconds + ", " + (month+1) + "/" + date + '  ' + "/" + year ;
+    str += hours + ":" + minutes + ":" + seconds + ", " + (month+1) + "/" + date;
 	return str;	
 }
 
@@ -1721,8 +1726,11 @@ function getTimeDateInt(currentTime) {
 	
 /* Connection Updater for Labels */
 function updatedispenserConnection(conn) {
+	devicePatient = doctor.patientsGood[0];
 	connected = conn;
 	if (conn) {
+		contactPicture = contactPatientBlue;
+		contactPic.url = contactPatientBlue;
 		dispenserPicture.url = dispenser;
 		dispenserLabelStyle = capsStyle;
 		dispenserLabel.style = dispenserLabelStyle;
@@ -1778,18 +1786,15 @@ function checkTaken(patient, med){
 /* Pins discovery helper function */
 function discovery() {
 
-devicePatient = doctor.patientsGood[0];
-			    		trace(devicePatient.name + " = devicePatient\n")
     trace("Trying to connect to remote pins\n");
 	let discoveryInstance = Pins.discover(
         connectionDesc => {
             
             if (connectionDesc.name == "pillsense-device") {
                 trace("Connected to remote pins\n");
-				contactPicture.url = contactPatientBlue;
                 remotePins = Pins.connect(connectionDesc);
-                remotePins.repeat("/pill1Button/read", 500, function(result1) {
-	                updatedispenserConnection(true);
+    //             remotePins.repeat("/pill1Button/read", 500, function(result) {
+	   //              updatedispenserConnection(true);
 			 //    	if (devicePatient.meds.length <= 1){
 			 //    		devicePatient.lastTaken = devicePatient.med[0].name;
 			 //    		devicePatient.med[0].lastTakenTime = new Date();
@@ -1800,7 +1805,7 @@ devicePatient = doctor.patientsGood[0];
 			 //    	for (var i = 0; i < patientsBad.length; i++) {
 			 //    		if (!patientCorrectPlace(patientsBad[i], devicePatient.statusGood)) movePatient(patientsBad[i]);
 			 //    	};
-				});
+				// });
 
 				// remotePins.repeat("/pill2Button/read", 500, function(result2) {
 				// 	if (devicePatient.meds.length <= 2){
