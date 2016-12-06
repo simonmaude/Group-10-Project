@@ -1549,7 +1549,7 @@ Container($, {left: 0, right: 0,
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
-						contactPicture = Picture($, { left:0, right:0, height:50, url: contactPatientGrey,
+						contactPicture = Picture($, { left:0, right:0, height:50, active: true, url: contactPatientGrey,
 							Behavior: MainScreenBehavior, 
 							Behavior: class extends Behavior {
 								onTouchEnded(container, id, x, y, ticks) {
@@ -1589,7 +1589,7 @@ Container($, {left: 0, right: 0,
 				/* BLANK SPACE */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height * 0.05), top: 0, style:labelStyle, skin: greySkin, string:'  ',}),	
+								Label($, {left:0, right:0, height:(application.height * 0.02), top: 0, style:labelStyle, skin: greySkin, string:'  ',}),	
 							],
 							Behavior: class extends Behavior {
 								onTouchEnded(container, id, x, y, ticks) {
@@ -1723,7 +1723,6 @@ function getTimeDateInt(currentTime) {
 function updatedispenserConnection(conn) {
 	connected = conn;
 	if (conn) {
-		contactPicture.url = contactPatientBlue;
 		dispenserPicture.url = dispenser;
 		dispenserLabelStyle = capsStyle;
 		dispenserLabel.style = dispenserLabelStyle;
@@ -1778,54 +1777,58 @@ function checkTaken(patient, med){
 
 /* Pins discovery helper function */
 function discovery() {
+
+devicePatient = doctor.patientsGood[0];
+			    		trace(devicePatient.name + " = devicePatient\n")
     trace("Trying to connect to remote pins\n");
 	let discoveryInstance = Pins.discover(
         connectionDesc => {
             
             if (connectionDesc.name == "pillsense-device") {
                 trace("Connected to remote pins\n");
-                updatedispenserConnection(true);
+				contactPicture.url = contactPatientBlue;
                 remotePins = Pins.connect(connectionDesc);
                 remotePins.repeat("/pill1Button/read", 500, function(result1) {
-			    	if (devicePatient.meds.length <= 1){
-			    		devicePatient.lastTaken = devicePatient.med[0].name;
-			    		devicePatient.med[0].lastTakenTime = new Date();
-			    	}   
-			    	for (var i = 0; i < patientsGood.length; i++) {
-			    		if (!patientCorrectPlace(patientsGood[i], devicePatient.statusGood)) movePatient(patientsGood[i]);
-			    	};
-			    	for (var i = 0; i < patientsBad.length; i++) {
-			    		if (!patientCorrectPlace(patientsBad[i], devicePatient.statusGood)) movePatient(patientsBad[i]);
-			    	};
+	                updatedispenserConnection(true);
+			 //    	if (devicePatient.meds.length <= 1){
+			 //    		devicePatient.lastTaken = devicePatient.med[0].name;
+			 //    		devicePatient.med[0].lastTakenTime = new Date();
+			 //    	}   
+			 //    	for (var i = 0; i < patientsGood.length; i++) {
+			 //    		if (!patientCorrectPlace(patientsGood[i], devicePatient.statusGood)) movePatient(patientsGood[i]);
+			 //    	};
+			 //    	for (var i = 0; i < patientsBad.length; i++) {
+			 //    		if (!patientCorrectPlace(patientsBad[i], devicePatient.statusGood)) movePatient(patientsBad[i]);
+			 //    	};
 				});
 
-				remotePins.repeat("/pill2Button/read", 500, function(result2) {
-					if (devicePatient.meds.length <= 2){
-			    		devicePatient.lastTaken = devicePatient.med[1].name;
-			    		devicePatient.med[1].lastTakenTime = new Date();
-			    	}   
-				});
+				// remotePins.repeat("/pill2Button/read", 500, function(result2) {
+				// 	if (devicePatient.meds.length <= 2){
+			 //    		devicePatient.lastTaken = devicePatient.med[1].name;
+			 //    		devicePatient.med[1].lastTakenTime = new Date();
+			 //    	}   
+				// });
 
-                remotePins.repeat("/pill3Button/read", 500, function(result3) {
-			    	 if (devicePatient.meds.length <= 3){
-			    		devicePatient.lastTaken = devicePatient.med[2].name;
-			    		devicePatient.med[2].lastTakenTime = new Date();
-			    	}    
-				});
+    //             remotePins.repeat("/pill3Button/read", 500, function(result3) {
+			 //    	 if (devicePatient.meds.length <= 3){
+			 //    		devicePatient.lastTaken = devicePatient.med[2].name;
+			 //    		devicePatient.med[2].lastTakenTime = new Date();
+			 //    	}    
+				// });
 
-				remotePins.repeat("/pill4Button/read", 500, function(result4) {
-					if (devicePatient.meds.length <= 4){
-						devicePatient.lastTaken = devicePatient.med[3].name;
-			    		devicePatient.med[3].lastTakenTime = new Date();		    		
-			    	}   
-				});
+				// remotePins.repeat("/pill4Button/read", 500, function(result4) {
+				// 	if (devicePatient.meds.length <= 4){
+				// 		devicePatient.lastTaken = devicePatient.med[3].name;
+			 //    		devicePatient.med[3].lastTakenTime = new Date();		    		
+			 //    	}   
+				// });
 
-				remotePins.repeat("/pill5Button/read", 500, function(result5) {
-					if (devicePatient.meds.length <= 5){
-			    		devicePatient.lastTaken = devicePatient.med[4].name;
-			    		devicePatient.med[4].lastTakenTime = new Date();
-			    	}   
-				});
+				// remotePins.repeat("/pill5Button/read", 500, function(result5) {
+				// 	if (devicePatient.meds.length <= 5){
+			 //    		devicePatient.lastTaken = devicePatient.med[4].name;
+			 //    		devicePatient.med[4].lastTakenTime = new Date();
+			 //    	}   
+				// });
 
 		        remotePins.repeat("/ibuLevel/read", 500, function(result) {
 				   	let level1 = empty;
