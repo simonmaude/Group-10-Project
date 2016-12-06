@@ -107,6 +107,7 @@ let receivedMessageLabel = new Label({ left:0, right:0, string:"", style: labelS
 let addMedName;
 let refreshPic;
 let sendPic;
+let contactPicture;
 
 
 /* Assets */
@@ -122,6 +123,7 @@ let ok = './assets/save.png';
 let contactPatientBlue = './assets/contactPatientBlue.png';
 let contactPatientGreen = './assets/contactPatientGreen.png';
 let contactPatientRed = './assets/contactPatientRed.png';
+let contactPatientGrey = './assets/contactPatientGrey.png';
 let send = './assets/send.png';
 let plus = './assets/plus.png';
 let settingsPicture = './assets/settings.png';
@@ -1547,6 +1549,16 @@ Container($, {left: 0, right: 0,
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+						contactPicture = Picture($, { left:0, right:0, height:50, url: contactPatientGrey,
+							Behavior: MainScreenBehavior, 
+							Behavior: class extends Behavior {
+								onTouchEnded(container, id, x, y, ticks) {
+									container.bubble( "onTriggerTransition", "toMessageRight");
+									trace("pic touched\n");
+								}
+							},  
+						}),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
 					/* DEVICE TITLE */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
@@ -1571,21 +1583,13 @@ Container($, {left: 0, right: 0,
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+						Picture($, { left:0, right: 0, height: 50, url: contactPatientGrey,}),
+						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+									
 				/* BLANK SPACE */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height * 0.2), top: 0, style:labelStyle, skin: greySkin, string:' zulu nation ',
-											
-										}),
-								Picture($, { left:0, top:10, active: true, bottom:0, width:(application.width * 0.1), url: back,
-									Behavior: MainScreenBehavior, 
-									Behavior: class extends Behavior {
-										onTouchEnded(container, id, x, y, ticks) {
-											container.bubble( "onTriggerTransition", "toMessageRight");
-											trace("pic touched\n");
-										}
-									},  
-								}),
+								Label($, {left:0, right:0, height:(application.height * 0.05), top: 0, style:labelStyle, skin: greySkin, string:'  ',}),	
 							],
 							Behavior: class extends Behavior {
 								onTouchEnded(container, id, x, y, ticks) {
@@ -1719,6 +1723,7 @@ function getTimeDateInt(currentTime) {
 function updatedispenserConnection(conn) {
 	connected = conn;
 	if (conn) {
+		contactPicture.url = contactPatientBlue;
 		dispenserPicture.url = dispenser;
 		dispenserLabelStyle = capsStyle;
 		dispenserLabel.style = dispenserLabelStyle;
