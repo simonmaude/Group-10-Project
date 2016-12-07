@@ -376,13 +376,13 @@ goodTime.setHours(goodTime.getHours() - 1);
 // trace(goodTime + " = GOODTIME \n")
 
 let doctor = new User("Doctor_1", "password123");
-doctor.patientsBad.push(new Patient("Alfie", "YOLO", "01/01/92", "Male", "6ft", "160lbs", false, "ibuprofen", badTime, "no message", "no message"));
-doctor.patientsBad.push(new Patient("Amelia", "LOL",  "02/02/91", "Female", "5ft, 6in", "130lbs", false, "acetaminophen", badTime, "no message", "no message"));
-doctor.patientsBad.push(new Patient("Archie", "ROFL",  "03/03/90", "Male", "6ft 3in", "180lbs", false, "prozac", badTime, "no message", "no message" ));
-doctor.patientsGood.push(new Patient("Ava", "GG",  "04/04/89", "Female", "5ft 2in", "140lbs", true, "ibuprofen", goodTime, "no message","no message" ));
-doctor.patientsGood.push(new Patient("Abe", "NVM",  "05/05/88", "Declined to say", "5ft 6in", "165lbs", true, "acetaminophen", goodTime, "no message","no message"));
-doctor.patientsGood.push(new Patient("Aaron", "TBH",  "06/06/87", "Male", "5ft 11in", "174lbs", true, "prozac", goodTime, "no message","no message"));
-doctor.patientsGood.push(new Patient("Anna", "CBA",  "07/07/86", "Female", "5ft 10in", "168lbs", true, "ibuprofen", goodTime, "no message","no message"));
+doctor.patientsBad.push(new Patient("Alfie", "Nowell", "01/01/92", "Male", "6ft", "160lbs", false, "ibuprofen", badTime, "no message", "no message"));
+doctor.patientsBad.push(new Patient("Amelia", "Carr",  "02/02/91", "Female", "5ft, 6in", "130lbs", false, "acetaminophen", badTime, "no message", "no message"));
+doctor.patientsBad.push(new Patient("Archie", "Morrison",  "03/03/90", "Male", "6ft 3in", "180lbs", false, "prozac", badTime, "no message", "no message" ));
+doctor.patientsGood.push(new Patient("Ava", "Shute",  "04/04/89", "Female", "5ft 2in", "140lbs", true, "ibuprofen", goodTime, "no message","no message" ));
+doctor.patientsGood.push(new Patient("Abe", "Paley",  "05/05/88", "Declined to say", "5ft 6in", "165lbs", true, "acetaminophen", goodTime, "no message","no message"));
+doctor.patientsGood.push(new Patient("Aaron", "Catteral",  "06/06/87", "Male", "5ft 11in", "174lbs", true, "prozac", goodTime, "no message","no message"));
+doctor.patientsGood.push(new Patient("Anna", "Style",  "07/07/86", "Female", "5ft 10in", "168lbs", true, "ibuprofen", goodTime, "no message","no message"));
 
 doctor.patientsBad[0].addMed(new Med("ibuprofen", "300", "mg", 4, "day", "None", "Can cause anemia, vomiting", badTime, "None", "None"));
 doctor.patientsBad[0].addMed(new Med("prozac", "20", "mg", 1, "day", "None", "Can cause anxiety", goodTime, "None", "None"));
