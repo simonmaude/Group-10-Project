@@ -54,7 +54,7 @@ let skyBlueSkin = new Skin ({fill: '#808080'});
 
 let buttonStyle = new Style ({font: 'bold 20px', color: 'white'});
 let inactiveStyle = new Style ({font: 'bold 20px', color: 'white'});
-let titleStyle = new Style({font: 'bold 26px', color: 'white'});
+let titleStyle = new Style({font: 'bold 26px Spinnaker', color: 'white'});
 let productNameStyle = new Style({  font: 'bold 18px', horizontal: 'left', vertical: 'middle', lines: 1 });
 let productDescriptionStyle = new Style({  font: '16px', horizontal: 'left', vertical: 'middle', left: 1});
 let productAmountStyle = new Style({  font: '16px', horizontal: 'left', vertical: 'middle', left: 1, skin: greySkin});
