@@ -143,8 +143,8 @@ class AppBehavior extends Behavior {
             led2: {
                 require: "Digital", // use built-in digital BLL
                 pins: {
-                    ground: { pin: 51, type: "Ground" },
-                    digital: { pin: 52, direction: "output" },
+                    ground: { pin: 53, type: "Ground" },
+                    digital: { pin: 54, direction: "output" },
                 }
             },
             pill1Button: {

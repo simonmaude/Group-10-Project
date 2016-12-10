@@ -123,7 +123,7 @@ let ok = './assets/save.png';
 let contactPatientBlue = './assets/contactPatientBlue.png';
 let contactPatientGreen = './assets/contactPatientGreen.png';
 let contactPatientRed = './assets/contactPatientRed.png';
-let contactPatientGrey = './assets/contactPatientGrey.jpg';
+let hellYeah = './assets/hellYeah.png';
 let contactPicture = contactPatientBlue;
 let send = './assets/send.png';
 let plus = './assets/plus.png';
@@ -1733,8 +1733,8 @@ Container($, {left: 0, right: 0,
 					/* DEVICE TITLE */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								dispenserPicture = Picture($, { left:0, top:0, bottom:0, width:(application.width * 0.15), url:dispenserDisconnect}),
-								dispenserLabel = Label($, {left:0, right:0, height:(application.height / 8), width:(application.width * 0.85), top: 0, style:dispenserLabelStyle, string:' Alfie Nowell DISPENSER ' }),
+								dispenserPicture = Picture($, { left:0, top:0, bottom:0, width:(application.width * 0.15), url:dispenser}),
+								dispenserLabel = Label($, {left:0, right:0, height:(application.height / 8), width:(application.width * 0.85), top: 0, style:capsStyle, string:' Alfie Nowell DISPENSER ' }),
 							]
 						}),						
 						Line($, { left: 0, right: 0, height: 3, skin: separatorSkin }),
@@ -1788,7 +1788,7 @@ Container($, {left: 0, right: 0,
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
-						Picture($, { left:0, right: 0, height: 50, url: contactPatientBlue,}),
+						Picture($, { left:0, right: 0, height: 50, url: hellYeah,}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
 									
 				/* BLANK SPACE */
@@ -1934,25 +1934,26 @@ function updatedispenserConnection(conn) {
 	devicePatient = doctor.patientsBad[0];
 	connected = conn;
 	if (conn) {
-		contactPicture = contactPatientBlue;
-		contactPic.url = contactPatientBlue;
-		dispenserPicture.url = dispenser;
-		dispenserLabelStyle = capsStyle;
-		dispenserLabel.style = dispenserLabelStyle;
+	// 	contactPicture = contactPatientBlue;
+	// 	contactPic.url = contactPatientBlue;
+	// 	dispenserPicture.url = dispenser;
+	// 	dispenserLabelStyle = capsStyle;
+	// 	dispenserLabel.style = dispenserLabelStyle;
 		aceLevel.url = empty;
 		ibuLevel.url = empty;
-		// dispenseButton.skin = buttonSkin;
-		// dispenseButton.style = buttonStyle;
-		// dispenseButton.string = 'DISPENSE TREAT';
-	} else {
-		dispenserLabelStyle = capsStyleDisconnect;
-		dispenserLabel.style = dispenserLabelStyle;
-		aceLevel.url = emptyDisconnect;
-		ibuLevel.url = emptyDisconnect;
-		// dispenseButton.skin = inactiveButtonSkin;
-		// dispenseButton.style = inactiveStyle;
-		// dispenseButton.string = 'DISCONNECTED';
-	}
+	// 	// dispenseButton.skin = buttonSkin;
+	// 	// dispenseButton.style = buttonStyle;
+	// 	// dispenseButton.string = 'DISPENSE TREAT';
+	} 
+	// else {
+	// 	dispenserLabelStyle = capsStyleDisconnect;
+	// 	dispenserLabel.style = dispenserLabelStyle;
+	// 	aceLevel.url = emptyDisconnect;
+	// 	ibuLevel.url = emptyDisconnect;
+	// 	// dispenseButton.skin = inactiveButtonSkin;
+	// 	// dispenseButton.style = inactiveStyle;
+	// 	// dispenseButton.string = 'DISCONNECTED';
+	// }
 }
 
 /* Application sharing functions */
@@ -1987,7 +1988,7 @@ function checkTaken(patient, med){
 	return (timeNow < nextTaken);
 }
 
-
+let connSwitch = true;
 /* Pins discovery helper function */
 function discovery() {
 
@@ -1999,9 +2000,9 @@ function discovery() {
                 trace("Connected to remote pins\n");
                 remotePins = Pins.connect(connectionDesc);
                 remotePins.repeat("/pill1Button/read", 500, function(result) {
-	                updatedispenserConnection(true);
+	                updatedispenserConnection(connSwitch);
+	                connSwitch = false;
 
-	devicePatient.statusGood = true;
 			 //    	if (devicePatient.meds.length <= 1){
 			 //    		devicePatient.lastTaken = devicePatient.med[0].name;
 			 //    		devicePatient.med[0].lastTakenTime = new Date();
