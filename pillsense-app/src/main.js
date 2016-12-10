@@ -54,7 +54,7 @@ let skyBlueSkin = new Skin ({fill: '#808080'});
 
 let buttonStyle = new Style ({font: 'bold 20px', color: 'white'});
 let inactiveStyle = new Style ({font: 'bold 20px', color: 'white'});
-let titleStyle = new Style({font: 'bold 26px Spinnaker', color: 'white'});
+let titleStyle = new Style({font: 'bold 24px Spinnaker', color: 'white'});
 let productNameStyle = new Style({  font: 'bold 18px', horizontal: 'left', vertical: 'middle', lines: 1 });
 let productDescriptionStyle = new Style({  font: '16px', horizontal: 'left', vertical: 'middle', left: 1});
 let productAmountStyle = new Style({  font: '16px', horizontal: 'left', vertical: 'middle', left: 1, skin: greySkin});
@@ -123,8 +123,8 @@ let ok = './assets/save.png';
 let contactPatientBlue = './assets/contactPatientBlue.png';
 let contactPatientGreen = './assets/contactPatientGreen.png';
 let contactPatientRed = './assets/contactPatientRed.png';
-let contactPatientGrey = './assets/contactPatientGrey.png';
-let contactPicture = contactPatientGrey;
+let contactPatientGrey = './assets/contactPatientGrey.jpg';
+let contactPicture = contactPatientBlue;
 let send = './assets/send.png';
 let plus = './assets/plus.png';
 let settingsPicture = './assets/settings.png';
@@ -142,8 +142,8 @@ let oneQuarter = './assets/oneQuarter.png';
 let empty = './assets/empty.png';
 let emptyDisconnect = './assets/empty_disconnect.png';
 let myPatientsTitle = './assets/empty_disconnect.png';
-let refreshPicURL = './assets/refreshbutton.png';
-let sendPicURL = './assets/sendbutton.png';
+let refreshPicURL = './assets/refreshbutton.jpg';
+let sendPicURL = './assets/sendbutton.jpg';
 
 /* Transitions */
 class MainScreenBehavior extends Behavior {
@@ -384,10 +384,10 @@ doctor.patientsGood.push(new Patient("Abe", "Paley",  "05/05/88", "Declined to s
 doctor.patientsGood.push(new Patient("Aaron", "Catteral",  "06/06/87", "Male", "5ft 11in", "174lbs", true, "prozac", goodTime, "no message","no message"));
 doctor.patientsGood.push(new Patient("Anna", "Style",  "07/07/86", "Female", "5ft 10in", "168lbs", true, "ibuprofen", goodTime, "no message","no message"));
 
-doctor.patientsBad[0].addMed(new Med("ibuprofen", "300", "mg", 4, "day", "None", "Can cause anemia, vomiting", badTime, "None", "None"));
+doctor.patientsBad[0].addMed(new Med("ibuprofen", "300", "mg", 4, "day", "None", "Can cause anemia, vomiting", badTime, "Patient missed deadline", "I was stuck in traffic"));
 doctor.patientsBad[0].addMed(new Med("prozac", "20", "mg", 1, "day", "None", "Can cause anxiety", goodTime, "None", "None"));
-doctor.patientsBad[1].addMed(new Med("prozac", "20", "mg", 1, "day", "None", "Can cause anxiety", badTime, "None", "None"));
-doctor.patientsBad[2].addMed(new Med("acetaminophen", "325", "mg", 3, "day", "None", "Can cause diarrhea", badTime, "None", "None"));
+doctor.patientsBad[1].addMed(new Med("prozac", "20", "mg", 1, "day", "None", "Can cause anxiety", badTime, "No Medication - need refill", "I am going to the pharmacy today"));
+doctor.patientsBad[2].addMed(new Med("acetaminophen", "325", "mg", 3, "day", "None", "Can cause diarrhea", badTime, "No signal from the device", "None"));
 doctor.patientsGood[0].addMed(new Med("ibuprofen", "300", "mg", 4, "day", "None", "Can cause anemia, vomiting", goodTime, "None", "None"));
 doctor.patientsGood[1].addMed(new Med("ibuprofen", "300", "mg", 4, "day", "None", "Can cause anemia, vomiting", goodTime, "None", "None"));
 doctor.patientsGood[1].addMed(new Med("dayquil", "40", "ml", 2, "day", "None", "Can cause sore throat", goodTime, "None", "None"));
@@ -396,6 +396,7 @@ doctor.patientsGood[3].addMed(new Med("ibuprofen", "300", "mg", 4, "day", "None"
 doctor.patientsGood[3].addMed(new Med("acetaminophen", "325", "mg", 3, "day", "None", "Can cause diarrhea", goodTime, "None", "None"));
 
 currentPatient = doctor.patientsBad[0];
+currentMed = currentPatient.meds[0];
 devicePatient = doctor.patientsGood[0];
 
 
@@ -557,7 +558,7 @@ let PopUpErrorScreen = Container.template($ => ({
 	contents: [
 		Column($, {left: 1, right: 1, top: 1, bottom: 1, skin: whiteSkin,
 			contents: [
-				Container($, {left: 0, right: 0, height: 50, skin: redSkin,
+				Container($, {left: 0, right: 0, height: 70, skin: redSkin,
 					contents: [
 						Picture($, { left:10, active: true, width:25, url: redBack, active: true, 
 							Behavior: class extends Behavior {
@@ -573,17 +574,17 @@ let PopUpErrorScreen = Container.template($ => ({
 				}),	
 				Line($, {left:10, right:10, height:60,}),
 				Label($, {left:60, right:10, height:25, vertical: "middle", style:bigBoldLabelStyle, string: String(currentPatient.first) + ' ' + String(currentPatient.last) + ' failed',}),
-				Label($, {left:60, right:10, height:25, vertical: "middle", style:bigBoldLabelStyle, string: 'to take ' + String(currentPatient.lastTaken),}),
+				Label($, {left:60, right:10, height:25, vertical: "middle", style:bigBoldLabelStyle, string: 'to take ' + String(currentMed.name)}),
 				// Label($, {left:60, right:10, height:25, vertical: "middle", style:bigBoldLabelStyle, string: 'at ' + String(currentPatient.lastTakenTime),}),
-				Label($, {left:60, right:10, height:25, vertical: "middle", style:bigBoldLabelStyle, string: 'at ' + getTimeDateString(badTime),}),
+				Label($, {left:60, right:10, height:25, vertical: "middle", style:bigBoldLabelStyle, string: 'at ' + getTimeDateString(currentMed.lastTakenTime),}),
 				Line($, {left:10, right:10, height:50,}),
 				Label($, {left:10, right:10, height:30, style:boldLabelStyle, string: 'Error Message:',}),
-				// Label($, {left:10, right:10, height:30, style:labelStyle, string: String(currentPatient.errorMessage),}),
-				Label($, {left:10, right:10, height:30, style:labelStyle, string: "Patient failed to take medication on time",}),
+				Label($, {left:10, right:10, height:30, style:labelStyle, string: String(currentMed.errorMessage),}),
+				// Label($, {left:10, right:10, height:30, style:labelStyle, string: "Patient failed to take medication on time",}),
 				Line($, {left:10, right:10, height:50,}),
 				Label($, {left:10, right:10, height:30, style:boldLabelStyle, string: 'Patient\'s Message:',}),
-				// Label($, {left:10, right:10, height:30, style:labelStyle, editable: false, string: String(currentPatient.patientMessage),}),
-				Label($, {left:10, right:10, height:30, style:labelStyle, editable: false, string: "no message recorded",}),
+				Label($, {left:10, right:10, height:30, style:labelStyle, editable: false, string: String(currentMed.patientMessage),}),
+				// Label($, {left:10, right:10, height:30, style:labelStyle, editable: false, string: "no message recorded",}),
 				Line($, {left:10, right:10, height:50,}),
 				Picture($, { left:10, right: 10, active: true, width:25, url: contactPatientRed, active: true, 							
 					Behavior: class extends Behavior {
@@ -643,7 +644,7 @@ let PopUpTickScreen = Container.template($ => ({
 	contents: [
 		Column($, {left: 1, right: 1, top: 1, bottom: 1, skin: whiteSkin,
 			contents: [
-				Container($, {left: 0, right: 0, height: 50, skin: greenSkin,
+				Container($, {left: 0, right: 0, height: 70, skin: greenSkin,
 					contents: [
 						Picture($, { left:10, active: true, width:25, url: greenBack, active: true, 
 							Behavior: class extends Behavior {
@@ -658,9 +659,9 @@ let PopUpTickScreen = Container.template($ => ({
 				}),
 				Line($, {left:10, right:10, height:60,}),
 				Label($, {left:60, right:10, height:25, vertical: "middle", style:bigBoldLabelStyle, string: String(currentPatient.first) + ' ' + String(currentPatient.last) + ' last',}),
-				Label($, {left:60, right:10, height:25, vertical: "middle", style:bigBoldLabelStyle, string: 'took ' + String(currentPatient.lastTaken),}),
+				Label($, {left:60, right:10, height:25, vertical: "middle", style:bigBoldLabelStyle, string: 'took ' + String(currentMed.name),}),
 				// Label($, {left:60, right:10, height:25, vertical: "middle", style:bigBoldLabelStyle, string: 'at ' + String(currentPatient.lastTakenTime),}),
-				Label($, {left:60, right:10, height:25, vertical: "middle", style:bigBoldLabelStyle, string: 'at ' + getTimeDateString(goodTime),}),
+				Label($, {left:60, right:10, height:25, vertical: "middle", style:bigBoldLabelStyle, string: 'at ' + getTimeDateString(currentMed.lastTakenTime),}),
 				Line($, {left:10, right:10, height:260,}),
 				Picture($, { left:10, right: 10, active: true, width:25, url: contactPatientGreen, active: true, 							
 					Behavior: class extends Behavior {
@@ -715,14 +716,167 @@ let HomeScreen = Container.template($ => ({
 	
 
 
-/* Add Patient Screen */
+// /* Add Patient Screen */
+// let AddPatientScreen = Container.template($ => ({ 
+// 	left: 0, right: 0, top: 0, bottom: 0, skin: whiteSkin, 
+// 	Behavior: MainScreenBehavior, 
+// 	contents: [
+// 		Container($, {left: 0, right: 0,
+// 			contents: [ 		
+// 				Column($, {left: 0, right: 0,
+// 					Behavior: class extends Behavior {
+// 						onTouchEnded(content) {
+// 			        		//SystemKeyboard.hide();
+// 			        		trace("hide keyboard moom \n");
+// 			        		//SystemKeyBoard.hide();
+// 			        		content.focus();
+// 		    			}
+// 		    		},
+//     				contents: [ 
+// 					/* ADD PATIENT TITLE */
+// 						Container($, {left: 0, right: 0, skin: blueSkin,
+// 							contents: [
+// 								Label($, {left:10, right:40, height:70, top: 30, style:titleStyle, string:'Add Patient' }),
+// 								Picture($, { left:10, top:30, active: true, bottom:0, width:(application.width * 0.1), url: back, active: true, 
+// 									Behavior: class extends Behavior {
+// 										onTouchEnded(container, id, x, y, ticks) {
+// 											if (popSwitch) container.bubble( "onTriggerTransition", "toHomeRight");
+// 										}
+// 									},  
+// 								}),
+// 								Picture($, { right:10, top:30, active: true, bottom:0, width:(application.width * 0.25), url: save, active: true, 
+// 									Behavior: class extends Behavior {
+// 										onTouchEnded(container, id, x, y, ticks) {
+// 											var newPatient = new Patient("John", "Doe", "01/01/1989", "Male", "6ft", "169 lbs", true, "None");
+// 											doctor.patientsGood.push(newPatient);
+// 											if (popSwitch) container.bubble( "onTriggerTransition", "toHomeRight");
+// 										}
+// 									},  
+// 								}),
+// 							]
+// 						}),
+// 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+// 					/* FIRST NAME */
+// 						Line($, {left: 0, right: 0, top:0, bottom:0,
+// 							contents: [
+// 								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  First Name:' }),
+// 								Label($, {right:25, height:(application.height / 10), top: 0, active: true, editable: true, style:editLabelStyle, string:'  enter text', 
+// 									Behavior: class extends Behavior {onTouchEnded(label) {
+// 				                            label.string = "John",
+// 				                            label.style = labelStyle,
+// 										}
+// 									}, 
+// 								}),
+// 							]
+// 						}),
+// 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+// 					/* LAST NAME */
+// 						Line($, {left: 0, right: 0, top:0, bottom:0,
+// 							contents: [
+// 								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Last Name:' }),
+// 								Label($, {right:25, height:(application.height / 10), top: 0, active: true, editable: true, style:editLabelStyle, string:'  enter text', 
+// 									Behavior: class extends Behavior {onTouchEnded(label) {
+// 				                            label.string = "Doe",
+// 				                            label.style = labelStyle,
+// 										}
+// 									}, 
+// 								}),
+// 							]
+// 						}),
+// 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+// 					/* BIRTHDAY */
+// 						Line($, {left: 0, right: 0, top:0, bottom:0,
+// 							contents: [
+// 								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Birthday:'}), 
+// 								Label($, {right:25, height:(application.height / 10), top: 0, active: true, editable: true, style:editLabelStyle, string:'  enter text', 
+// 									Behavior: class extends Behavior {onTouchEnded(label) {
+// 				                            label.string = "01/01/1989",
+// 				                            label.style = labelStyle,
+// 										}
+// 									}, 
+// 								}),
+// 							]
+// 						}),
+// 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),	
+// 					/* GENDER */
+// 						Line($, {left: 0, right: 0, top:0, bottom:0,
+// 							contents: [
+// 								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Gender:'}), 
+// 								Label($, {right:25, height:(application.height / 10), top: 0, active: true, editable: true, style:editLabelStyle, string:'  enter text', 
+// 									Behavior: class extends Behavior {onTouchEnded(label) {
+// 				                            label.string = "Male",
+// 				                            label.style = labelStyle,
+// 										}
+// 									}, 
+// 								}),
+// 							]
+// 						}),
+// 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+// 					/* HEIGHT */
+// 						Line($, {left: 0, right: 0, top:0, bottom:0,
+// 							contents: [
+// 								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Height:'}), 
+// 								Label($, {right:25, height:(application.height / 10), top: 0, active: true, editable: true, style:editLabelStyle, string:'  enter text', 
+// 									Behavior: class extends Behavior {onTouchEnded(label) {
+// 				                            label.string = "6ft",
+// 				                            label.style = labelStyle,
+// 										}
+// 									}, 
+// 								}),
+// 							]
+// 						}),
+// 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+// 					/* WEIGHT */
+// 						Line($, {left: 0, right: 0, top:0, bottom:0,
+// 							contents: [
+// 								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Weight:'}), 
+// 								Label($, {right:25, height:(application.height / 10), top: 0, active: true, editable: true, style:editLabelStyle, string:'  enter text', 
+// 									Behavior: class extends Behavior {onTouchEnded(label) {
+// 				                            label.string = "169 lbs",
+// 				                            label.style = labelStyle,
+// 										}
+// 									}, 
+// 								}),
+// 							]
+// 						}),
+// 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+// 					/* ADD MEDICATION */
+// 						Line($, {left: 0, right: 0, top:0, bottom:0,
+// 							contents: [
+// 								Picture($, { left:0, top:0, bottom:0, url:plus, active: true, 
+// 									Behavior: class extends Behavior {
+// 										onTouchEnded(container, id, x, y, ticks) {
+// 											container.bubble( "onTriggerTransition", "toAddMedicationLeft");
+// 										}
+// 									},  									
+// 								}),
+// 								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Add Medication' }),
+// 							]
+// 						}),
+// 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
+// 		/* BLANK SPACE */
+// 						Line($, {left: 0, right: 0, top:0, bottom:0,
+// 							contents: [
+// 								Label($, {left:0, right:0, height:(application.height * 0.22), top: 0, style:labelStyle, skin: greySkin, string:'  ' }),
+// 							]
+// 						}),	
+// 					]
+// 				})
+
+// 			]
+// 		})
+// 	] 
+// }));
+
+
+/* Patient Edit Screen */
 let AddPatientScreen = Container.template($ => ({ 
 	left: 0, right: 0, top: 0, bottom: 0, skin: whiteSkin, 
 	Behavior: MainScreenBehavior, 
 	contents: [
-		Container($, {left: 0, right: 0,
+		Container($, {left: 0, right: 0, 
 			contents: [ 		
-				Column($, {left: 0, right: 0,
+				Column($, {left: 0, right: 0, active: true, 
 					Behavior: class extends Behavior {
 						onTouchEnded(content) {
 			        		//SystemKeyboard.hide();
@@ -730,25 +884,33 @@ let AddPatientScreen = Container.template($ => ({
 			        		//SystemKeyBoard.hide();
 			        		content.focus();
 		    			}
-		    		},
-    				contents: [ 
-					/* ADD PATIENT TITLE */
-						Container($, {left: 0, right: 0, skin: blueSkin,
+    				},
+					contents: [ 
+					/* PATIENT X TITLE */
+						Container($, {left: 0, right: 0, skin: blueSkin, 
 							contents: [
-								Label($, {left:10, right:40, height:70, top: 30, style:titleStyle, string:'Add Patient' }),
-								Picture($, { left:10, top:30, active: true, bottom:0, width:(application.width * 0.1), url: back, active: true, 
+								Label($, {left:0, right:0, height:(application.height / 8), top: 30, style:titleStyle, string:'Add Patient' }),
+								Picture($, { left:0, top:30, active: true, bottom:0, width:(application.width * 0.1), url: back, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
-											if (popSwitch) container.bubble( "onTriggerTransition", "toHomeRight");
+											container.bubble( "onTriggerTransition", "toHomeRight");
 										}
 									},  
 								}),
 								Picture($, { right:10, top:30, active: true, bottom:0, width:(application.width * 0.25), url: save, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
-											var newPatient = new Patient("John", "Doe", "01/01/1989", "Male", "6ft", "169 lbs", true, "None");
-											doctor.patientsGood.push(newPatient);
-											if (popSwitch) container.bubble( "onTriggerTransition", "toHomeRight");
+											var newPatient = new Patient(textFieldInputs.first, textFieldInputs.last, textFieldInputs.birthday, textFieldInputs.gender,
+												textFieldInputs.height, textFieldInputs.weight, true, "None");
+											currentPatient.first = textFieldInputs.first;
+											currentPatient.last = textFieldInputs.last;
+											currentPatient.birthday = textFieldInputs.birthday;
+											currentPatient.gender = textFieldInputs.gender;
+											currentPatient.height = textFieldInputs.height;
+											currentPatient.weight = textFieldInputs.weight;
+											currentPatientName = currentPatient.first + ' ' + currentPatient.last;
+											doctor.patientsGood.push(newPatient); 
+											container.bubble( "onTriggerTransition", "toHomeRight");
 										}
 									},  
 								}),
@@ -758,84 +920,120 @@ let AddPatientScreen = Container.template($ => ({
 					/* FIRST NAME */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  First Name:' }),
-								Label($, {right:25, height:(application.height / 10), top: 0, active: true, editable: true, style:editLabelStyle, string:'  enter text', 
-									Behavior: class extends Behavior {onTouchEnded(label) {
-				                            label.string = "John",
-				                            label.style = labelStyle,
-										}
-									}, 
-								}),
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  First Name:', 
+									Behavior: class extends Behavior {
+										onTouchEnded(content) {
+											KEYBOARD.hide();
+        									//SystemKeyboard.hide();
+        									system.keyboard.visible = false;
+        									//SystemKeyBoard.hide();
+        									content.focus();
+    									}
+    								},
+    							}),
+								editFirst = new MyField({name: "John", ind: 'first'}),
+								// new MyField({name: "John"}),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
 					/* LAST NAME */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, style:labelStyle, string:'  Last Name:' }),
-								Label($, {right:25, height:(application.height / 10), top: 0, active: true, editable: true, style:editLabelStyle, string:'  enter text', 
-									Behavior: class extends Behavior {onTouchEnded(label) {
-				                            label.string = "Doe",
-				                            label.style = labelStyle,
-										}
-									}, 
-								}),
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Last Name:', 
+									Behavior: class extends Behavior {
+										onTouchEnded(content) {
+											KEYBOARD.hide();
+        									//SystemKeyboard.hide();
+        									system.keyboard.visible = false;
+        									//SystemKeyBoard.hide();
+        									content.focus();
+    									}
+    								},
+    							}),
+
+								editLast =  new MyField({name: "Doe", ind: 'last'}),
+								// new MyField({name: "Doe"}),
+
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
 					/* BIRTHDAY */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Birthday:'}), 
-								Label($, {right:25, height:(application.height / 10), top: 0, active: true, editable: true, style:editLabelStyle, string:'  enter text', 
-									Behavior: class extends Behavior {onTouchEnded(label) {
-				                            label.string = "01/01/1989",
-				                            label.style = labelStyle,
-										}
-									}, 
-								}),
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Birthday:', 
+									Behavior: class extends Behavior {
+										onTouchEnded(content) {
+											KEYBOARD.hide();
+        									//SystemKeyboard.hide();
+        									system.keyboard.visible = false;
+        									//SystemKeyBoard.hide();
+        									content.focus();
+    									}
+    								},
+    							}),
+
+								editBirthday = new MyField({name: "02/14/96", ind: 'birthday'}),
+								// new MyField({name: "01/01/92"}),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),	
 					/* GENDER */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Gender:'}), 
-								Label($, {right:25, height:(application.height / 10), top: 0, active: true, editable: true, style:editLabelStyle, string:'  enter text', 
-									Behavior: class extends Behavior {onTouchEnded(label) {
-				                            label.string = "Male",
-				                            label.style = labelStyle,
-										}
-									}, 
-								}),
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Gender:', 
+									Behavior: class extends Behavior {
+										onTouchEnded(content) {
+											KEYBOARD.hide();
+        									//SystemKeyboard.hide();
+        									system.keyboard.visible = false;
+        									//SystemKeyBoard.hide();
+        									content.focus();
+    									}
+    								},
+    							}),
+
+								editGender = new MyField({name: "male", ind: 'gender'}),
+								// new MyField({name: "Male"}),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
 					/* HEIGHT */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Height:'}), 
-								Label($, {right:25, height:(application.height / 10), top: 0, active: true, editable: true, style:editLabelStyle, string:'  enter text', 
-									Behavior: class extends Behavior {onTouchEnded(label) {
-				                            label.string = "6ft",
-				                            label.style = labelStyle,
-										}
-									}, 
-								}),
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Height:', 
+									Behavior: class extends Behavior {
+										onTouchEnded(content) {
+											KEYBOARD.hide();
+        									//SystemKeyboard.hide();
+        									system.keyboard.visible = false;
+        									//SystemKeyBoard.hide();
+        									content.focus();
+    									}
+    								},
+    							}),
+
+								editHeight = new MyField({name: "6 ft", ind: 'height'}),
+								// new MyField({name: "6ft"}),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
 					/* WEIGHT */
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
-								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Weight:'}), 
-								Label($, {right:25, height:(application.height / 10), top: 0, active: true, editable: true, style:editLabelStyle, string:'  enter text', 
-									Behavior: class extends Behavior {onTouchEnded(label) {
-				                            label.string = "169 lbs",
-				                            label.style = labelStyle,
-										}
-									}, 
-								}),
+								Label($, {left:0, right:0, height:(application.height / 10), top: 0, active: true, style:labelStyle, string:'  Weight:', 
+									Behavior: class extends Behavior {
+										onTouchEnded(content) {
+											KEYBOARD.hide();
+        									//SystemKeyboard.hide();
+        									system.keyboard.visible = false;
+        									//SystemKeyBoard.hide();
+        									content.focus();
+    									}
+    								},
+    							}),
+
+								editWeight = new MyField({name: "172 lbs", ind: 'weight'}),
+								// new MyField({name: "169lbs"}),
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
@@ -846,6 +1044,8 @@ let AddPatientScreen = Container.template($ => ({
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
 											container.bubble( "onTriggerTransition", "toAddMedicationLeft");
+											SystemKeyboard.hide();
+											container.focus();
 										}
 									},  									
 								}),
@@ -868,7 +1068,6 @@ let AddPatientScreen = Container.template($ => ({
 }));
 
 
-
 function createPatientMedicineScreen(patient) {
 	var i;
 	for (i = 0; i < patient.meds.length; i++) {
@@ -876,10 +1075,10 @@ function createPatientMedicineScreen(patient) {
 		// trace("createPatientMedicineScreen says: " + patient.first + " " + curMed.name + ' \n' );
 		var takenMed = checkTaken(patient, curMed);
 		if (takenMed == true) {
-			currentScreen.patientFirst.patientSecond.add(new medicineTemplate({height: (application.height / 10), name: "   " + curMed.name, url: tick}));
+			currentScreen.patientFirst.patientSecond.add(new medicineTemplate({height: (application.height / 10), curMed: curMed, url: tick}));
 		}
 		else {
-			currentScreen.patientFirst.patientSecond.add(new medicineTemplate({height: (application.height / 10), name: "   " + curMed.name, url: exclamation}));
+			currentScreen.patientFirst.patientSecond.add(new medicineTemplate({height: (application.height / 10), curMed: curMed, url: exclamation}));
 		}
 		currentScreen.patientFirst.patientSecond.add(new seperatorTemplate());
 	}
@@ -888,11 +1087,11 @@ function createPatientMedicineScreen(patient) {
 }
 
 
-// height, name, url
+// height, curMed, url
 let medicineTemplate = Line.template($ => ({
     left: 0, right: 0, top:0, bottom:0, active: true,
     contents: [
-    	Label($, {left:0, right:0, height: $.height, top: 0, style:labelStyle, string: $.name}),
+    	Label($, {left:0, right:0, height: $.height, top: 0, style:labelStyle, string: "   " + $.curMed.name}),
 		Picture($, { right:0, top:0, bottom:0, url: $.url, active: true,
 		Behavior: class extends Behavior {
 				onTouchEnded(container) {
@@ -900,7 +1099,8 @@ let medicineTemplate = Line.template($ => ({
 						popSwitch = false;
 						currentScreen.active = false;
 						currentPatientName = String(currentPatient.first) + ' ' + String(currentPatient.last);
-						if ($.status == exclamation) {
+						currentMed = $.curMed;
+						if ($.url == exclamation) {
 							container.bubble( "onTriggerTransition", "toPopUpExclamationFade" );
 						} else {
 							container.bubble( "onTriggerTransition", "toPopUpTickFade" );
@@ -1258,15 +1458,15 @@ let AddMedicationScreen = Container.template($ => ({
 /* PATIENT X TITLE */
 						Container($, {left: 0, right: 0, skin: blueSkin,
 							contents: [
-								Label($, {left:0, right: 20, height:70, top: 30, style:titleStyle, string:'Add Medication' }),
-								Picture($, { left:0, top:30, active: true, bottom:0, width:(application.width * 0.1), url: back, active: true, 
+								Label($, {left:0, right: 20, height:70, top: 55, style:titleStyle, string:'Add Medication' }),
+								Picture($, { left:0, top:55, active: true, bottom:0, width:(application.width * 0.1), url: back, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
 											container.bubble( "onTriggerTransition", "toPatientRight");
 										}
 									},  
 								}),
-								Picture($, { right:10, top:30, active: true, bottom:0, width:(application.width * 0.25), url: save, active: true, 
+								Picture($, { right:5, top:55, active: true, bottom:0, width:(application.width * 0.25), url: save, active: true, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
 											// trace(currentPatient.first + "\n");	
@@ -1534,7 +1734,7 @@ Container($, {left: 0, right: 0,
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
 								dispenserPicture = Picture($, { left:0, top:0, bottom:0, width:(application.width * 0.15), url:dispenserDisconnect}),
-								dispenserLabel = Label($, {left:0, right:0, height:(application.height / 8), width:(application.width * 0.85), top: 0, style:dispenserLabelStyle, string:' DISPENSER 1  ' }),
+								dispenserLabel = Label($, {left:0, right:0, height:(application.height / 8), width:(application.width * 0.85), top: 0, style:dispenserLabelStyle, string:' Alfie Nowell DISPENSER ' }),
 							]
 						}),						
 						Line($, { left: 0, right: 0, height: 3, skin: separatorSkin }),
@@ -1568,7 +1768,7 @@ Container($, {left: 0, right: 0,
 						Line($, {left: 0, right: 0, top:0, bottom:0,
 							contents: [
 								Picture($, { left:0, top:0, bottom:0, width:(application.width * 0.15), url:dispenserDisconnect}),
-								Label($, {left:0, right:0, height:(application.height / 8), width:(application.width * 0.85), top: 0, style:dispenserLabelStyle, string:' DISPENSER 2  ' }),
+								Label($, {left:0, right:0, height:(application.height / 8), width:(application.width * 0.85), top: 0, style:dispenserLabelStyle, string:' Ava Shute DISPENSER  ' }),
 							]
 						}),						
 						Line($, { left: 0, right: 0, height: 3, skin: separatorSkin }),
@@ -1622,7 +1822,7 @@ let MessageScreen = Container.template($ => ({
 					/* MESSAGING */
 						Container($, {left: 0, right: 0, skin: blueSkin,
 							contents: [
-								Picture($, { left:0, top:10, active: true, bottom:0, width:(application.width * 0.1), url: back,
+								Picture($, { left:0, top:0, active: true, bottom:0, width:(application.width * 0.1), url: back,
 									Behavior: MainScreenBehavior, 
 									Behavior: class extends Behavior {
 										onTouchEnded(container, id, x, y, ticks) {
@@ -1630,7 +1830,7 @@ let MessageScreen = Container.template($ => ({
 										}
 									},  
 								}),
-								Label($, {left:0, right:0, top: 10, height:(application.height / 7), top: 0, style:titleStyle, string:'Messaging' }),
+								Label($, {left:0, right:0, top: 0, height:(application.height / 8), top: 0, style:titleStyle, string:'Messaging' }),
 							]
 						}),
 						Line($, {left: 0, right: 0, top:0, bottom:0, height: application.height/5+70,
@@ -1638,7 +1838,7 @@ let MessageScreen = Container.template($ => ({
 								//button
 								//on touch ended, send a message to device using handler.bind
 								//sendButton
-								receivedMessageLabel = new Label({ left:0, right:0, string:"", style: labelStyle})					
+								receivedMessageLabel = new Label({ left:0, right:0, string:"  No Message", style: labelStyle})					
 							]
 							
 						}),
@@ -1655,11 +1855,11 @@ let MessageScreen = Container.template($ => ({
 							contents: [
 								// where the error occurs
 								//messageBox
-								messageBox = new MessageField({string:"mongoos", name: "messageBox"})
+								messageBox = new MessageField({string:"mongoos", name: "Enter Text Here"})
 								
 							]
 						}),
-						Line($, {left: 25, right: 25, top:0, bottom:0, height: 50, width: 100,
+						Line($, {left: 25, right: 25, top:0, bottom:25, height: 50, width: 100,
 							contents: [
 								//button
 								//on touch ended, send a message to device using handler.bind
@@ -1667,7 +1867,12 @@ let MessageScreen = Container.template($ => ({
 								new SendButtonTemplate({ textForLabel: "Send", width: 10, align: "center" })							
 							]
 							
-						}),						
+						}),	
+						// Line($, {left: 0, right: 0, top:0, bottom:0,
+						// 	contents: [
+						// 		Label($, {left:0, right:0, height:(application.height * 0.02), top: 0, style:labelStyle, skin: greySkin, string:'  ',}),	
+						// 	],	
+						// }),						
 					]			
 				})
 			]
@@ -1681,12 +1886,12 @@ let MessageScreen = Container.template($ => ({
 /* LED Flash function */
 Handler.bind("/flashLED", {
     onInvoke: function(handler, message){
-    	remotePins.invoke("/led/write", 1);
+    	remotePins.invoke("/led1/write", 1);
     	if (deviceURL != "") new MessageWithObject(deviceURL + "dispenseTreatStart", JSON.stringify( { message: level3 } )).invoke();
     	handler.wait(1500);
     },
     onComplete: function(handler, message) {
-    	remotePins.invoke("/led/write", 0);
+    	remotePins.invoke("/led1/write", 0);
     	if (deviceURL != "") new MessageWithObject(deviceURL + "dispenseTreatEnd", "").invoke();
     }
 });
@@ -1726,7 +1931,7 @@ function getTimeDateInt(currentTime) {
 	
 /* Connection Updater for Labels */
 function updatedispenserConnection(conn) {
-	devicePatient = doctor.patientsGood[0];
+	devicePatient = doctor.patientsBad[0];
 	connected = conn;
 	if (conn) {
 		contactPicture = contactPatientBlue;
@@ -1793,8 +1998,10 @@ function discovery() {
             if (connectionDesc.name == "pillsense-device") {
                 trace("Connected to remote pins\n");
                 remotePins = Pins.connect(connectionDesc);
-    //             remotePins.repeat("/pill1Button/read", 500, function(result) {
-	   //              updatedispenserConnection(true);
+                remotePins.repeat("/pill1Button/read", 500, function(result) {
+	                updatedispenserConnection(true);
+
+	devicePatient.statusGood = true;
 			 //    	if (devicePatient.meds.length <= 1){
 			 //    		devicePatient.lastTaken = devicePatient.med[0].name;
 			 //    		devicePatient.med[0].lastTakenTime = new Date();
@@ -1805,7 +2012,7 @@ function discovery() {
 			 //    	for (var i = 0; i < patientsBad.length; i++) {
 			 //    		if (!patientCorrectPlace(patientsBad[i], devicePatient.statusGood)) movePatient(patientsBad[i]);
 			 //    	};
-				// });
+				});
 
 				// remotePins.repeat("/pill2Button/read", 500, function(result2) {
 				// 	if (devicePatient.meds.length <= 2){

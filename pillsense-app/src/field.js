@@ -68,6 +68,7 @@ export class FieldLabelBehavior extends  Behavior {
 				if (label instanceof Text) {
 					label.insert(key);
 					edited = true;
+					SystemKeyboard.hide();
 				}
 				else
 					return false;
