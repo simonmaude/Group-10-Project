@@ -334,7 +334,7 @@ let RefreshButtonTemplate = Button.template($ => ({
         onTap(button){
         	// trace("refresh button in app tapped\n");
 			if (deviceURL != "") new Message(deviceURL + "patientMessage").invoke(Message.JSON).then(json => { receivedPatientMessage = json.patientMessage; }); //trace("device received message: "+json.doctorMessage+"\n");
-			receivedMessageLabel.string = "last message: "+receivedPatientMessage;
+			receivedMessageLabel.string = "  last message: "+receivedPatientMessage;
 			//receivedMessageLabel.string = receivedPatientMessage;
         }
     }
@@ -1788,7 +1788,7 @@ Container($, {left: 0, right: 0,
 							]
 						}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
-						Picture($, { left:0, right: 0, height: 50, url: contactPatientGrey,}),
+						Picture($, { left:0, right: 0, height: 50, url: contactPatientBlue,}),
 						Line($, { left: 0, right: 0, height: 1, skin: separatorSkin }),
 									
 				/* BLANK SPACE */
