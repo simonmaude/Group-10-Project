@@ -902,13 +902,13 @@ let AddPatientScreen = Container.template($ => ({
 										onTouchEnded(container, id, x, y, ticks) {
 											var newPatient = new Patient(textFieldInputs.first, textFieldInputs.last, textFieldInputs.birthday, textFieldInputs.gender,
 												textFieldInputs.height, textFieldInputs.weight, true, "None");
-											currentPatient.first = textFieldInputs.first;
-											currentPatient.last = textFieldInputs.last;
-											currentPatient.birthday = textFieldInputs.birthday;
-											currentPatient.gender = textFieldInputs.gender;
-											currentPatient.height = textFieldInputs.height;
-											currentPatient.weight = textFieldInputs.weight;
-											currentPatientName = currentPatient.first + ' ' + currentPatient.last;
+											// currentPatient.first = textFieldInputs.first;
+											// currentPatient.last = textFieldInputs.last;
+											// currentPatient.birthday = textFieldInputs.birthday;
+											// currentPatient.gender = textFieldInputs.gender;
+											// currentPatient.height = textFieldInputs.height;
+											// currentPatient.weight = textFieldInputs.weight;
+											// currentPatientName = currentPatient.first + ' ' + currentPatient.last;
 											doctor.patientsGood.push(newPatient); 
 											container.bubble( "onTriggerTransition", "toHomeRight");
 										}
@@ -2062,6 +2062,9 @@ function discovery() {
 				   	else if (result >= 0.60) level2 = threeQuarter;
 				   	else if (result >= 0.35) level2 = half;
 				   	else if (result >= 0.1) level2 = oneQuarter;
+				   	else {
+				   		devicePatient.statusGood = false;
+				   	}
 				   	aceLevel.url = level2;
 				});
             }
