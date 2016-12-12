@@ -2002,7 +2002,12 @@ function discovery() {
                 remotePins.repeat("/pill1Button/read", 500, function(result) {
 	                updatedispenserConnection(connSwitch);
 	                connSwitch = false;
-
+	                if (result == 1) {
+	                	currentPatient.statusGood = true;
+	                }
+	                if (result == 0) {
+	                	currentPatient.statusGood = false;
+	                }
 			 //    	if (devicePatient.meds.length <= 1){
 			 //    		devicePatient.lastTaken = devicePatient.med[0].name;
 			 //    		devicePatient.med[0].lastTakenTime = new Date();
